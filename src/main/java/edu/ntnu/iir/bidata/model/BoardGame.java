@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata;
+package edu.ntnu.iir.bidata.model;
 
 import java.util.List;
 

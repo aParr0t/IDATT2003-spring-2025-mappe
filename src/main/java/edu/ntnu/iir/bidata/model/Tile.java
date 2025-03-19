@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata;
+package edu.ntnu.iir.bidata.model;
 
 /**
  * Represents a tile on the game board.

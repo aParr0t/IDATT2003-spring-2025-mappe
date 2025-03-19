@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata;
 
+import edu.ntnu.iir.bidata.model.Player;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
