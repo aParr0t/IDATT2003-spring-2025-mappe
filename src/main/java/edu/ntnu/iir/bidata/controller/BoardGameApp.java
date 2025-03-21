@@ -34,14 +34,10 @@ public class BoardGameApp {
 
     // Create the game
     game = new BoardGame(board, players, dice);
-
-    // GUI app
-    uiApp = new GUIApp();
   }
 
   public void run() {
-    // Start the game in the console
-    // game.startGame();
-    uiApp.startApp();
+    // game.startGame();  // Start the game in the console
+    GUIApp.startApp();
   }
 }

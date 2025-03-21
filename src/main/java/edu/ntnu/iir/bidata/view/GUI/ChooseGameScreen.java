@@ -1,7 +1,6 @@
 package edu.ntnu.iir.bidata.view.GUI;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -28,34 +27,49 @@ public class ChooseGameScreen extends StackPane {
   public ChooseGameScreen() {
     // Create title label
     Label titleLabel = new Label("Choose a game");
-    titleLabel.setFont(new Font(24));
+    titleLabel.setFont(new Font(32));
 
     // get all games
     List<GamePreview> gamePreviews = List.of(
-            new GamePreview("Stigespill", "game1.png"),
-            new GamePreview("Monopoly", "game2.png")
+            new GamePreview("Stigespill", "/images/stigespill.png"),
+            new GamePreview("Monopoly", "/images/monopoly.png")
     );
 
     // draw game previews
-    HBox gamePreviewContainer = new HBox();
+    HBox gamesContainer = new HBox(20);
     for (GamePreview gamePreview : gamePreviews) {
       VBox gameCard = new VBox();
+      gameCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+
       // game preview image
-      Rectangle imageContainer = new Rectangle(100, 100);
+      Rectangle imageContainer = new Rectangle(200, 200);
       ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.imagePath));
       imageContainer.setFill(imagePattern);
-      // game preview name
+
+      // game name
       Label gameName = new Label(gamePreview.name);
+      gameName.setFont(new Font(18));
+      gameName.setStyle("-fx-padding: 10px;");
 
       gameCard.getChildren().addAll(imageContainer, gameName);
+      gamesContainer.getChildren().add(gameCard);
+
+      // add click handler to gameCard
+      gameCard.setOnMouseClicked(event -> {
+        System.out.println("Clicked on " + gamePreview.name);
+      });
     }
+    gamesContainer.setAlignment(Pos.CENTER);
 
     // Vertical box to hold elements
-    VBox vbox = new VBox(10, titleLabel, gamePreviewContainer);
-    vbox.setAlignment(Pos.CENTER);
+    VBox container = new VBox(20, titleLabel, gamesContainer);
+    container.setAlignment(Pos.CENTER);
 
     // Add vbox to StackPane
-    this.getChildren().add(vbox);
+    this.getChildren().add(container);
     this.setAlignment(Pos.CENTER);
+
+    // Add a go back button
+    GoBackButton.addButtonToScene(GUIApp.sceneContent, new HomeScreen());
   }
 }

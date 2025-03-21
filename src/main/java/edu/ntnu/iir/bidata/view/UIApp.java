@@ -1,7 +1,11 @@
 package edu.ntnu.iir.bidata.view;
 
 public interface UIApp {
-  void startApp();
+  static void startApp() {
+    
+  }
 
-  void quitApp();
+  static void quitApp() {
+
+  }
 }

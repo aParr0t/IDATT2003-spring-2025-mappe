@@ -22,8 +22,8 @@ public class HomeScreen extends StackPane {
     Button quitButton = new Button("QUIT");
 
     // Button click handlers
-    startButton.setOnAction(event -> System.out.println("Start game"));
-    quitButton.setOnAction(event -> System.out.println("Quit game"));
+    startButton.setOnAction(event -> GUIApp.setContent(new ChooseGameScreen()));
+    quitButton.setOnAction(event -> GUIApp.quitApp());
 
     // Set button sizes
     startButton.setMinWidth(100);

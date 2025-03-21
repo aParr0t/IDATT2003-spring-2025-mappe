@@ -8,13 +8,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class GUIApp extends Application implements UIApp {
-  BorderPane sceneContent;
-  Stage stage;
+  static BorderPane sceneContent;
+  static Stage stage;
 
   @Override
   public void start(Stage stage) {
     sceneContent = new BorderPane();
-    this.stage = stage;
+    GUIApp.stage = stage;
     Scene scene = new Scene(sceneContent, 1000, 800);
     scene.setOnKeyPressed(event -> {
       switch (event.getCode()) {
@@ -27,15 +27,15 @@ public class GUIApp extends Application implements UIApp {
     setContent(new HomeScreen());
   }
 
-  public void setContent(Node content) {
-    this.sceneContent.setCenter(content);
+  public static void setContent(Node content) {
+    sceneContent.setCenter(content);
   }
 
-  public void quitApp() {
+  public static void quitApp() {
     stage.close();
   }
 
-  public void startApp() {
+  public static void startApp() {
     launch();
   }
 }
