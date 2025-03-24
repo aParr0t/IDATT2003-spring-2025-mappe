@@ -4,47 +4,51 @@ package edu.ntnu.iir.bidata.model;
  * Represents a player in the game.
  */
 public class Player {
-    private final String name;
-    private int position;
+  private final String name;
+  private int position;
+  private PlayingPiece playingPiece;
 
-    /**
-     * Creates a new player with a given name.
-     *
-     * @param name the player's name
-     */
-    public Player(String name) {
-        this.name = name;
-        this.position = 0; // Spilleren starter på posisjon 0
-    }
+  public Player(String name) {
+    this(name, null); // Using null as default, can be changed later via setter
+  }
 
-    /**
-     * Moves the player forward a certain number of steps.
-     * If the steps are negative, the player does not move.
-     *
-     * @param steps the number of steps to move forward
-     */
-    public void move(int steps) {
-        if (steps > 0) {
-            this.position += steps;
-        }
-        // Hvis steps er negativt, skjer ingenting
-    }
+  /**
+   * Creates a new player with a given name.
+   *
+   * @param name the player's name
+   */
+  public Player(String name, PlayingPiece playingPiece) {
+    this.name = name;
+    this.position = 0; // Spilleren starter på posisjon 0
+    this.playingPiece = playingPiece;
+  }
 
-    /**
-     * Gets the player's current position.
-     *
-     * @return the player's position
-     */
-    public int getPosition() {
-        return position;
+  /**
+   * Moves the player forward a certain number of steps.
+   * If the steps are negative, the player does not move.
+   *
+   * @param steps the number of steps to move forward
+   */
+  public void move(int steps) {
+    if (steps > 0) {
+      this.position += steps;
     }
+    // Hvis steps er negativt, skjer ingenting
+  }
 
-    /**
-     * Gets the player's name.
-     *
-     * @return the player's name
-     */
-    public String getName() {
-        return name;
-    }
+  public int getPosition() {
+    return position;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public PlayingPiece getPlayingPiece() {
+    return playingPiece;
+  }
+
+  public void setPlayingPiece(PlayingPiece playingPiece) {
+    this.playingPiece = playingPiece;
+  }
 }
