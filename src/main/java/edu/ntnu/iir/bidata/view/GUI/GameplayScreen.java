@@ -1,0 +1,154 @@
+package edu.ntnu.iir.bidata.view.GUI;
+
+import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.PlayingPiece;
+import edu.ntnu.iir.bidata.model.PlayingPieceType;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class GameplayScreen extends StackPane {
+  private final List<Player> players;
+  private int currentPlayerIndex = 0;
+  private final Random random = new Random();
+  private final Rectangle gameBoard;
+  private final DieRectangle die1;
+  private final DieRectangle die2;
+  private final Button rollButton;
+  private final HBox playerCardsSection;
+
+  public GameplayScreen() {
+    // Initialize players (static for now)
+    players = new ArrayList<>();
+    players.add(new Player("Atas", new PlayingPiece(PlayingPieceType.CAR)));
+    players.add(new Player("Stian", new PlayingPiece(PlayingPieceType.DOG)));
+
+    // Create the main layout
+    BorderPane mainLayout = new BorderPane();
+
+    // Center section - Game board
+    gameBoard = new Rectangle(500, 500);
+    gameBoard.setFill(Color.LIGHTGRAY);
+    gameBoard.setStroke(Color.BLACK);
+    StackPane gameBoardContainer = new StackPane(gameBoard);
+    gameBoardContainer.setPadding(new Insets(10));
+    mainLayout.setCenter(gameBoardContainer);
+
+    // Bottom section - Player info and dice
+    HBox bottomSection = new HBox();
+    bottomSection.setAlignment(Pos.CENTER_LEFT);
+    // add top border to bottom section
+    bottomSection.setStyle("-fx-border-color: black; -fx-border-width: 2px 0 0 0;");
+
+    // Player cards section
+    playerCardsSection = new HBox(10);
+    playerCardsSection.setPadding(new Insets(20));
+    playerCardsSection.setStyle("-fx-border-color: black; -fx-border-width: 0 2px 0 0;");
+    HBox.setHgrow(playerCardsSection, javafx.scene.layout.Priority.ALWAYS);
+    playerCardsSection.setAlignment(Pos.CENTER);
+    updatePlayerCards();
+
+    // Dice section
+    VBox diceSection = new VBox(10);
+    diceSection.setAlignment(Pos.CENTER);
+    diceSection.setPadding(new Insets(20));
+    diceSection.setMinWidth(USE_PREF_SIZE);
+    diceSection.setPrefWidth(Control.USE_COMPUTED_SIZE);
+    diceSection.setMaxWidth(Control.USE_PREF_SIZE);
+
+    HBox diceContainer = new HBox(10);
+    diceContainer.setAlignment(Pos.CENTER);
+
+    die1 = new DieRectangle(1, 70);
+    die2 = new DieRectangle(1, 70);
+
+    diceContainer.getChildren().addAll(die1, die2);
+
+    rollButton = new Button("Roll");
+    rollButton.setPrefSize(120, 40);
+    rollButton.setOnAction(e -> handleRollDice());
+
+    diceSection.getChildren().addAll(diceContainer, rollButton);
+
+    bottomSection.getChildren().addAll(playerCardsSection, diceSection);
+    mainLayout.setBottom(bottomSection);
+
+    // Add the main layout to the stack pane
+    this.getChildren().add(mainLayout);
+  }
+
+  private StackPane createPlayerCard(Player player, boolean isActive) {
+    // Create player card container
+    StackPane playerCard = new StackPane();
+    playerCard.setPrefSize(150, 180);
+    playerCard.setPadding(new Insets(10));
+
+    // give container an outline if the player is active
+    if (isActive) {
+      playerCard.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+    }
+
+    // Create player avatar (circle)
+    Rectangle avatar = new Rectangle(120, 120);
+    ImagePattern imagePattern = new ImagePattern(new Image(player.getPlayingPiece().getImagePath()));
+    avatar.setFill(imagePattern);
+
+    // Create player name label
+    Label nameLabel = new Label(player.getName());
+    nameLabel.setTextFill(Color.BLACK);
+    nameLabel.setFont(new Font(16));
+    nameLabel.setTranslateY(70);
+
+    // Add components to card
+    playerCard.getChildren().addAll(avatar, nameLabel);
+    return playerCard;
+  }
+
+  private void handleRollDice() {
+    // get the dice values
+    // TODO: Don't do the random logic here
+    int dieValue1 = random.nextInt(6) + 1;
+    int dieValue2 = random.nextInt(6) + 1;
+
+    // update the dots on the dice
+    die1.setDotCount(dieValue1);
+    die2.setDotCount(dieValue2);
+
+    // increment active player index
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+
+    // calculate the total roll
+    int rollTotal = dieValue1 + dieValue2;
+    System.out.println("Rolled: " + dieValue1 + " + " + dieValue2 + " = " + rollTotal);
+
+    // update the player cards
+    updatePlayerCards();
+  }
+
+  private void updatePlayerCards() {
+    playerCardsSection.getChildren().clear();
+
+    for (Player player : players) {
+      boolean isActive = players.indexOf(player) == currentPlayerIndex;
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
+    }
+  }
+}
