@@ -31,8 +31,8 @@ public class ChooseGameScreen extends StackPane {
 
     // get all games
     List<GamePreview> gamePreviews = List.of(
-            new GamePreview("Stigespill", "/images/stigespill.png"),
-            new GamePreview("Monopoly", "/images/monopoly.png")
+            new GamePreview("Stigespill", "/images/games/stigespill.png"),
+            new GamePreview("Monopoly", "/images/games/monopoly.png")
     );
 
     // draw game previews
@@ -57,6 +57,7 @@ public class ChooseGameScreen extends StackPane {
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
         System.out.println("Clicked on " + gamePreview.name);
+        GUIApp.setContent(new ChoosePlayerScreen());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);
@@ -68,8 +69,5 @@ public class ChooseGameScreen extends StackPane {
     // Add vbox to StackPane
     this.getChildren().add(container);
     this.setAlignment(Pos.CENTER);
-
-    // Add a go back button
-    GoBackButton.addButtonToScene(GUIApp.sceneContent, new HomeScreen());
   }
 }
