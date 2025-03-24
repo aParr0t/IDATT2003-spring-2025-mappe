@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import edu.ntnu.iir.bidata.model.Player;
 
 import java.util.List;
 import java.util.HashSet;
@@ -26,27 +27,27 @@ public class ChoosePlayerScreen extends StackPane {
           new Player("Stian", new PlayingPiece(PlayingPieceType.DOG))
   );
 
-  static class Player {
-    String name;
-    PlayingPiece playingPiece;
-
-    public Player(String name, PlayingPiece playingPiece) {
-      this.name = name;
-      this.playingPiece = playingPiece;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public PlayingPiece getPlayingPiece() {
-      return playingPiece;
-    }
-
-    public void setPlayingPiece(PlayingPiece playingPiece) {
-      this.playingPiece = playingPiece;
-    }
-  }
+//  static class Player {
+//    String name;
+//    PlayingPiece playingPiece;
+//
+//    public Player(String name, PlayingPiece playingPiece) {
+//      this.name = name;
+//      this.playingPiece = playingPiece;
+//    }
+//
+//    public String getName() {
+//      return name;
+//    }
+//
+//    public PlayingPiece getPlayingPiece() {
+//      return playingPiece;
+//    }
+//
+//    public void setPlayingPiece(PlayingPiece playingPiece) {
+//      this.playingPiece = playingPiece;
+//    }
+//  }
 
   public ChoosePlayerScreen() {
     // Create title label
@@ -102,11 +103,11 @@ public class ChoosePlayerScreen extends StackPane {
 
       // playing piece image
       Rectangle imageContainer = new Rectangle(200, 200);
-      ImagePattern imagePattern = new ImagePattern(new Image(player.playingPiece.getImagePath()));
+      ImagePattern imagePattern = new ImagePattern(new Image(player.getPlayingPiece().getImagePath()));
       imageContainer.setFill(imagePattern);
 
       // player name is an input field
-      TextField playerNameField = new TextField(player.name);
+      TextField playerNameField = new TextField(player.getName());
       playerNameField.setFont(new Font(18));
       playerNameField.setStyle("-fx-padding: 10px;");
 
@@ -124,10 +125,8 @@ public class ChoosePlayerScreen extends StackPane {
       // Hide any previous error message
       errorLabel.setVisible(false);
 
-      System.out.println("Starting game with players:");
-      for (Player player : players) {
-        System.out.println(player.getName() + " playing with " + player.getPlayingPiece().getType());
-      }
+      // Start game
+      GUIApp.setContent(new GameplayScreen());
     } else {
       // Show error message
       errorLabel.setText("Every player must have a unique playing piece");
