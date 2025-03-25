@@ -1,8 +1,7 @@
 package edu.ntnu.iir.bidata.view.GUI;
 
-import edu.ntnu.iir.bidata.model.Player;
-import edu.ntnu.iir.bidata.model.PlayingPiece;
-import edu.ntnu.iir.bidata.model.PlayingPieceType;
+import edu.ntnu.iir.bidata.model.*;
+import edu.ntnu.iir.bidata.view.GUI.games.SnakesAndLaddersBoard;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,7 +28,6 @@ public class GameplayScreen extends StackPane {
   private final List<Player> players;
   private int currentPlayerIndex = 0;
   private final Random random = new Random();
-  private final Rectangle gameBoard;
   private final DieRectangle die1;
   private final DieRectangle die2;
   private final Button rollButton;
@@ -45,9 +43,10 @@ public class GameplayScreen extends StackPane {
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
-    gameBoard = new Rectangle(500, 500);
-    gameBoard.setFill(Color.LIGHTGRAY);
-    gameBoard.setStroke(Color.BLACK);
+    Board board = BoardFactory.createRandomSnakesAndLaddersBoard(10, 10);
+    var gameBoard = new SnakesAndLaddersBoard(board);
+    gameBoard.setWidth(500);  // Set the width of the canvas
+    gameBoard.setHeight(500); // Set the height of the canvas
     StackPane gameBoardContainer = new StackPane(gameBoard);
     gameBoardContainer.setPadding(new Insets(10));
     mainLayout.setCenter(gameBoardContainer);

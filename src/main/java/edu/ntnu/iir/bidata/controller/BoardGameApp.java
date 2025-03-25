@@ -18,8 +18,7 @@ public class BoardGameApp {
   private UIApp uiApp;
 
   public void setup() {
-    // Create a game board with 90 tiles
-    Board board = new Board(90);
+//    game = new BoardGame();
 
     // Create players
     Player p1 = new Player("Atas");
@@ -33,7 +32,7 @@ public class BoardGameApp {
     Dice dice = new Dice(2, 6);
 
     // Create the game
-    game = new BoardGame(board, players, dice);
+//    game = new BoardGame(board, players, dice);
   }
 
   public void run() {

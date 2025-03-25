@@ -7,30 +7,50 @@ import java.util.List;
  * Represents the game board consisting of multiple tiles.
  */
 public class Board {
-    private final List<Tile> tiles;
+  private final List<Tile> tiles;
+  private double width;
+  private double height;
 
-    /**
-     * Creates a board with a specified number of tiles.
-     *
-     * @param size the number of tiles on the board
-     * @throws IllegalArgumentException if the size is less than 1
-     */
-    public Board(int size) {
-        if (size < 1) {
-            throw new IllegalArgumentException("Board must have at least one tile");
-        }
-        tiles = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            tiles.add(new Tile(i));
-        }
-    }
+  public Board() {
+    this.tiles = new ArrayList<>();
+    this.width = 1;
+    this.height = 1;
+  }
 
-    /**
-     * Returns the total number of tiles on the board.
-     *
-     * @return the board size
-     */
-    public int getSize() {
-        return tiles.size();
-    }
+  public Board(List<Tile> tiles) {
+    this.tiles = tiles;
+  }
+
+  public void addTile(Tile tile) {
+    tiles.add(tile);
+  }
+
+  public Tile getTile(int tileId) {
+    return tiles.get(tileId);
+  }
+
+  public List<Tile> getTiles() {
+    return tiles;
+  }
+
+  public int getTileCount() {
+    return tiles.size();
+  }
+
+  public double getWidth() {
+    return width;
+  }
+
+  public double getHeight() {
+    return height;
+  }
+
+  @Override
+  public String toString() {
+    return "Board{" +
+            "tileCount=" + getTileCount() +
+            ", width=" + width +
+            ", height=" + height +
+            '}';
+  }
 }
