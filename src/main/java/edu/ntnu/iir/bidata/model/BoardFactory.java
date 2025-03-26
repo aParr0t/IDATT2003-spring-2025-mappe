@@ -116,11 +116,12 @@ public class BoardFactory {
   }
 
   public static Board chineseSnakesAndLadders() {
-    List<Tile> tiles = BoardTileLayout.snakesAndLadders(10, 10);
+    int columns = 20, rows = 20;
+    List<Tile> tiles = BoardTileLayout.snakesAndLadders(columns, rows);
     Board board = new Board(tiles);
 
     // snakes
-    for (int i = 1; i < 100; i++) {
+    for (int i = 1; i < columns * rows; i++) {
       if ((i - 1) % 12 == 0) {
         continue;
       }
