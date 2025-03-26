@@ -18,10 +18,15 @@ public class BoardGameApp {
   private BoardGame game;
 
   public void setup() {
-//    game = new BoardGame();
+    game = new BoardGame();
 
     GUIApp.getInstance().addEventListener(GameEvent.QUIT, event -> {
       System.out.println("quitted");
+    });
+
+    GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameName -> {
+      System.out.println("Game chosen: " + gameName);
+      // Use the gameName string directly - no type checking needed!
     });
 
     // Create players

@@ -20,7 +20,7 @@ import edu.ntnu.iir.bidata.view.GameEventListener;
 import java.util.Stack;
 
 public class GUIApp extends Application implements UIApp {
-  private static Map<GameEvent, List<GameEventListener>> eventListeners = new HashMap<>();
+  private static Map<GameEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
   private static BorderPane sceneContent;
   private static Stage stage;
   private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
@@ -44,8 +44,8 @@ public class GUIApp extends Application implements UIApp {
     stage.show();
 
     // Set initial screen
-//    setContent(new HomeScreen(), false); // Don't add to history since it's first screen
-    setContent(new GameplayScreen(), false); // Don't add to history since it's first screen
+    setContent(new HomeScreen(), false); // Don't add to history since it's first screen
+//    setContent(new GameplayScreen(), false); // Don't add to history since it's first screen
   }
 
   // Static method to get the instance
@@ -101,28 +101,45 @@ public class GUIApp extends Application implements UIApp {
     launch();
   }
 
-
+  /**
+   * (Help from AI: help with generics)
+   */
   @Override
-  public void addEventListener(GameEvent event, GameEventListener listener) {
+  public <T> void addEventListener(GameEvent<T> event, GameEventListener<T> listener) {
     if (!eventListeners.containsKey(event)) {
       eventListeners.put(event, new ArrayList<>());
     }
     eventListeners.get(event).add(listener);
   }
 
+  /**
+   * (Help from AI: help with generics)
+   */
   @Override
-  public void removeEventListener(GameEvent event, GameEventListener listener) {
+  public <T> void removeEventListener(GameEvent<T> event, GameEventListener<T> listener) {
     if (eventListeners.containsKey(event)) {
       eventListeners.get(event).remove(listener);
     }
   }
 
+  /**
+   * (Help from AI: help with generics)
+   */
+  @SuppressWarnings("unchecked")
   @Override
-  public void emitEvent(GameEvent event) {
+  public <T> void emitEvent(GameEvent<T> event, T data) {
     if (eventListeners.containsKey(event)) {
-      for (GameEventListener listener : eventListeners.get(event)) {
-        listener.onEvent(event);
+      for (GameEventListener<?> listener : eventListeners.get(event)) {
+        ((GameEventListener<T>) listener).onEvent(data);
       }
     }
+  }
+
+  /**
+   * (Help from AI: help with generics)
+   */
+  @Override
+  public void emitEvent(GameEvent<Void> event) {
+    UIApp.super.emitEvent(event);
   }
 }

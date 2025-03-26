@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view.GUI;
 
+import edu.ntnu.iir.bidata.view.GameEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -16,11 +17,12 @@ public class ChooseGameScreen extends StackPane {
   class GamePreview {
     String name;
     String imagePath;
-//    GameType type;  // add this later so that clicking on a game selects that type of game
+    String gameType;  // this should be an enum or an object
 
-    public GamePreview(String name, String imagePath) {
+    public GamePreview(String name, String imagePath, String gameType) {
       this.name = name;
       this.imagePath = imagePath;
+      this.gameType = gameType;
     }
   }
 
@@ -31,8 +33,8 @@ public class ChooseGameScreen extends StackPane {
 
     // get all games
     List<GamePreview> gamePreviews = List.of(
-            new GamePreview("Stigespill", "/images/games/stigespill.png"),
-            new GamePreview("Monopoly", "/images/games/monopoly.png")
+            new GamePreview("Stigespill", "/images/games/stigespill.png", "snakesAndLadders"),
+            new GamePreview("Monopoly", "/images/games/monopoly.png", "monopoly")
     );
 
     // draw game previews
@@ -56,7 +58,7 @@ public class ChooseGameScreen extends StackPane {
 
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
-        System.out.println("Clicked on " + gamePreview.name);
+        GUIApp.getInstance().emitEvent(GameEvent.GAME_CHOSEN, gamePreview.gameType);
         GUIApp.setContent(new ChoosePlayerScreen());
       });
     }

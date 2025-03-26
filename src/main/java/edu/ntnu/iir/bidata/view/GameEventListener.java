@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view;
 
-public interface GameEventListener {
-  void onEvent(GameEvent event);
+@FunctionalInterface
+public interface GameEventListener<T> {
+    void onEvent(T data);
 }
