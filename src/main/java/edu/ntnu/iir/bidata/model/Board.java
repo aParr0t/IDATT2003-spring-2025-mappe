@@ -1,28 +1,33 @@
 package edu.ntnu.iir.bidata.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the game board consisting of multiple tiles.
  */
 public class Board {
-  private final List<Tile> tiles;
+  private Map<Integer, Tile> tiles;
   private double width;
   private double height;
 
   public Board() {
-    this.tiles = new ArrayList<>();
+    this(new ArrayList<>());
+  }
+
+  public Board(List<Tile> tiles) {
+    this.tiles = new HashMap<>();
+    for (Tile tile : tiles) {
+      this.tiles.put(tile.getId(), tile);
+    }
     this.width = 1;
     this.height = 1;
   }
 
-  public Board(List<Tile> tiles) {
-    this.tiles = tiles;
-  }
-
   public void addTile(Tile tile) {
-    tiles.add(tile);
+    tiles.put(tile.getId(), tile);
   }
 
   public Tile getTile(int tileId) {
@@ -30,7 +35,7 @@ public class Board {
   }
 
   public List<Tile> getTiles() {
-    return tiles;
+    return new ArrayList<>(tiles.values());
   }
 
   public int getTileCount() {
