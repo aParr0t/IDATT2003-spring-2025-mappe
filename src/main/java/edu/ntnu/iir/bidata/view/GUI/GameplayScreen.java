@@ -43,7 +43,7 @@ public class GameplayScreen extends StackPane {
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
-    Board board = BoardFactory.createRandomSnakesAndLaddersBoard(10, 10);
+    Board board = BoardFactory.normalSnakesAndLadders();
     var gameBoard = new SnakesAndLaddersBoard(board);
     gameBoard.setWidth(500);  // Set the width of the canvas
     gameBoard.setHeight(500); // Set the height of the canvas

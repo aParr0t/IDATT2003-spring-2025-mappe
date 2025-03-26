@@ -25,7 +25,7 @@ public class BoardFactory {
    *
    * @return A board with standard configuration
    */
-  public static Board createRandomSnakesAndLaddersBoard(int columns, int rows) {
+  public static Board randomSnakesAndLadders(int columns, int rows) {
     // the random generation doesn't work for columns < 3 and rows < 3
     if (columns < 3 || rows < 3) {
       throw new IllegalArgumentException("Columns and rows must be at least 3.");
@@ -88,5 +88,50 @@ public class BoardFactory {
     }
 
     return board;
+  }
+
+  public static Board normalSnakesAndLadders() {
+    List<Tile> tiles = BoardTileLayout.snakesAndLadders(10, 10);
+    Board board = new Board(tiles);
+
+    // ladders
+    addMoveAction(board, 2, 38);
+    addMoveAction(board, 4, 14);
+    addMoveAction(board, 8, 30);
+    addMoveAction(board, 21, 42);
+    addMoveAction(board, 28, 76);
+    addMoveAction(board, 50, 67);
+    addMoveAction(board, 71, 92);
+    addMoveAction(board, 88, 99);
+
+    // snakes
+    addMoveAction(board, 34, 6);
+    addMoveAction(board, 32, 10);
+    addMoveAction(board, 48, 26);
+    addMoveAction(board, 62, 18);
+    addMoveAction(board, 88, 24);
+    addMoveAction(board, 95, 56);
+
+    return board;
+  }
+
+  public static Board chineseSnakesAndLadders() {
+    List<Tile> tiles = BoardTileLayout.snakesAndLadders(10, 10);
+    Board board = new Board(tiles);
+
+    // snakes
+    for (int i = 1; i < 100; i++) {
+      if ((i - 1) % 12 == 0) {
+        continue;
+      }
+      addMoveAction(board, i, 1);
+    }
+
+    return board;
+  }
+
+  private static void addMoveAction(Board board, int start, int end) {
+    MoveAction action = new MoveAction(start, end);
+    board.getTile(start).setAction(action);
   }
 }
