@@ -9,17 +9,30 @@ import javafx.scene.layout.BorderPane;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
+
+import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.GameEventListener;
+
 import java.util.Stack;
 
 public class GUIApp extends Application implements UIApp {
-  static BorderPane sceneContent;
-  static Stage stage;
-  // Keep track of navigation history
-  private static final Stack<Node> screenHistory = new Stack<>();
+  private static Map<GameEvent, List<GameEventListener>> eventListeners = new HashMap<>();
+  private static BorderPane sceneContent;
+  private static Stage stage;
+  private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
+  private static GUIApp instance;
+
+  public GUIApp() {
+    instance = this;
+  }
 
   @Override
   public void start(Stage stage) {
-    sceneContent = new BorderPane();
+    GUIApp.sceneContent = new BorderPane();
     GUIApp.stage = stage;
     Scene scene = new Scene(sceneContent, 1000, 800);
     scene.setOnKeyPressed(event -> {
@@ -31,11 +44,20 @@ public class GUIApp extends Application implements UIApp {
     stage.show();
 
     // Set initial screen
-    setContent(new HomeScreen(), false); // Don't add to history since it's first screen
+//    setContent(new HomeScreen(), false); // Don't add to history since it's first screen
+    setContent(new GameplayScreen(), false); // Don't add to history since it's first screen
+  }
+
+  // Static method to get the instance
+  public static GUIApp getInstance() {
+    if (instance == null) {
+      instance = new GUIApp();
+    }
+    return instance;
   }
 
   public static void setContent(Node content) {
-    setContent(content, true);
+    GUIApp.setContent(content, true);
   }
 
   public static void setContent(Node content, boolean addToHistory) {
@@ -70,11 +92,37 @@ public class GUIApp extends Application implements UIApp {
     }
   }
 
-  public static void quitApp() {
+  public void quitApp() {
+    emitEvent(GameEvent.QUIT);
     stage.close();
   }
 
-  public static void startApp() {
+  public void startApp() {
     launch();
+  }
+
+
+  @Override
+  public void addEventListener(GameEvent event, GameEventListener listener) {
+    if (!eventListeners.containsKey(event)) {
+      eventListeners.put(event, new ArrayList<>());
+    }
+    eventListeners.get(event).add(listener);
+  }
+
+  @Override
+  public void removeEventListener(GameEvent event, GameEventListener listener) {
+    if (eventListeners.containsKey(event)) {
+      eventListeners.get(event).remove(listener);
+    }
+  }
+
+  @Override
+  public void emitEvent(GameEvent event) {
+    if (eventListeners.containsKey(event)) {
+      for (GameEventListener listener : eventListeners.get(event)) {
+        listener.onEvent(event);
+      }
+    }
   }
 }

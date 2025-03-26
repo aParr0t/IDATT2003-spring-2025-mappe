@@ -5,6 +5,7 @@ import edu.ntnu.iir.bidata.model.BoardGame;
 import edu.ntnu.iir.bidata.model.Dice;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.GUI.GUIApp;
+import edu.ntnu.iir.bidata.view.GameEvent;
 import edu.ntnu.iir.bidata.view.UIApp;
 
 import java.util.Arrays;
@@ -15,10 +16,13 @@ import java.util.List;
  */
 public class BoardGameApp {
   private BoardGame game;
-  private UIApp uiApp;
 
   public void setup() {
 //    game = new BoardGame();
+
+    GUIApp.getInstance().addEventListener(GameEvent.QUIT, event -> {
+      System.out.println("quitted");
+    });
 
     // Create players
     Player p1 = new Player("Atas");
@@ -37,6 +41,6 @@ public class BoardGameApp {
 
   public void run() {
     // game.startGame();  // Start the game in the console
-    GUIApp.startApp();
+    GUIApp.getInstance().startApp();
   }
 }

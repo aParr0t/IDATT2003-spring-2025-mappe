@@ -1,11 +1,13 @@
 package edu.ntnu.iir.bidata.view;
 
 public interface UIApp {
-  static void startApp() {
-    
-  }
+  void startApp();
 
-  static void quitApp() {
+  void quitApp();
 
-  }
+  void addEventListener(GameEvent event, GameEventListener listener);
+
+  void removeEventListener(GameEvent event, GameEventListener listener);
+
+  void emitEvent(GameEvent event);
 }
