@@ -22,34 +22,13 @@ import java.util.HashSet;
 public class ChoosePlayerScreen extends StackPane {
   private final HBox playersContainer;
   private final Label errorLabel;
-  private final List<Player> players = List.of(
-          new Player("Atas", new PlayingPiece(PlayingPieceType.CAR)),
-          new Player("Stian", new PlayingPiece(PlayingPieceType.DOG))
-  );
+  private final List<Player> players;
+  private final List<PlayingPiece> allPlayingPieces;
 
-//  static class Player {
-//    String name;
-//    PlayingPiece playingPiece;
-//
-//    public Player(String name, PlayingPiece playingPiece) {
-//      this.name = name;
-//      this.playingPiece = playingPiece;
-//    }
-//
-//    public String getName() {
-//      return name;
-//    }
-//
-//    public PlayingPiece getPlayingPiece() {
-//      return playingPiece;
-//    }
-//
-//    public void setPlayingPiece(PlayingPiece playingPiece) {
-//      this.playingPiece = playingPiece;
-//    }
-//  }
+  public ChoosePlayerScreen(List<Player> players, List<PlayingPiece> allPlayingPieces) {
+    this.players = players;
+    this.allPlayingPieces = allPlayingPieces;
 
-  public ChoosePlayerScreen() {
     // Create title label
     Label titleLabel = new Label("Who's playing?");
     titleLabel.setFont(new Font(32));
@@ -77,18 +56,22 @@ public class ChoosePlayerScreen extends StackPane {
     this.setAlignment(Pos.CENTER);
   }
 
-  private PlayingPieceType getNextPlayingPiece(PlayingPieceType playingPieceType) {
-    // make a list of all the playing pieces from the enum class PlayingPieceType
-    PlayingPieceType[] playingPieces = PlayingPieceType.values();
+  private PlayingPiece getNextPlayingPiece(PlayingPiece playingPiece) {
     // get the index of the current playing piece
-    int currentIndex = playingPieceType.ordinal();
+    int currentIndex = playingPiece.getType().ordinal();
     // return the next playing piece
-    return playingPieces[(currentIndex + 1) % playingPieces.length];
+    return allPlayingPieces.get((currentIndex + 1) % allPlayingPieces.size());
   }
 
   private void playerClickHandler(Player player) {
-    PlayingPieceType nextPlayingPiece = getNextPlayingPiece(player.getPlayingPiece().getType());
-    player.setPlayingPiece(new PlayingPiece(nextPlayingPiece));
+    PlayingPiece currentPlayingPiece = player.getPlayingPiece();
+    PlayingPiece nextPlayingPiece;
+    if (currentPlayingPiece == null) {
+      nextPlayingPiece = new PlayingPiece(PlayingPieceType.CAR);
+    } else {
+      nextPlayingPiece = getNextPlayingPiece(player.getPlayingPiece());
+    }
+    player.setPlayingPiece(nextPlayingPiece);
     redrawPlayers();
   }
 
@@ -103,7 +86,13 @@ public class ChoosePlayerScreen extends StackPane {
 
       // playing piece image
       Rectangle imageContainer = new Rectangle(200, 200);
-      ImagePattern imagePattern = new ImagePattern(new Image(player.getPlayingPiece().getImagePath()));
+      PlayingPiece playingPiece = player.getPlayingPiece();
+      ImagePattern imagePattern;
+      if (playingPiece == null) {
+        imagePattern = new ImagePattern(new Image("/images/playingPieces/noPlayingPiece.png"));
+      } else {
+        imagePattern = new ImagePattern(new Image(playingPiece.getImagePath()));
+      }
       imageContainer.setFill(imagePattern);
 
       // player name is an input field

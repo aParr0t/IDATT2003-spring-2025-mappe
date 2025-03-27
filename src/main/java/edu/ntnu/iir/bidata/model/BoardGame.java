@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,6 +35,10 @@ public class BoardGame {
 
   public List<Player> getPlayers() {
     return players;
+  }
+
+  public List<PlayingPiece> getAllPlayingPieces() {
+    return Arrays.stream(PlayingPieceType.values()).map(PlayingPiece::new).toList();
   }
 
   public void setDice(Dice dice) {

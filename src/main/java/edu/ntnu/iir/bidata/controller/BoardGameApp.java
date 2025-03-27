@@ -1,9 +1,6 @@
 package edu.ntnu.iir.bidata.controller;
 
-import edu.ntnu.iir.bidata.model.Board;
-import edu.ntnu.iir.bidata.model.BoardGame;
-import edu.ntnu.iir.bidata.model.Dice;
-import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.view.GUI.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.GUI.GUIApp;
 import edu.ntnu.iir.bidata.view.GameEvent;
@@ -28,16 +25,20 @@ public class BoardGameApp {
     GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameName -> {
       System.out.println("Game chosen: " + gameName);
       game.setGameType(gameName);
-      GUIApp.setContent(new ChoosePlayerScreen());
+      // navigate to next screen
+      List<Player> players = game.getPlayers();
+      List<PlayingPiece> allPlayingPieces = game.getAllPlayingPieces();
+      GUIApp.setContent(new ChoosePlayerScreen(players, allPlayingPieces));
     });
 
     // Create players
-    Player p1 = new Player("Atas");
-    Player p2 = new Player("Stian");
-    Player p3 = new Player("aParrot");
-    Player p4 = new Player("Myrra");
-
-    List<Player> players = Arrays.asList(p1, p2, p3, p4);
+    List<Player> players = List.of(
+            new Player("Atas"),
+            new Player("Stian"),
+            new Player("aParrot"),
+            new Player("Myrra")
+    );
+    game.setPlayers(players);
 
     // Create 2 dice with 6 sides each
     Dice dice = new Dice(2, 6);
