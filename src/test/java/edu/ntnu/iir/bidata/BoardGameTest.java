@@ -1,5 +1,9 @@
 package edu.ntnu.iir.bidata;
 
+import edu.ntnu.iir.bidata.model.Board;
+import edu.ntnu.iir.bidata.model.BoardGame;
+import edu.ntnu.iir.bidata.model.Dice;
+import edu.ntnu.iir.bidata.model.Player;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
