@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,6 +28,21 @@ public class BoardGame {
   public void setGameType(String gameType) {
     // temporary method
     this.gameType = gameType;
+  }
+
+  public PlayerConfigResponse isPlayerConfigOk(List<Player> players) {
+    // Checks if all players have unique playing pieces using a HashSet
+    HashSet<PlayingPieceType> pieceTypes = new HashSet<>();
+    for (Player player : players) {
+      pieceTypes.add(player.getPlayingPiece().getType());
+    }
+    // If the set size equals the player count, all pieces are unique
+    boolean areAllUnique = pieceTypes.size() == players.size();
+    if (areAllUnique) {
+      return new PlayerConfigResponse(true, null);
+    } else {
+      return new PlayerConfigResponse(false, "All players must have unique playing pieces.");
+    }
   }
 
   public void setPlayers(List<Player> players) {
