@@ -34,7 +34,11 @@ public class BoardGame {
     // Checks if all players have unique playing pieces using a HashSet
     HashSet<PlayingPieceType> pieceTypes = new HashSet<>();
     for (Player player : players) {
-      pieceTypes.add(player.getPlayingPiece().getType());
+      PlayingPiece playingPiece = player.getPlayingPiece();
+      if (playingPiece == null) {
+        return new PlayerConfigResponse(false, "All players must have a playing piece.");
+      }
+      pieceTypes.add(playingPiece.getType());
     }
     // If the set size equals the player count, all pieces are unique
     boolean areAllUnique = pieceTypes.size() == players.size();
