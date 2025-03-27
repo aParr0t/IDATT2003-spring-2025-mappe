@@ -37,6 +37,7 @@ public class BoardGameApp {
         return;
       }
       game.setPlayers(players);
+      game.startGame();
       GUIApp.setContent(new GameplayScreen());
     });
 

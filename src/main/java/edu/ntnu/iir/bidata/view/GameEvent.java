@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view;
 
+import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface GameEvent<T> {
   };
   GameEvent<Void> START = new GameEvent<>() {
   };
-  GameEvent<String> GAME_CHOSEN = new GameEvent<>() {
+  GameEvent<GameType> GAME_CHOSEN = new GameEvent<>() {
   };
   GameEvent<List<Player>> PLAYERS_CHOSEN = new GameEvent<>() {
   };

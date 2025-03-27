@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view.GUI;
 
+import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.view.GameEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,42 +15,29 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class ChooseGameScreen extends StackPane {
-  class GamePreview {
-    String name;
-    String imagePath;
-    String gameType;  // this should be an enum or an object
-
-    public GamePreview(String name, String imagePath, String gameType) {
-      this.name = name;
-      this.imagePath = imagePath;
-      this.gameType = gameType;
-    }
-  }
+  List<GameTypePreview> gamePreviews = List.of(
+          new GameTypePreview("Stigespill", "/images/games/stigespill.png", GameType.SNAKES_AND_LADDERS),
+          new GameTypePreview("Monopoly", "/images/games/monopoly.png", GameType.MONOPOLY)
+  );
 
   public ChooseGameScreen() {
     // Create title label
     Label titleLabel = new Label("Choose a game");
     titleLabel.setFont(new Font(32));
 
-    // get all games
-    List<GamePreview> gamePreviews = List.of(
-            new GamePreview("Stigespill", "/images/games/stigespill.png", "snakesAndLadders"),
-            new GamePreview("Monopoly", "/images/games/monopoly.png", "monopoly")
-    );
-
     // draw game previews
     HBox gamesContainer = new HBox(20);
-    for (GamePreview gamePreview : gamePreviews) {
+    for (GameTypePreview gamePreview : gamePreviews) {
       VBox gameCard = new VBox();
       gameCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
 
       // game preview image
       Rectangle imageContainer = new Rectangle(200, 200);
-      ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.imagePath));
+      ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.getImagePath()));
       imageContainer.setFill(imagePattern);
 
       // game name
-      Label gameName = new Label(gamePreview.name);
+      Label gameName = new Label(gamePreview.getName());
       gameName.setFont(new Font(18));
       gameName.setStyle("-fx-padding: 10px;");
 
@@ -58,7 +46,7 @@ public class ChooseGameScreen extends StackPane {
 
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
-        GUIApp.getInstance().emitEvent(GameEvent.GAME_CHOSEN, gamePreview.gameType);
+        GUIApp.getInstance().emitEvent(GameEvent.GAME_CHOSEN, gamePreview.getGameType());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);
