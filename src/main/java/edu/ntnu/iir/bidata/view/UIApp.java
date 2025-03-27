@@ -42,4 +42,6 @@ public interface UIApp {
   default void emitEvent(GameEvent<Void> event) {
     emitEvent(event, null);
   }
+
+  void showMessage(String message);
 }

@@ -4,6 +4,7 @@ import edu.ntnu.iir.bidata.view.UIApp;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.geometry.Pos;
@@ -141,5 +142,14 @@ public class GUIApp extends Application implements UIApp {
   @Override
   public void emitEvent(GameEvent<Void> event) {
     UIApp.super.emitEvent(event);
+  }
+
+  @Override
+  public void showMessage(String message) {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Information");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
   }
 }
