@@ -3,29 +3,17 @@ package edu.ntnu.iir.bidata.view.GUI.games;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.TileAction.MoveAction;
-import edu.ntnu.iir.bidata.utils.RandomColor;
 import edu.ntnu.iir.bidata.utils.RandomMath;
+import edu.ntnu.iir.bidata.view.GUI.BoardCanvas;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.List;
 
-public class SnakesAndLaddersBoard extends Canvas {
-  private final Board board;
-
+public class SnakesAndLaddersBoard extends BoardCanvas {
   public SnakesAndLaddersBoard(Board board) {
-    this.board = board;
-    // Set default size if not specified otherwise
-    setWidth(500);
-    setHeight(500);
-
-    // Add listener to redraw when the canvas size changes
-    widthProperty().addListener(observable -> draw());
-    heightProperty().addListener(observable -> draw());
-
-    draw();
+    super(board);
   }
 
   private void drawTiles() {
@@ -237,6 +225,7 @@ public class SnakesAndLaddersBoard extends Canvas {
     gc.fillOval(xPoints[0] - headSize / 2, yPoints[0] - headSize / 2, headSize, headSize);
   }
 
+  @Override
   public void draw() {
     getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight()); // Clear the canvas
     drawTiles();
