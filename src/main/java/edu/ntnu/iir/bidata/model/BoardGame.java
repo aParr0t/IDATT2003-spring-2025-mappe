@@ -25,9 +25,33 @@ public class BoardGame {
     this.board = board;
   }
 
+  public Board getBoard() {
+    return board;
+  }
+
+  public List<Board> getAllBoardsForGameType(GameType gameType) {
+    switch (gameType) {
+      case GameType.SNAKES_AND_LADDERS:
+        return List.of(
+                BoardFactory.randomSnakesAndLadders(10, 10),
+                BoardFactory.normalSnakesAndLadders(),
+                BoardFactory.chineseSnakesAndLadders()
+        );
+      case GameType.MONOPOLY:
+        return List.of(
+                BoardFactory.createEmptyBoard()
+        );
+      default:
+        return List.of();
+    }
+  }
+
   public void setGameType(GameType gameType) {
-    // temporary method
     this.gameType = gameType;
+  }
+
+  public GameType getGameType() {
+    return gameType;
   }
 
   public PlayerConfigResponse isPlayerConfigOk(List<Player> players) {

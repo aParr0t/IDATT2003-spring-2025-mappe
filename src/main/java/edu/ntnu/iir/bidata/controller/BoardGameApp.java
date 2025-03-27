@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata.controller;
 
 import edu.ntnu.iir.bidata.model.*;
+import edu.ntnu.iir.bidata.view.GUI.ChooseBoardScreen;
 import edu.ntnu.iir.bidata.view.GUI.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.GUI.GUIApp;
 import edu.ntnu.iir.bidata.view.GUI.GameplayScreen;
@@ -21,13 +22,21 @@ public class BoardGameApp {
       System.out.println("quitted");
     });
 
-    GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameName -> {
-      System.out.println("Game chosen: " + gameName);
-      game.setGameType(gameName);
-      // navigate to next screen
+    GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameType -> {
+      // update model
+      game.setGameType(gameType);
+      // update view
+      GameType retrievedGameType = game.getGameType();
+      List<Board> boards = game.getAllBoardsForGameType(gameType);
+      GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards));
+    });
+
+    GUIApp.getInstance().addEventListener(GameEvent.BOARD_CHOSEN, board -> {
+      // update model
+      game.setBoard(board);
+      // update view
       List<Player> players = game.getPlayers();
-      List<PlayingPiece> allPlayingPieces = game.getAllPlayingPieces();
-      GUIApp.setContent(new ChoosePlayerScreen(players, allPlayingPieces));
+      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()));
     });
 
     GUIApp.getInstance().addEventListener(GameEvent.PLAYERS_CHOSEN, players -> {
@@ -36,8 +45,10 @@ public class BoardGameApp {
         GUIApp.getInstance().showMessage(response.getErrorMessage());
         return;
       }
+      // update model
       game.setPlayers(players);
       game.startGame();
+      // update view
       GUIApp.setContent(new GameplayScreen());
     });
 
