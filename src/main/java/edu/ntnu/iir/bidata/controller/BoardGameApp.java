@@ -4,6 +4,7 @@ import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.BoardGame;
 import edu.ntnu.iir.bidata.model.Dice;
 import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.view.GUI.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.GUI.GUIApp;
 import edu.ntnu.iir.bidata.view.GameEvent;
 import edu.ntnu.iir.bidata.view.UIApp;
@@ -26,7 +27,8 @@ public class BoardGameApp {
 
     GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameName -> {
       System.out.println("Game chosen: " + gameName);
-      // Use the gameName string directly - no type checking needed!
+      game.setGameType(gameName);
+      GUIApp.setContent(new ChoosePlayerScreen());
     });
 
     // Create players

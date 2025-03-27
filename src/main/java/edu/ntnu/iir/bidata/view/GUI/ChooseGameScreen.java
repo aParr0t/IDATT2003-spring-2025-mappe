@@ -59,7 +59,6 @@ public class ChooseGameScreen extends StackPane {
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
         GUIApp.getInstance().emitEvent(GameEvent.GAME_CHOSEN, gamePreview.gameType);
-        GUIApp.setContent(new ChoosePlayerScreen());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);
