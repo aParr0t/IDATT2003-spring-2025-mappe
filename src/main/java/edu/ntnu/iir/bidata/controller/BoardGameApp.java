@@ -3,10 +3,9 @@ package edu.ntnu.iir.bidata.controller;
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.view.GUI.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.GUI.GUIApp;
+import edu.ntnu.iir.bidata.view.GUI.GameplayScreen;
 import edu.ntnu.iir.bidata.view.GameEvent;
-import edu.ntnu.iir.bidata.view.UIApp;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +28,16 @@ public class BoardGameApp {
       List<Player> players = game.getPlayers();
       List<PlayingPiece> allPlayingPieces = game.getAllPlayingPieces();
       GUIApp.setContent(new ChoosePlayerScreen(players, allPlayingPieces));
+    });
+
+    GUIApp.getInstance().addEventListener(GameEvent.PLAYERS_CHOSEN, players -> {
+      PlayerConfigResponse response = game.isPlayerConfigOk(players);
+      if (!response.isPlayerConfigOk()) {
+        GUIApp.getInstance().showMessage(response.getErrorMessage());
+        return;
+      }
+      game.setPlayers(players);
+      GUIApp.setContent(new GameplayScreen());
     });
 
     // Create players

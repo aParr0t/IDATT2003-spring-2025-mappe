@@ -2,6 +2,7 @@ package edu.ntnu.iir.bidata.view.GUI;
 
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
+import edu.ntnu.iir.bidata.view.GameEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,18 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import edu.ntnu.iir.bidata.model.Player;
 
 import java.util.List;
-import java.util.HashSet;
 
 public class ChoosePlayerScreen extends StackPane {
   private final HBox playersContainer;
-  private final Label errorLabel;
   private final List<Player> players;
   private final List<PlayingPiece> allPlayingPieces;
 
@@ -38,17 +36,12 @@ public class ChoosePlayerScreen extends StackPane {
     playersContainer.setAlignment(Pos.CENTER);
     redrawPlayers();
 
-    // Create error label (initially hidden)
-    errorLabel = new Label();
-    errorLabel.setTextFill(Color.RED);
-    errorLabel.setVisible(false);
-
     // add start game button
     Button startGameButton = new Button("Start game");
     startGameButton.setOnAction(event -> startGameHandler());
 
     // Vertical box to hold elements
-    VBox container = new VBox(20, titleLabel, playersContainer, errorLabel, startGameButton);
+    VBox container = new VBox(20, titleLabel, playersContainer, startGameButton);
     container.setAlignment(Pos.CENTER);
 
     // Add vbox to StackPane
@@ -109,33 +102,6 @@ public class ChoosePlayerScreen extends StackPane {
   }
 
   private void startGameHandler() {
-    // Check if all playing pieces are unique
-    if (hasEveryPlayerUniquePiece()) {
-      // Hide any previous error message
-      errorLabel.setVisible(false);
-
-      // Start game
-      GUIApp.setContent(new GameplayScreen());
-    } else {
-      // Show error message
-      errorLabel.setText("Every player must have a unique playing piece");
-      errorLabel.setVisible(true);
-    }
-  }
-
-  /**
-   * Checks if all players have unique playing pieces using a HashSet
-   *
-   * @return true if all pieces are unique, false otherwise
-   */
-  private boolean hasEveryPlayerUniquePiece() {
-    HashSet<PlayingPieceType> pieceTypes = new HashSet<>();
-
-    for (Player player : players) {
-      pieceTypes.add(player.getPlayingPiece().getType());
-    }
-
-    // If the set size equals the player count, all pieces are unique
-    return pieceTypes.size() == players.size();
+    GUIApp.getInstance().emitEvent(GameEvent.PLAYERS_CHOSEN, players);
   }
 }
