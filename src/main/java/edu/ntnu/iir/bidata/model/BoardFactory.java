@@ -87,6 +87,7 @@ public class BoardFactory {
       freePositions.remove(Integer.valueOf(end));
     }
 
+    board.setName("Random board");
     return board;
   }
 
@@ -112,6 +113,7 @@ public class BoardFactory {
     addMoveAction(board, 88, 24);
     addMoveAction(board, 95, 56);
 
+    board.setName("Normal board");
     return board;
   }
 
@@ -128,6 +130,7 @@ public class BoardFactory {
       addMoveAction(board, i, 1);
     }
 
+    board.setName("Chinese board");
     return board;
   }
 

@@ -9,6 +9,7 @@ import java.util.Map;
  * Represents the game board consisting of multiple tiles.
  */
 public class Board {
+  private String name = "Unnamed board";
   private Map<Integer, Tile> tiles;
   private double width;
   private double height;
@@ -24,6 +25,14 @@ public class Board {
     }
     this.width = 1;
     this.height = 1;
+  }
+
+  public void setName(String newName) {
+    name = newName;
+  }
+
+  public String getName() {
+    return name;
   }
 
   public void addTile(Tile tile) {
