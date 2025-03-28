@@ -6,22 +6,29 @@ import java.util.Random;
  * Represents a six-sided die.
  */
 public class Die {
-    private static final int SIDES = 6;
-    private final Random random;
+  private final int sides;
+  private final Random random;
+  private int count = 1;
 
-    /**
-     * Creates a six-sided die.
-     */
-    public Die() {
-        this.random = new Random();
-    }
+  /**
+   * Creates a six-sided die.
+   */
+  public Die(int sides) {
+    this.sides = sides;
+    this.random = new Random();
+  }
 
-    /**
-     * Rolls the die and returns a value between 1 and 6.
-     *
-     * @return a random value between 1 and 6
-     */
-    public int roll() {
-        return random.nextInt(SIDES) + 1;
-    }
+  /**
+   * Rolls the die and returns a value between 1 and sides (inclusive).
+   *
+   * @return a random value between 1 and sides (inclusive)
+   */
+  public int roll() {
+    count = random.nextInt(sides) + 1;
+    return count;
+  }
+
+  public int getCount() {
+    return count;
+  }
 }
