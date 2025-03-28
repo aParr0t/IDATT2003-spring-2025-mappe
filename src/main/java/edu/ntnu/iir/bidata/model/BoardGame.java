@@ -1,5 +1,7 @@
 package edu.ntnu.iir.bidata.model;
 
+import edu.ntnu.iir.bidata.model.TileAction.TileAction;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -126,7 +128,12 @@ public class BoardGame {
     }
 
     // move the player to the new tile
-    currentPlayer.setPosition(newPlayerTile.getId());
+    TileAction tileAction = newPlayerTile.getAction();
+    if (tileAction == null) {
+      currentPlayer.setPosition(newPlayerTile.getId());
+    } else {
+      tileAction.execute(currentPlayer);
+    }
 
     playerTurn = (playerTurn + 1) % players.size();
   }
