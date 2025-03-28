@@ -29,6 +29,7 @@ public class GameplayScreen extends StackPane {
 
     // Center section - Game board
     BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
+    boardCanvas.setPlayers(players);
     boardCanvas.setWidth(500);  // Set the width of the canvas
     boardCanvas.setHeight(500); // Set the height of the canvas
     StackPane gameBoardContainer = new StackPane(boardCanvas);
