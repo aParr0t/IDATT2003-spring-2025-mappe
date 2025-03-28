@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -54,6 +55,10 @@ public abstract class BoardCanvas extends Canvas {
       String imagePath = player.getPlayingPiece().getImagePath();
       Image image = new Image(imagePath);
       gc.drawImage(image, playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+      // draw outline of the tile
+      gc.setStroke(Color.BLACK);
+      gc.setLineWidth(2);
+      gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
     }
   }
 }
