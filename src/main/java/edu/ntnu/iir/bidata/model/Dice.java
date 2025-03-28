@@ -1,10 +1,13 @@
 package edu.ntnu.iir.bidata.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a collection of dice.
  */
 public class Dice {
-  private final Die[] dice;
+  private final List<Die> dice = new ArrayList<>();
 
   /**
    * Creates a set of six-sided dice.
@@ -18,9 +21,8 @@ public class Dice {
       throw new IllegalArgumentException("Must have at least one die");
     }
 
-    dice = new Die[numberOfDice];
     for (int i = 0; i < numberOfDice; i++) {
-      dice[i] = new Die(); // Die-klassen skal alltid være en 6-sidet terning
+      dice.add(new Die(sides));
     }
   }
 
@@ -31,9 +33,15 @@ public class Dice {
    */
   public int rollAll() {
     int sum = 0;
-    for (Die d : dice) {
-      sum += d.roll();
+    for (Die die : dice) {
+      sum += die.roll();
     }
     return sum;
+  }
+
+  public List<Integer> getCounts() {
+    return dice.stream()
+            .map(Die::getCount)
+            .toList();
   }
 }
