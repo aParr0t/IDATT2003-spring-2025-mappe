@@ -12,9 +12,7 @@ public class MoveAction implements TileAction {
   }
 
   public void execute(Player player) {
-    if (player.getPosition() == start) {
-      player.setPosition(end);
-    }
+    player.setPosition(end);
   }
 
   public int getStart() {
