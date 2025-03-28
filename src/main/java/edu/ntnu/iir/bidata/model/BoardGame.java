@@ -12,7 +12,8 @@ public class BoardGame {
   private List<Player> players;
   private Dice dice;
   private boolean isGameOver;
-  private GameType gameType;  // temporary
+  private GameType gameType;
+  private int playerTurn;
 
   /**
    * Initializes the board game with a given board, players, and dice.
@@ -85,8 +86,19 @@ public class BoardGame {
     return Arrays.stream(PlayingPieceType.values()).map(PlayingPiece::new).toList();
   }
 
-  public void setDice(Dice dice) {
-    this.dice = dice;
+  private void configureRestOfGame() {
+    // These are hardcoded configs for each game type.
+    // This could be refactored, but there are limits to over-engineering :)
+    switch (gameType) {
+      case GameType.SNAKES_AND_LADDERS:
+      case GameType.MONOPOLY: {
+        this.dice = new Dice(2, 6);
+        break;
+      }
+      default:
+        this.dice = new Dice(1, 6);
+        break;
+    }
   }
 
   /**
@@ -94,5 +106,23 @@ public class BoardGame {
    */
   public void startGame() {
     System.out.println("BoardGame started");
+    configureRestOfGame();
+    this.playerTurn = 0;
+  }
+
+  public void makeTurn() {
+    dice.rollAll();
+    Player currentPlayer = players.get(playerTurn);
+    List<Integer> diceCounts = dice.getCounts();
+    int diceSum = diceCounts.stream().mapToInt(Integer::intValue).sum();
+    playerTurn = (playerTurn + 1) % players.size();
+  }
+
+  public List<Integer> getDiceCounts() {
+    return dice.getCounts();
+  }
+
+  public Player getCurrentPlayerTurn() {
+    return players.get(playerTurn);
   }
 }
