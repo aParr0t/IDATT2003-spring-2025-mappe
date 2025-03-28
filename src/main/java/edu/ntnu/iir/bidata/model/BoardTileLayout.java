@@ -25,6 +25,11 @@ public class BoardTileLayout {
       tiles.add(tile);
       tileCount++;
 
+      // connect the previous tile to this tile
+      if (tileCount >= 2) {
+        tiles.get(tiles.size() - 2).setNextTile(tile);
+      }
+
       // move to the next position
       x += xDir * dx;
       boolean shouldChangeXDir = tileCount % columns == 0;
