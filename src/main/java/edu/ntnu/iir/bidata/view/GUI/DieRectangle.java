@@ -34,7 +34,7 @@ public class DieRectangle extends Pane {
    */
   public DieRectangle(int dotCount, double size) {
     if (dotCount < 1 || dotCount > 6) {
-      throw new IllegalArgumentException("Dot count must be between 1 and 6");
+      throw new IllegalArgumentException("Dot count must be between 1 and 6, but got " + dotCount);
     }
 
     this.dotCount = dotCount;
