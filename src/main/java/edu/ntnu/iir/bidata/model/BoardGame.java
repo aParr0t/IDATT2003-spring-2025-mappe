@@ -115,6 +115,19 @@ public class BoardGame {
     Player currentPlayer = players.get(playerTurn);
     List<Integer> diceCounts = dice.getCounts();
     int diceSum = diceCounts.stream().mapToInt(Integer::intValue).sum();
+
+    // get the tile that the player would land on
+    Tile newPlayerTile = board.getTile(currentPlayer.getPosition());
+    for (int i = 0; i < diceSum; i++) {
+      if (newPlayerTile.getNextTile() == null) {
+        break;
+      }
+      newPlayerTile = newPlayerTile.getNextTile();
+    }
+
+    // move the player to the new tile
+    currentPlayer.setPosition(newPlayerTile.getId());
+
     playerTurn = (playerTurn + 1) % players.size();
   }
 
