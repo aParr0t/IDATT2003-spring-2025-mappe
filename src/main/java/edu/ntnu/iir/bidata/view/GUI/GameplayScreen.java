@@ -122,32 +122,6 @@ public class GameplayScreen extends StackPane {
   }
 
   private void handleRollDice() {
-    // get the dice values
-    // TODO: Don't do the random logic here
-    int dieValue1 = random.nextInt(6) + 1;
-    int dieValue2 = random.nextInt(6) + 1;
-
-    // update the dots on the dice
-    die1.setDotCount(dieValue1);
-    die2.setDotCount(dieValue2);
-
-    // increment active player index
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-
-    // calculate the total roll
-    int rollTotal = dieValue1 + dieValue2;
-    System.out.println("Rolled: " + dieValue1 + " + " + dieValue2 + " = " + rollTotal);
-
-    // update the player cards
-    updatePlayerCards();
-  }
-
-  private void updatePlayerCards() {
-    playerCardsSection.getChildren().clear();
-
-    for (Player player : players) {
-      boolean isActive = players.indexOf(player) == currentPlayerIndex;
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
+    GUIApp.getInstance().emitEvent(GameEvent.DICE_ROLLED);
   }
 }
