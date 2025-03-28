@@ -26,6 +26,6 @@ public interface GameEvent<T> {
   };
   GameEvent<List<Player>> PLAYERS_CHOSEN = new GameEvent<>() {
   };
-
-  // Add other event types as needed
+  GameEvent<Void> DICE_ROLLED = new GameEvent<>() {
+  };
 }
