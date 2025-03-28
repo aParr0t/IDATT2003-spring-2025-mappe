@@ -55,9 +55,7 @@ public class BoardGameApp {
     // Create players
     List<Player> players = List.of(
             new Player("Atas"),
-            new Player("Stian"),
-            new Player("aParrot"),
-            new Player("Myrra")
+            new Player("Stian")
     );
     game.setPlayers(players);
 
