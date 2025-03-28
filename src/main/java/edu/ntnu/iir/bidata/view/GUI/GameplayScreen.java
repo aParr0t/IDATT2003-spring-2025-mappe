@@ -1,7 +1,7 @@
 package edu.ntnu.iir.bidata.view.GUI;
 
 import edu.ntnu.iir.bidata.model.*;
-import edu.ntnu.iir.bidata.view.GUI.games.SnakesAndLaddersBoard;
+import edu.ntnu.iir.bidata.view.GameEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,34 +20,18 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class GameplayScreen extends StackPane {
-  private final List<Player> players;
-  private int currentPlayerIndex = 0;
-  private final Random random = new Random();
-  private final DieRectangle die1;
-  private final DieRectangle die2;
-  private final Button rollButton;
-  private final HBox playerCardsSection;
-
-  public GameplayScreen() {
-    // Initialize players (static for now)
-    players = new ArrayList<>();
-    players.add(new Player("Atas", new PlayingPiece(PlayingPieceType.CAR)));
-    players.add(new Player("Stian", new PlayingPiece(PlayingPieceType.DOG)));
-
+  public GameplayScreen(List<Player> players, GameType gameType, Board board, List<Integer> diceCounts, Player currentPlayer) {
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
-    Board board = BoardFactory.normalSnakesAndLadders();
-    var gameBoard = new SnakesAndLaddersBoard(board);
-    gameBoard.setWidth(500);  // Set the width of the canvas
-    gameBoard.setHeight(500); // Set the height of the canvas
-    StackPane gameBoardContainer = new StackPane(gameBoard);
+    BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
+    boardCanvas.setWidth(500);  // Set the width of the canvas
+    boardCanvas.setHeight(500); // Set the height of the canvas
+    StackPane gameBoardContainer = new StackPane(boardCanvas);
     gameBoardContainer.setPadding(new Insets(10));
     mainLayout.setCenter(gameBoardContainer);
 
@@ -58,12 +42,18 @@ public class GameplayScreen extends StackPane {
     bottomSection.setStyle("-fx-border-color: black; -fx-border-width: 2px 0 0 0;");
 
     // Player cards section
-    playerCardsSection = new HBox(10);
+    HBox playerCardsSection = new HBox(10);
     playerCardsSection.setPadding(new Insets(20));
     playerCardsSection.setStyle("-fx-border-color: black; -fx-border-width: 0 2px 0 0;");
     HBox.setHgrow(playerCardsSection, javafx.scene.layout.Priority.ALWAYS);
     playerCardsSection.setAlignment(Pos.CENTER);
-    updatePlayerCards();
+
+    // create player cards
+    playerCardsSection.getChildren().clear();
+    for (Player player : players) {
+      boolean isActive = player.equals(currentPlayer);
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
+    }
 
     // Dice section
     VBox diceSection = new VBox(10);
@@ -76,12 +66,12 @@ public class GameplayScreen extends StackPane {
     HBox diceContainer = new HBox(10);
     diceContainer.setAlignment(Pos.CENTER);
 
-    die1 = new DieRectangle(1, 70);
-    die2 = new DieRectangle(1, 70);
+    for (Integer diceCount : diceCounts) {
+      DieRectangle die = new DieRectangle(diceCount, 70);
+      diceContainer.getChildren().add(die);
+    }
 
-    diceContainer.getChildren().addAll(die1, die2);
-
-    rollButton = new Button("Roll");
+    Button rollButton = new Button("Roll");
     rollButton.setPrefSize(120, 40);
     rollButton.setOnAction(e -> handleRollDice());
 

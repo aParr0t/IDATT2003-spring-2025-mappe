@@ -49,7 +49,12 @@ public class BoardGameApp {
       game.setPlayers(players);
       game.startGame();
       // update view
-      GUIApp.setContent(new GameplayScreen());
+      goToAndUpdateGameScreen();
+    });
+
+    GUIApp.getInstance().addEventListener(GameEvent.DICE_ROLLED, diceRolls -> {
+      game.makeTurn();
+      goToAndUpdateGameScreen();
     });
 
     // Create players
@@ -58,16 +63,13 @@ public class BoardGameApp {
             new Player("Stian")
     );
     game.setPlayers(players);
+  }
 
-    // Create 2 dice with 6 sides each
-    Dice dice = new Dice(2, 6);
-
-    // Create the game
-//    game = new BoardGame(board, players, dice);
+  private void goToAndUpdateGameScreen() {
+    GUIApp.setContent(new GameplayScreen(game.getPlayers(), game.getGameType(), game.getBoard(), game.getDiceCounts(), game.getCurrentPlayerTurn()));
   }
 
   public void run() {
-    // game.startGame();  // Start the game in the console
     GUIApp.getInstance().startApp();
   }
 }
