@@ -21,17 +21,36 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.util.List;
+import java.util.Map;
 
 public class GameplayScreen extends StackPane {
-  public GameplayScreen(List<Player> players, GameType gameType, Board board, List<Integer> diceCounts, Player currentPlayer) {
+  private Button rollButton;
+  private BoardCanvas boardCanvas;
+  private List<Player> players;
+  private Map<String, Integer> previousPositions;
+  private HBox playerCardsSection;
+  private HBox diceContainer;
+  
+  public GameplayScreen(List<Player> players, GameType gameType, Board board, 
+                        List<Integer> diceCounts, Player currentPlayer, 
+                        Map<String, Integer> previousPositions) {
+    this.players = players;
+    this.previousPositions = previousPositions;
+    
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
-    BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
+    boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
     boardCanvas.setPlayers(players);
     boardCanvas.setWidth(500);  // Set the width of the canvas
     boardCanvas.setHeight(500); // Set the height of the canvas
+    
+    // Set previous positions in the board canvas
+    if (boardCanvas instanceof AnimatedBoardCanvas) {
+      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
+    }
+    
     StackPane gameBoardContainer = new StackPane(boardCanvas);
     gameBoardContainer.setPadding(new Insets(10));
     mainLayout.setCenter(gameBoardContainer);
@@ -43,7 +62,7 @@ public class GameplayScreen extends StackPane {
     bottomSection.setStyle("-fx-border-color: black; -fx-border-width: 2px 0 0 0;");
 
     // Player cards section
-    HBox playerCardsSection = new HBox(10);
+    playerCardsSection = new HBox(10);
     playerCardsSection.setPadding(new Insets(20));
     playerCardsSection.setStyle("-fx-border-color: black; -fx-border-width: 0 2px 0 0;");
     HBox.setHgrow(playerCardsSection, javafx.scene.layout.Priority.ALWAYS);
@@ -64,7 +83,7 @@ public class GameplayScreen extends StackPane {
     diceSection.setPrefWidth(Control.USE_COMPUTED_SIZE);
     diceSection.setMaxWidth(Control.USE_PREF_SIZE);
 
-    HBox diceContainer = new HBox(10);
+    diceContainer = new HBox(10);
     diceContainer.setAlignment(Pos.CENTER);
 
     for (Integer diceCount : diceCounts) {
@@ -72,7 +91,7 @@ public class GameplayScreen extends StackPane {
       diceContainer.getChildren().add(die);
     }
 
-    Button rollButton = new Button("Roll");
+    rollButton = new Button("Roll");
     rollButton.setPrefSize(120, 40);
     rollButton.setOnAction(e -> handleRollDice());
 
@@ -82,7 +101,7 @@ public class GameplayScreen extends StackPane {
     mainLayout.setBottom(bottomSection);
 
     // Add the main layout to the stack pane
-    this.getChildren().add(mainLayout);
+    this.getChildren().add(mainLayout); 
   }
 
   private StackPane createPlayerCard(Player player, boolean isActive) {
@@ -113,6 +132,51 @@ public class GameplayScreen extends StackPane {
   }
 
   private void handleRollDice() {
+    // Disable roll button during animation
+    rollButton.setDisable(true);
+    
+    // First, notify that dice were rolled (this will update the game state in BoardGameApp)
+    // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
     GUIApp.getInstance().emitEvent(GameEvent.DICE_ROLLED);
+    
+    // After the game state and screen are updated, start the animation
+    // The animation will use the previousPositions that were passed during updateGameState
+    if (boardCanvas instanceof AnimatedBoardCanvas) {
+      ((AnimatedBoardCanvas) boardCanvas).startAnimation(() -> {
+        // Re-enable roll button when animation completes
+        rollButton.setDisable(false);
+      });
+    } else {
+      // No animation support, just re-enable the button
+      rollButton.setDisable(false);
+    }
+  }
+
+  public void updateGameState(List<Player> players, List<Integer> diceCounts, 
+                              Player currentPlayer, Map<String, Integer> previousPositions) {
+    this.players = players;
+    this.previousPositions = previousPositions;
+    
+    // Update the board canvas with new player positions but keep the same instance
+    boardCanvas.setPlayers(players);
+    
+    // Set previous positions in the board canvas
+    if (boardCanvas instanceof AnimatedBoardCanvas) {
+      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
+    }
+    
+    // Update player cards section
+    playerCardsSection.getChildren().clear();
+    for (Player player : players) {
+      boolean isActive = player.equals(currentPlayer);
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
+    }
+    
+    // Update dice section
+    diceContainer.getChildren().clear();
+    for (Integer diceCount : diceCounts) {
+      DieRectangle die = new DieRectangle(diceCount, 70);
+      diceContainer.getChildren().add(die);
+    } 
   }
 }
