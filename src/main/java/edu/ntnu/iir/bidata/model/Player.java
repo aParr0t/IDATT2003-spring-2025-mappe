@@ -19,7 +19,7 @@ public class Player {
    */
   public Player(String name, PlayingPiece playingPiece) {
     this.name = name;
-    this.position = 0; // Spilleren starter på posisjon 0
+    this.position = 1;
     this.playingPiece = playingPiece;
   }
 

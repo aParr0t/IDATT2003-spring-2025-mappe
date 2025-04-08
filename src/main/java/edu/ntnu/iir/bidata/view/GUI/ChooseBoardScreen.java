@@ -2,8 +2,6 @@ package edu.ntnu.iir.bidata.view.GUI;
 
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
-import edu.ntnu.iir.bidata.view.GUI.games.MonopolyBoard;
-import edu.ntnu.iir.bidata.view.GUI.games.SnakesAndLaddersBoard;
 import edu.ntnu.iir.bidata.view.GameEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -12,16 +10,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
 
 public class ChooseBoardScreen extends StackPane {
-  private static final HashMap<GameType, Function<Board, BoardCanvas>> boardFactories = new HashMap<>() {{
-    put(GameType.SNAKES_AND_LADDERS, SnakesAndLaddersBoard::new);
-    put(GameType.MONOPOLY, MonopolyBoard::new);
-  }};
-
   public ChooseBoardScreen(GameType gameType, List<Board> boards) {
     // Create title label
     Label titleLabel = new Label("Choose a board");
@@ -33,11 +24,7 @@ public class ChooseBoardScreen extends StackPane {
       VBox boardCard = new VBox();
       boardCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
 
-      // board canvas
-//      Rectangle imageContainer = new Rectangle(200, 200);
-//      ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.getImagePath()));
-//      imageContainer.setFill(imagePattern);
-      BoardCanvas boardCanvas = boardFactories.get(gameType).apply(board);
+      BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
       boardCanvas.setWidth(200);
       boardCanvas.setHeight(200);
 

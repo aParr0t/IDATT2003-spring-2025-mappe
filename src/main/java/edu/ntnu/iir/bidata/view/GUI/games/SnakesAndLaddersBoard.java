@@ -230,5 +230,8 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight()); // Clear the canvas
     drawTiles();
     drawSnakesAndLadders();
+    if (!players.isEmpty()) {
+      drawPlayers(players);
+    }
   }
 }

@@ -1,5 +1,7 @@
 package edu.ntnu.iir.bidata.model;
 
+import edu.ntnu.iir.bidata.model.TileAction.TileAction;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +14,8 @@ public class BoardGame {
   private List<Player> players;
   private Dice dice;
   private boolean isGameOver;
-  private GameType gameType;  // temporary
+  private GameType gameType;
+  private int playerTurn;
 
   /**
    * Initializes the board game with a given board, players, and dice.
@@ -85,8 +88,19 @@ public class BoardGame {
     return Arrays.stream(PlayingPieceType.values()).map(PlayingPiece::new).toList();
   }
 
-  public void setDice(Dice dice) {
-    this.dice = dice;
+  private void configureRestOfGame() {
+    // These are hardcoded configs for each game type.
+    // This could be refactored, but there are limits to over-engineering :)
+    switch (gameType) {
+      case GameType.SNAKES_AND_LADDERS:
+      case GameType.MONOPOLY: {
+        this.dice = new Dice(2, 6);
+        break;
+      }
+      default:
+        this.dice = new Dice(1, 6);
+        break;
+    }
   }
 
   /**
@@ -94,5 +108,41 @@ public class BoardGame {
    */
   public void startGame() {
     System.out.println("BoardGame started");
+    configureRestOfGame();
+    this.playerTurn = 0;
+  }
+
+  public void makeTurn() {
+    dice.rollAll();
+    Player currentPlayer = players.get(playerTurn);
+    List<Integer> diceCounts = dice.getCounts();
+    int diceSum = diceCounts.stream().mapToInt(Integer::intValue).sum();
+
+    // get the tile that the player would land on
+    Tile newPlayerTile = board.getTile(currentPlayer.getPosition());
+    for (int i = 0; i < diceSum; i++) {
+      if (newPlayerTile.getNextTile() == null) {
+        break;
+      }
+      newPlayerTile = newPlayerTile.getNextTile();
+    }
+
+    // move the player to the new tile
+    TileAction tileAction = newPlayerTile.getAction();
+    if (tileAction == null) {
+      currentPlayer.setPosition(newPlayerTile.getId());
+    } else {
+      tileAction.execute(currentPlayer);
+    }
+
+    playerTurn = (playerTurn + 1) % players.size();
+  }
+
+  public List<Integer> getDiceCounts() {
+    return dice.getCounts();
+  }
+
+  public Player getCurrentPlayerTurn() {
+    return players.get(playerTurn);
   }
 }
