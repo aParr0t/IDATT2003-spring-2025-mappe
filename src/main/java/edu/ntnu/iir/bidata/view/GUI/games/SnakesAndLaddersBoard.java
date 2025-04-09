@@ -10,8 +10,29 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SnakesAndLaddersBoard extends BoardCanvas {
+  private final Map<String, Color> snakeColors = new HashMap<>();
+  private final Map<String, Color> ladderColors = new HashMap<>();
+
+  private static final List<Color> SNAKE_COLOR_OPTIONS = List.of(
+          Color.rgb(182, 70, 95),
+          Color.rgb(217, 154, 197),
+          Color.rgb(138, 132, 226),
+          Color.rgb(194, 232, 18),
+          Color.rgb(239, 118, 122)
+  );
+
+  private static final List<Color> LADDER_COLOR_OPTIONS = List.of(
+          Color.rgb(205, 127, 50),
+          Color.rgb(165, 42, 42),
+          Color.rgb(218, 160, 109),
+          Color.rgb(233, 116, 81),
+          Color.rgb(123, 63, 0)
+  );
+
   public SnakesAndLaddersBoard(Board board) {
     super(board);
   }
@@ -100,16 +121,12 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     double canvasHeight = getHeight();
     GraphicsContext gc = getGraphicsContext2D();
 
-    // styling
-    List<Color> ladderColors = List.of(
-            Color.rgb(205, 127, 50),
-            Color.rgb(165, 42, 42),
-            Color.rgb(218, 160, 109),
-            Color.rgb(233, 116, 81),
-            Color.rgb(123, 63, 0),
-            Color.rgb(123, 63, 0)
-    );
-    Color ladderColor = RandomMath.randomPick(ladderColors).orElse(Color.BROWN);
+    // Get or create color for this ladder
+    String ladderKey = start.getX() + "," + start.getY() + "->" + end.getX() + "," + end.getY();
+    // (Help from autocomplete: I didn't know about the computeIfAbsent method)
+    Color ladderColor = ladderColors.computeIfAbsent(ladderKey,
+            k -> RandomMath.randomPick(LADDER_COLOR_OPTIONS).orElse(Color.BROWN));
+
     gc.setStroke(ladderColor);
     gc.setLineWidth(5);  // Make ladder thicker
 
@@ -166,15 +183,12 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     double canvasHeight = getHeight();
     GraphicsContext gc = getGraphicsContext2D();
 
-    // styling
-    List<Color> snakeColors = List.of(
-            Color.rgb(182, 70, 95),
-            Color.rgb(217, 154, 197),
-            Color.rgb(138, 132, 226),
-            Color.rgb(194, 232, 18),
-            Color.rgb(239, 118, 122)
-    );
-    Color snakeColor = RandomMath.randomPick(snakeColors).orElse(Color.PURPLE);
+    // Get or create color for this snake
+    String snakeKey = start.getX() + "," + start.getY() + "->" + end.getX() + "," + end.getY();
+    // (Help from autocomplete: I didn't know about the computeIfAbsent method)
+    Color snakeColor = snakeColors.computeIfAbsent(snakeKey,
+            k -> RandomMath.randomPick(SNAKE_COLOR_OPTIONS).orElse(Color.PURPLE));
+
     gc.setStroke(snakeColor);
     gc.setFill(snakeColor);
     double snakeWidth = normalizedSnakeWidth * canvasWidth;
