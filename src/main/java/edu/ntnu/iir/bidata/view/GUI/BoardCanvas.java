@@ -51,8 +51,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
         }
       }
     };
-
-    draw();
   }
 
   public void setPlayers(List<Player> players) {
