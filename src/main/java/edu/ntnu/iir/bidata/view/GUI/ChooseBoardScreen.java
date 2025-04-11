@@ -25,8 +25,8 @@ public class ChooseBoardScreen extends StackPane {
       boardCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
 
       BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
-      boardCanvas.setWidth(200);
-      boardCanvas.setHeight(200);
+      boardCanvas.setWidth(300);
+      boardCanvas.setHeight(300);
 
       // game name
       Label gameName = new Label(board.getName());
