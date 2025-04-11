@@ -5,7 +5,7 @@ import edu.ntnu.iir.bidata.view.gui.ChooseBoardScreen;
 import edu.ntnu.iir.bidata.view.gui.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.gui.GameplayScreen;
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +22,11 @@ public class BoardGameController {
   public void setup() {
     game = new BoardGame();
 
-    GUIApp.getInstance().addEventListener(GameEvent.QUIT, event -> {
+    GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
       System.out.println("quitted");
     });
 
-    GUIApp.getInstance().addEventListener(GameEvent.GAME_CHOSEN, gameType -> {
+    GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
       // update model
       game.setGameType(gameType);
       // update view
@@ -35,7 +35,7 @@ public class BoardGameController {
       GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards));
     });
 
-    GUIApp.getInstance().addEventListener(GameEvent.BOARD_CHOSEN, board -> {
+    GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
       // update model
       game.setBoard(board);
       // update view
@@ -43,7 +43,7 @@ public class BoardGameController {
       GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()));
     });
 
-    GUIApp.getInstance().addEventListener(GameEvent.PLAYERS_CHOSEN, players -> {
+    GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
       PlayerConfigResponse response = game.isPlayerConfigOk(players);
       if (!response.isPlayerConfigOk()) {
         GUIApp.getInstance().showMessage(response.getErrorMessage());
@@ -60,7 +60,7 @@ public class BoardGameController {
       goToAndUpdateGameScreen();
     });
 
-    GUIApp.getInstance().addEventListener(GameEvent.DICE_ROLLED, diceRolls -> {
+    GUIApp.getInstance().addEventListener(AppEvent.DICE_ROLLED, diceRolls -> {
       // Store previous positions before making the turn
       updatePreviousPositions();
 

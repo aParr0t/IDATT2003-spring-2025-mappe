@@ -14,18 +14,18 @@ import java.util.List;
  *
  * @param <T> The type of data associated with the event.
  */
-public interface GameEvent<T> {
+public interface AppEvent<T> {
   // Event types defined as singleton instances
-  GameEvent<Void> QUIT = new GameEvent<>() {
+  AppEvent<Void> QUIT = new AppEvent<>() {
   };
-  GameEvent<Void> START = new GameEvent<>() {
+  AppEvent<Void> START = new AppEvent<>() {
   };
-  GameEvent<GameType> GAME_CHOSEN = new GameEvent<>() {
+  AppEvent<GameType> GAME_CHOSEN = new AppEvent<>() {
   };
-  GameEvent<Board> BOARD_CHOSEN = new GameEvent<>() {
+  AppEvent<Board> BOARD_CHOSEN = new AppEvent<>() {
   };
-  GameEvent<List<Player>> PLAYERS_CHOSEN = new GameEvent<>() {
+  AppEvent<List<Player>> PLAYERS_CHOSEN = new AppEvent<>() {
   };
-  GameEvent<Void> DICE_ROLLED = new GameEvent<>() {
+  AppEvent<Void> DICE_ROLLED = new AppEvent<>() {
   };
 }

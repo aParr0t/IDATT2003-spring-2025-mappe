@@ -1,7 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.*;
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -137,7 +137,7 @@ public class GameplayScreen extends StackPane {
 
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
-    GUIApp.getInstance().emitEvent(GameEvent.DICE_ROLLED);
+    GUIApp.getInstance().emitEvent(AppEvent.DICE_ROLLED);
 
     // After the game state and screen are updated, start the animation
     // The animation will use the previousPositions that were passed during updateGameState
