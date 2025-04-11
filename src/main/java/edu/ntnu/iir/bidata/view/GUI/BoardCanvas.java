@@ -229,7 +229,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   public void drawTiles() {
     // Draw the tiles
-    System.out.println("Tiles: " + board.getTiles().size());
     for (Tile tile : board.getTiles()) {
       // Get the normalized position (0-1 range)
       double normalizedX = tile.getPosition().getX();
