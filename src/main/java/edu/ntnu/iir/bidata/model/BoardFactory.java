@@ -1,6 +1,6 @@
 package edu.ntnu.iir.bidata.model;
 
-import edu.ntnu.iir.bidata.model.TileAction.MoveAction;
+import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

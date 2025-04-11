@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.view.UIApp;
 import javafx.application.Application;

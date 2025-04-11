@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;

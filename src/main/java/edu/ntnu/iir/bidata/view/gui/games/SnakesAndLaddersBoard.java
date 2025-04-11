@@ -1,10 +1,10 @@
-package edu.ntnu.iir.bidata.view.GUI.games;
+package edu.ntnu.iir.bidata.view.gui.games;
 
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Tile;
-import edu.ntnu.iir.bidata.model.TileAction.MoveAction;
+import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
-import edu.ntnu.iir.bidata.view.GUI.BoardCanvas;
+import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
