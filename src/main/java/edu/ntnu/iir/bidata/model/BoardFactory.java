@@ -88,6 +88,7 @@ public class BoardFactory {
     }
 
     board.setName("Random board");
+    colorSnakesAndLaddersBoard(board);
     return board;
   }
 
@@ -114,6 +115,7 @@ public class BoardFactory {
     addMoveAction(board, 95, 56);
 
     board.setName("Normal board");
+    colorSnakesAndLaddersBoard(board);
     return board;
   }
 
@@ -131,11 +133,33 @@ public class BoardFactory {
     }
 
     board.setName("Chinese board");
+    colorSnakesAndLaddersBoard(board);
     return board;
   }
 
   private static void addMoveAction(Board board, int start, int end) {
     MoveAction action = new MoveAction(start, end);
     board.getTile(start).setAction(action);
+  }
+
+  public static Board standardMonopoly() {
+    List<Tile> tiles = BoardTileLayout.monopoly();
+    Board board = new Board(tiles);
+    board.setName("Monopoly board");
+    return board;
+  }
+
+  private static void colorSnakesAndLaddersBoard(Board board) {
+    // color the snakes and ladders
+    for (Tile tile : board.getTiles()) {
+      if (tile.getAction() instanceof MoveAction) {
+        MoveAction action = (MoveAction) tile.getAction();
+        if (action.getStart() < action.getEnd()) {
+          tile.getStyling().setColor("#228B22");
+        } else {
+          tile.getStyling().setColor("#ec4a27");
+        }
+      }
+    }
   }
 }

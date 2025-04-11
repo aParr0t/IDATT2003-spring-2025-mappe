@@ -10,6 +10,7 @@ public class MonopolyBoard extends BoardCanvas {
 
   @Override
   public void draw() {
-
+    clearCanvas();
+    drawTiles();
   }
 }

@@ -42,7 +42,7 @@ public class BoardGame {
         );
       case GameType.MONOPOLY:
         return List.of(
-                BoardFactory.createEmptyBoard()
+                BoardFactory.standardMonopoly()
         );
       default:
         return List.of();
