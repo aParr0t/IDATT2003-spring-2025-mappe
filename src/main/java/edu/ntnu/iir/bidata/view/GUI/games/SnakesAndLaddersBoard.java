@@ -37,57 +37,6 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     super(board);
   }
 
-  private void drawTiles() {
-    // Draw the tiles
-    for (Tile tile : board.getTiles()) {
-      // Get the normalized position (0-1 range)
-      double normalizedX = tile.getPosition().getX();
-      double normalizedY = tile.getPosition().getY();
-      double normalizedWidth = tile.getWidth();
-      double normalizedHeight = tile.getHeight();
-
-      // Scale to actual canvas size
-      double canvasX = normalizedX * getWidth();
-      double canvasY = normalizedY * getHeight();
-      double tileWidth = normalizedWidth * getWidth();
-      double tileHeight = normalizedHeight * getHeight();
-
-      // Get the graphics context for drawing
-      var gc = getGraphicsContext2D();
-
-      // determine tile color
-      boolean hasAction = tile.getAction() != null;
-      Color fillColor = Color.WHITE;
-      if (hasAction) {
-        boolean isMoveAction = tile.getAction() instanceof MoveAction;
-        if (isMoveAction) {
-          int start = ((MoveAction) tile.getAction()).getStart();
-          int end = ((MoveAction) tile.getAction()).getEnd();
-          boolean isLadder = start < end;
-          fillColor = isLadder ? Color.LIGHTGREEN : Color.LIGHTCORAL;
-        }
-      }
-
-      // styling
-      gc.setStroke(Color.BLACK);
-      gc.setLineWidth(1);
-
-      // Draw the tile background (rectangle)
-      gc.setFill(fillColor);
-      gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
-
-      // Draw tile border
-      gc.setStroke(Color.BLACK);
-      gc.strokeRect(canvasX, canvasY, tileWidth, tileHeight);
-
-      // Draw the tile number
-      gc.setFill(Color.BLACK);
-      gc.fillText(String.valueOf(tile.getId()),
-              canvasX + (tileWidth / 2) - 5,  // Better centering horizontally
-              canvasY + (tileHeight / 2) + 5); // Better centering vertically
-    }
-  }
-
   public void drawSnakesAndLadders() {
     for (Tile tile : board.getTiles()) {
       double normalizedWidth = tile.getWidth();
@@ -241,7 +190,7 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
 
   @Override
   public void draw() {
-    getGraphicsContext2D().clearRect(0, 0, getWidth(), getHeight()); // Clear the canvas
+    clearCanvas();
     drawTiles();
     drawSnakesAndLadders();
     if (!players.isEmpty()) {
