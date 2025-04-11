@@ -97,7 +97,6 @@ public class BoardTileLayout {
     parkingTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
     tiles.add(parkingTile);
 
-
     // side 3
     for (int i = 0; i < sideTileCount; i++) {
       x -= SIDE_TILE_SIZE;

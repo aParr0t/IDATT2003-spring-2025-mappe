@@ -30,27 +30,27 @@ public class GameplayScreen extends StackPane {
   private Map<String, Integer> previousPositions;
   private HBox playerCardsSection;
   private HBox diceContainer;
-  
-  public GameplayScreen(List<Player> players, GameType gameType, Board board, 
-                        List<Integer> diceCounts, Player currentPlayer, 
+
+  public GameplayScreen(List<Player> players, GameType gameType, Board board,
+                        List<Integer> diceCounts, Player currentPlayer,
                         Map<String, Integer> previousPositions) {
     this.players = players;
     this.previousPositions = previousPositions;
-    
+
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
     boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
     boardCanvas.setPlayers(players);
-    boardCanvas.setWidth(500);  // Set the width of the canvas
-    boardCanvas.setHeight(500); // Set the height of the canvas
-    
+    boardCanvas.setWidth(600);
+    boardCanvas.setHeight(600);
+
     // Set previous positions in the board canvas
     if (boardCanvas instanceof AnimatedBoardCanvas) {
       ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
     }
-    
+
     StackPane gameBoardContainer = new StackPane(boardCanvas);
     gameBoardContainer.setPadding(new Insets(10));
     mainLayout.setCenter(gameBoardContainer);
@@ -101,7 +101,7 @@ public class GameplayScreen extends StackPane {
     mainLayout.setBottom(bottomSection);
 
     // Add the main layout to the stack pane
-    this.getChildren().add(mainLayout); 
+    this.getChildren().add(mainLayout);
   }
 
   private StackPane createPlayerCard(Player player, boolean isActive) {
@@ -134,11 +134,11 @@ public class GameplayScreen extends StackPane {
   private void handleRollDice() {
     // Disable roll button during animation
     rollButton.setDisable(true);
-    
+
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
     GUIApp.getInstance().emitEvent(GameEvent.DICE_ROLLED);
-    
+
     // After the game state and screen are updated, start the animation
     // The animation will use the previousPositions that were passed during updateGameState
     if (boardCanvas instanceof AnimatedBoardCanvas) {
@@ -152,31 +152,31 @@ public class GameplayScreen extends StackPane {
     }
   }
 
-  public void updateGameState(List<Player> players, List<Integer> diceCounts, 
+  public void updateGameState(List<Player> players, List<Integer> diceCounts,
                               Player currentPlayer, Map<String, Integer> previousPositions) {
     this.players = players;
     this.previousPositions = previousPositions;
-    
+
     // Update the board canvas with new player positions but keep the same instance
     boardCanvas.setPlayers(players);
-    
+
     // Set previous positions in the board canvas
     if (boardCanvas instanceof AnimatedBoardCanvas) {
       ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
     }
-    
+
     // Update player cards section
     playerCardsSection.getChildren().clear();
     for (Player player : players) {
       boolean isActive = player.equals(currentPlayer);
       playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
     }
-    
+
     // Update dice section
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);
-    } 
+    }
   }
 }
