@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Runs the game in a text-based version.
  */
-public class BoardGameApp {
+public class BoardGameController {
   private BoardGame game;
   private GameplayScreen currentGameScreen;
   private Map<String, Integer> playerPreviousPositions = new HashMap<>();
@@ -52,10 +52,10 @@ public class BoardGameApp {
       // update model
       game.setPlayers(players);
       game.startGame();
-      
+
       // Store initial positions
       updatePreviousPositions();
-      
+
       // update view
       goToAndUpdateGameScreen();
     });
@@ -63,10 +63,10 @@ public class BoardGameApp {
     GUIApp.getInstance().addEventListener(GameEvent.DICE_ROLLED, diceRolls -> {
       // Store previous positions before making the turn
       updatePreviousPositions();
-      
+
       // Make the turn in the game model
       game.makeTurn();
-      
+
       // Update the game screen with the new state and previous positions
       // The animation will be handled by the GameplayScreen
       goToAndUpdateGameScreen();
@@ -79,37 +79,37 @@ public class BoardGameApp {
     );
     game.setPlayers(players);
   }
-  
+
   private void updatePreviousPositions() {
     // Make a copy of the current positions before they change
     playerPreviousPositions.clear();
     for (Player player : game.getPlayers()) {
       playerPreviousPositions.put(player.getName(), player.getPosition());
-    } 
+    }
   }
 
   private void goToAndUpdateGameScreen() {
     // Create a new screen with the current game state and previous positions
     Map<String, Integer> positionsCopy = new HashMap<>(playerPreviousPositions);
-    
+
     if (currentGameScreen == null) {
       // Create a new screen if it doesn't exist yet
       currentGameScreen = new GameplayScreen(
-          game.getPlayers(), 
-          game.getGameType(), 
-          game.getBoard(), 
-          game.getDiceCounts(), 
-          game.getCurrentPlayerTurn(),
-          positionsCopy // Pass previous positions to the screen
+              game.getPlayers(),
+              game.getGameType(),
+              game.getBoard(),
+              game.getDiceCounts(),
+              game.getCurrentPlayerTurn(),
+              positionsCopy // Pass previous positions to the screen
       );
       GUIApp.setContent(currentGameScreen);
     } else {
       // Update the existing screen
       currentGameScreen.updateGameState(
-          game.getPlayers(),
-          game.getDiceCounts(),
-          game.getCurrentPlayerTurn(),
-          positionsCopy
+              game.getPlayers(),
+              game.getDiceCounts(),
+              game.getCurrentPlayerTurn(),
+              positionsCopy
       );
     }
   }
