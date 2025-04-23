@@ -1,9 +1,9 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
-import edu.ntnu.iir.bidata.view.GUI.games.MonopolyBoard;
-import edu.ntnu.iir.bidata.view.GUI.games.SnakesAndLaddersBoard;
+import edu.ntnu.iir.bidata.view.gui.games.MonopolyBoard;
+import edu.ntnu.iir.bidata.view.gui.games.SnakesAndLaddersBoard;
 
 import java.util.HashMap;
 import java.util.function.Function;

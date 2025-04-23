@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.view.UIApp;
 import javafx.application.Application;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.GameEventListener;
 
 import java.util.Stack;
 
 public class GUIApp extends Application implements UIApp {
-  private static Map<GameEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
+  private static Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
   private static BorderPane sceneContent;
   private static Stage stage;
   private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
@@ -94,7 +94,7 @@ public class GUIApp extends Application implements UIApp {
   }
 
   public void quitApp() {
-    emitEvent(GameEvent.QUIT);
+    emitEvent(AppEvent.QUIT);
     stage.close();
   }
 
@@ -106,7 +106,7 @@ public class GUIApp extends Application implements UIApp {
    * (Help from AI: help with generics)
    */
   @Override
-  public <T> void addEventListener(GameEvent<T> event, GameEventListener<T> listener) {
+  public <T> void addEventListener(AppEvent<T> event, GameEventListener<T> listener) {
     if (!eventListeners.containsKey(event)) {
       eventListeners.put(event, new ArrayList<>());
     }
@@ -117,7 +117,7 @@ public class GUIApp extends Application implements UIApp {
    * (Help from AI: help with generics)
    */
   @Override
-  public <T> void removeEventListener(GameEvent<T> event, GameEventListener<T> listener) {
+  public <T> void removeEventListener(AppEvent<T> event, GameEventListener<T> listener) {
     if (eventListeners.containsKey(event)) {
       eventListeners.get(event).remove(listener);
     }
@@ -128,7 +128,7 @@ public class GUIApp extends Application implements UIApp {
    */
   @SuppressWarnings("unchecked")
   @Override
-  public <T> void emitEvent(GameEvent<T> event, T data) {
+  public <T> void emitEvent(AppEvent<T> event, T data) {
     if (eventListeners.containsKey(event)) {
       for (GameEventListener<?> listener : eventListeners.get(event)) {
         ((GameEventListener<T>) listener).onEvent(data);
@@ -140,7 +140,7 @@ public class GUIApp extends Application implements UIApp {
    * (Help from AI: help with generics)
    */
   @Override
-  public void emitEvent(GameEvent<Void> event) {
+  public void emitEvent(AppEvent<Void> event) {
     UIApp.super.emitEvent(event);
   }
 

@@ -1,8 +1,8 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -102,6 +102,6 @@ public class ChoosePlayerScreen extends StackPane {
   }
 
   private void startGameHandler() {
-    GUIApp.getInstance().emitEvent(GameEvent.PLAYERS_CHOSEN, players);
+    GUIApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
   }
 }

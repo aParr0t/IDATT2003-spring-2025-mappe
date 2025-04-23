@@ -1,6 +1,6 @@
 package edu.ntnu.iir.bidata.model;
 
-import edu.ntnu.iir.bidata.model.TileAction.TileAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 import javafx.geometry.Point2D;
 
 /**
@@ -12,6 +12,7 @@ public class Tile {
   private Point2D position; // Position as x,y coordinates (0.0-1.0)
   private double width, height;
   private TileAction action;
+  private TileStyling styling;
 
   /**
    * Creates a tile with a unique identifier and position.
@@ -22,6 +23,15 @@ public class Tile {
     this.id = id;
     this.nextTile = null;
     this.position = new Point2D(0.0, 0.0);
+    this.styling = new TileStyling();
+  }
+
+  public TileStyling getStyling() {
+    return styling;
+  }
+
+  public void setStyling(TileStyling styling) {
+    this.styling = styling;
   }
 
   /**

@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.model.TileAction;
+package edu.ntnu.iir.bidata.model.tileaction;
 
 import edu.ntnu.iir.bidata.model.Player;
 

@@ -12,7 +12,7 @@ public interface UIApp {
    * @param listener
    * @param <T>
    */
-  <T> void addEventListener(GameEvent<T> event, GameEventListener<T> listener);
+  <T> void addEventListener(AppEvent<T> event, GameEventListener<T> listener);
 
   /**
    * (Help from AI: help with generics)
@@ -21,7 +21,7 @@ public interface UIApp {
    * @param listener
    * @param <T>
    */
-  <T> void removeEventListener(GameEvent<T> event, GameEventListener<T> listener);
+  <T> void removeEventListener(AppEvent<T> event, GameEventListener<T> listener);
 
   /**
    * (Help from AI: help with generics)
@@ -30,7 +30,7 @@ public interface UIApp {
    * @param data
    * @param <T>
    */
-  <T> void emitEvent(GameEvent<T> event, T data);
+  <T> void emitEvent(AppEvent<T> event, T data);
 
 
   /**
@@ -39,7 +39,7 @@ public interface UIApp {
    *
    * @param event
    */
-  default void emitEvent(GameEvent<Void> event) {
+  default void emitEvent(AppEvent<Void> event) {
     emitEvent(event, null);
   }
 

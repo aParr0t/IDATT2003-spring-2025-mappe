@@ -1,6 +1,6 @@
 package edu.ntnu.iir.bidata.model;
 
-import edu.ntnu.iir.bidata.model.TileAction.TileAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,7 +42,7 @@ public class BoardGame {
         );
       case GameType.MONOPOLY:
         return List.of(
-                BoardFactory.createEmptyBoard()
+                BoardFactory.standardMonopoly()
         );
       default:
         return List.of();

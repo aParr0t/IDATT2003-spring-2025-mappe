@@ -1,7 +1,7 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.GameType;
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -46,7 +46,7 @@ public class ChooseGameScreen extends StackPane {
 
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
-        GUIApp.getInstance().emitEvent(GameEvent.GAME_CHOSEN, gamePreview.getGameType());
+        GUIApp.getInstance().emitEvent(AppEvent.GAME_CHOSEN, gamePreview.getGameType());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);

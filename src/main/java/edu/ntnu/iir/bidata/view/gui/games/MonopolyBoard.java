@@ -1,7 +1,7 @@
-package edu.ntnu.iir.bidata.view.GUI.games;
+package edu.ntnu.iir.bidata.view.gui.games;
 
 import edu.ntnu.iir.bidata.model.Board;
-import edu.ntnu.iir.bidata.view.GUI.BoardCanvas;
+import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
 
 public class MonopolyBoard extends BoardCanvas {
   public MonopolyBoard(Board board) {
@@ -10,6 +10,7 @@ public class MonopolyBoard extends BoardCanvas {
 
   @Override
   public void draw() {
-
+    clearCanvas();
+    drawTiles();
   }
 }

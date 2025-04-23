@@ -1,4 +1,4 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Player;
@@ -218,6 +218,56 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       gc.setStroke(Color.BLACK);
       gc.setLineWidth(2);
       gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+    }
+  }
+
+  public void clearCanvas() {
+    // Clear the canvas
+    GraphicsContext gc = getGraphicsContext2D();
+    gc.clearRect(0, 0, getWidth(), getHeight());
+  }
+
+  public void drawTiles() {
+    // Draw the tiles
+    for (Tile tile : board.getTiles()) {
+      // Get the normalized position (0-1 range)
+      double normalizedX = tile.getPosition().getX();
+      double normalizedY = tile.getPosition().getY();
+      double normalizedWidth = tile.getWidth();
+      double normalizedHeight = tile.getHeight();
+
+      // Scale to actual canvas size
+      double canvasX = normalizedX * getWidth();
+      double canvasY = normalizedY * getHeight();
+      double tileWidth = normalizedWidth * getWidth();
+      double tileHeight = normalizedHeight * getHeight();
+
+      // Get the graphics context for drawing
+      var gc = getGraphicsContext2D();
+
+      // determine tile color
+      Color fillColor = Color.WHITE;
+      if (tile.getStyling() != null) {
+        fillColor = Color.web(tile.getStyling().getColor());
+      }
+
+      // styling
+      gc.setStroke(Color.BLACK);
+      gc.setLineWidth(1);
+
+      // Draw the tile background (rectangle)
+      gc.setFill(fillColor);
+      gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
+
+      // Draw tile border
+      gc.setStroke(Color.BLACK);
+      gc.strokeRect(canvasX, canvasY, tileWidth, tileHeight);
+
+      // Draw the tile number
+      gc.setFill(Color.BLACK);
+      gc.fillText(String.valueOf(tile.getId()),
+              canvasX + (tileWidth / 2) - 5,  // Better centering horizontally
+              canvasY + (tileHeight / 2) + 5); // Better centering vertically
     }
   }
 }

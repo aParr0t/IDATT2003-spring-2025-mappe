@@ -45,4 +45,83 @@ public class BoardTileLayout {
 
     return tiles;
   }
+
+  public static List<Tile> monopoly() {
+    List<Tile> tiles = new ArrayList<>();
+
+    // tile configuration
+    double CORNER_TILE_SIZE = 0.15;
+    int sideTileCount = 9;
+    double SIDE_TILE_SIZE = (1 - 2 * CORNER_TILE_SIZE) / sideTileCount;
+
+    double x = 0;
+    double y = 0;
+    int tileIndex = 0;
+
+    // create the tiles
+    // GO tile
+    Tile goTile = new Tile(tileIndex++);
+    goTile.setPosition(x, y);
+    goTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    tiles.add(goTile);
+    x += CORNER_TILE_SIZE;
+
+    // side 1
+    for (int i = 0; i < sideTileCount; i++) {
+      Tile sideTile = new Tile(tileIndex++);
+      sideTile.setPosition(x, y);
+      sideTile.setSize(SIDE_TILE_SIZE, CORNER_TILE_SIZE);
+      tiles.add(sideTile);
+      x += SIDE_TILE_SIZE;
+    }
+
+    // Prison tile
+    Tile prisonTile = new Tile(tileIndex++);
+    prisonTile.setPosition(x, y);
+    prisonTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    tiles.add(prisonTile);
+
+    // side 2
+    y += CORNER_TILE_SIZE;
+    for (int i = 0; i < sideTileCount; i++) {
+      Tile sideTile = new Tile(tileIndex++);
+      sideTile.setPosition(x, y);
+      sideTile.setSize(CORNER_TILE_SIZE, SIDE_TILE_SIZE);
+      tiles.add(sideTile);
+      y += SIDE_TILE_SIZE;
+    }
+
+    // Parking tile
+    Tile parkingTile = new Tile(tileIndex++);
+    parkingTile.setPosition(x, y);
+    parkingTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    tiles.add(parkingTile);
+
+    // side 3
+    for (int i = 0; i < sideTileCount; i++) {
+      x -= SIDE_TILE_SIZE;
+      Tile sideTile = new Tile(tileIndex++);
+      sideTile.setPosition(x, y);
+      sideTile.setSize(SIDE_TILE_SIZE, CORNER_TILE_SIZE);
+      tiles.add(sideTile);
+    }
+
+    // Go to jail tile
+    x -= CORNER_TILE_SIZE;
+    Tile goToJailTile = new Tile(tileIndex++);
+    goToJailTile.setPosition(x, y);
+    goToJailTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    tiles.add(goToJailTile);
+
+    // side 4
+    for (int i = 0; i < sideTileCount; i++) {
+      y -= SIDE_TILE_SIZE;
+      Tile sideTile = new Tile(tileIndex++);
+      sideTile.setPosition(x, y);
+      sideTile.setSize(CORNER_TILE_SIZE, SIDE_TILE_SIZE);
+      tiles.add(sideTile);
+    }
+
+    return tiles;
+  }
 }

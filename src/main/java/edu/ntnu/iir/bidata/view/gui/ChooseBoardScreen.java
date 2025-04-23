@@ -1,8 +1,8 @@
-package edu.ntnu.iir.bidata.view.GUI;
+package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
-import edu.ntnu.iir.bidata.view.GameEvent;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -25,8 +25,8 @@ public class ChooseBoardScreen extends StackPane {
       boardCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
 
       BoardCanvas boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
-      boardCanvas.setWidth(200);
-      boardCanvas.setHeight(200);
+      boardCanvas.setWidth(300);
+      boardCanvas.setHeight(300);
 
       // game name
       Label gameName = new Label(board.getName());
@@ -38,7 +38,7 @@ public class ChooseBoardScreen extends StackPane {
 
       // add click handler to gameCard
       boardCard.setOnMouseClicked(event -> {
-        GUIApp.getInstance().emitEvent(GameEvent.BOARD_CHOSEN, board);
+        GUIApp.getInstance().emitEvent(AppEvent.BOARD_CHOSEN, board);
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);
