@@ -17,4 +17,9 @@ public class SnakesAndLaddersGame extends Game {
   public void handleEvent(String event) {
     System.out.println("Handling event: " + event);
   }
+
+  @Override
+  public void start() {
+
+  }
 }

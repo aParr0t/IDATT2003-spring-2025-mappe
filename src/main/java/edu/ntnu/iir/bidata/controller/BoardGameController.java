@@ -61,10 +61,9 @@ public class BoardGameController {
       }
       // update model
       game.setPlayers(players);
-      //      game.startGame();
 
-      // Store initial positions
-//      updatePreviousPositions();
+      // start game
+      game.start();
 
       // update view
       goToAndUpdateGameScreen();
@@ -73,55 +72,27 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
       System.out.println("IN_GAME_EVENT");
       game.handleEvent(event);
+      goToAndUpdateGameScreen();
     });
 
 
     GUIApp.getInstance().addEventListener(AppEvent.DICE_ROLLED, diceRolls -> {
-//      // Store previous positions before making the turn
-//      updatePreviousPositions();
-//
-//      // Make the turn in the game model
-//      game.makeTurn();
-//
-//      // Update the game screen with the new state and previous positions
-//      // The animation will be handled by the GameplayScreen
-//      goToAndUpdateGameScreen();
     });
-  }
-
-  private void updatePreviousPositions() {
-    // Make a copy of the current positions before they change
-    playerPreviousPositions.clear();
-    for (Player player : game.getPlayers()) {
-      playerPreviousPositions.put(player.getName(), player.getPosition());
-    }
   }
 
   private void goToAndUpdateGameScreen() {
     // Create a new screen with the current game state and previous positions
     Map<String, Integer> positionsCopy = new HashMap<>(playerPreviousPositions);
 
-    if (currentGameScreen == null) {
-      // Create a new screen if it doesn't exist yet
-      currentGameScreen = new GameplayScreen(
-              game.getGameType(),
-              game.getPlayers(),
-              game.getBoard(),
-              game.getDiceCounts(),
-              game.getCurrentPlayer(),
-              positionsCopy // Pass previous positions to the screen
-      );
-      // Set content and specify that the back button should be hidden for gameplay screen
-      GUIApp.setContent(currentGameScreen, true, false);
-    } else {
-      // Update the existing screen
-//      currentGameScreen.updateGameState(
-//              game.getPlayers(),
-//              game.getDiceCounts(),
-//              game.getCurrentPlayerTurn(),
-//              positionsCopy
-//      );
-    }
+    currentGameScreen = new GameplayScreen(
+            game.getGameType(),
+            game.getPlayers(),
+            game.getBoard(),
+            game.getDiceCounts(),
+            game.getCurrentPlayer(),
+            positionsCopy // Pass previous positions to the screen
+    );
+    GUIApp.setContent(currentGameScreen, true, false);
   }
 
   public void run() {

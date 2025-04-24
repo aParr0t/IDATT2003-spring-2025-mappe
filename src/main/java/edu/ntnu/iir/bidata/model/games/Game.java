@@ -9,9 +9,9 @@ import java.util.List;
 public abstract class Game {
   private Board board;
   private List<Player> players;
-  private Dice dice;
+  protected Dice dice;
   protected GameType gameType;
-  private int currentPlayerIndex;
+  protected int currentPlayerIndex;
 
   public Game() {
     this.dice = new Dice(2, 6);
@@ -25,6 +25,10 @@ public abstract class Game {
 
   public int getCurrentPlayerIndex() {
     return currentPlayerIndex;
+  }
+
+  public void setCurrentPlayerIndex(int currentPlayerIndex) {
+    this.currentPlayerIndex = currentPlayerIndex;
   }
 
   public Player getCurrentPlayer() {
@@ -85,5 +89,7 @@ public abstract class Game {
   public abstract boolean isGameOver();
 
   public abstract void handleEvent(String event);
+
+  public abstract void start();
 }
 
