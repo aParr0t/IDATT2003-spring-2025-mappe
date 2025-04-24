@@ -95,8 +95,8 @@ public class BoardGameController {
     if (currentGameScreen == null) {
       // Create a new screen if it doesn't exist yet
       currentGameScreen = new GameplayScreen(
-              game.getPlayers(),
               game.getGameType(),
+              game.getPlayers(),
               game.getBoard(),
               game.getDiceCounts(),
               game.getCurrentPlayerTurn(),
@@ -105,12 +105,12 @@ public class BoardGameController {
       GUIApp.setContent(currentGameScreen);
     } else {
       // Update the existing screen
-      currentGameScreen.updateGameState(
-              game.getPlayers(),
-              game.getDiceCounts(),
-              game.getCurrentPlayerTurn(),
-              positionsCopy
-      );
+//      currentGameScreen.updateGameState(
+//              game.getPlayers(),
+//              game.getDiceCounts(),
+//              game.getCurrentPlayerTurn(),
+//              positionsCopy
+//      );
     }
   }
 
