@@ -192,11 +192,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
         displayPosition = currentPos;
       }
 
-      // Make sure we have a valid tile position (safety check)
-      if (displayPosition < 1 || displayPosition > board.getTiles().size()) {
-        displayPosition = 1;
-      }
-
       // Get the tile for the display position
       Tile tile = board.getTile(displayPosition);
       double tileWidth = tile.getWidth();
