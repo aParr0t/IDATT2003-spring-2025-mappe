@@ -32,7 +32,7 @@ public class BoardGameController {
       // update view
       GameType retrievedGameType = game.getGameType();
       List<Board> boards = game.getAllBoardsForGameType(gameType);
-      GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards));
+      GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards), true, true);
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
@@ -40,7 +40,7 @@ public class BoardGameController {
       game.setBoard(board);
       // update view
       List<Player> players = game.getPlayers();
-      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()));
+      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()), true, true);
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
@@ -102,7 +102,8 @@ public class BoardGameController {
               game.getCurrentPlayerTurn(),
               positionsCopy // Pass previous positions to the screen
       );
-      GUIApp.setContent(currentGameScreen);
+      // Set content and specify that the back button should be hidden for gameplay screen
+      GUIApp.setContent(currentGameScreen, true, false);
     } else {
       // Update the existing screen
 //      currentGameScreen.updateGameState(
