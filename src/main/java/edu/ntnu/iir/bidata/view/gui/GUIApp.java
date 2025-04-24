@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.view.UIApp;
+import edu.ntnu.iir.bidata.view.gui.screens.HomeScreen;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;

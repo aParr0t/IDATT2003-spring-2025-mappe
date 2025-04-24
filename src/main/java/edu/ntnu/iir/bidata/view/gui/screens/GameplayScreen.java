@@ -1,7 +1,8 @@
-package edu.ntnu.iir.bidata.view.gui;
+package edu.ntnu.iir.bidata.view.gui.screens;
 
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.view.AppEvent;
+import edu.ntnu.iir.bidata.view.gui.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

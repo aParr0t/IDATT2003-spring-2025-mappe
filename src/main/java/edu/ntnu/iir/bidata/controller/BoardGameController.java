@@ -1,10 +1,10 @@
 package edu.ntnu.iir.bidata.controller;
 
 import edu.ntnu.iir.bidata.model.*;
-import edu.ntnu.iir.bidata.view.gui.ChooseBoardScreen;
-import edu.ntnu.iir.bidata.view.gui.ChoosePlayerScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.ChooseBoardScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
-import edu.ntnu.iir.bidata.view.gui.GameplayScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.GameplayScreen;
 import edu.ntnu.iir.bidata.view.AppEvent;
 
 import java.util.HashMap;

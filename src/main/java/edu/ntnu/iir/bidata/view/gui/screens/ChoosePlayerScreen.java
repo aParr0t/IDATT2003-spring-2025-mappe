@@ -1,8 +1,9 @@
-package edu.ntnu.iir.bidata.view.gui;
+package edu.ntnu.iir.bidata.view.gui.screens;
 
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
 import edu.ntnu.iir.bidata.view.AppEvent;
+import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
