@@ -162,4 +162,27 @@ public class BoardFactory {
       }
     }
   }
+
+  /**
+   * Gets all available boards for the specified game type.
+   *
+   * @param gameType the type of game
+   * @return a list of available boards for the specified game type
+   */
+  public static List<Board> getAllBoardsForGameType(GameType gameType) {
+    switch (gameType) {
+      case GameType.SNAKES_AND_LADDERS:
+        return List.of(
+                randomSnakesAndLadders(10, 10),
+                normalSnakesAndLadders(),
+                chineseSnakesAndLadders()
+        );
+      case GameType.MONOPOLY:
+        return List.of(
+                standardMonopoly()
+        );
+      default:
+        return List.of();
+    }
+  }
 }
