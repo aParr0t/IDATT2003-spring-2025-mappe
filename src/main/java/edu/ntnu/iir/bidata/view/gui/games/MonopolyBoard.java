@@ -12,5 +12,8 @@ public class MonopolyBoard extends BoardCanvas {
   public void draw() {
     clearCanvas();
     drawTiles();
+    if (!players.isEmpty()) {
+      drawPlayers(players);
+    }
   }
 }
