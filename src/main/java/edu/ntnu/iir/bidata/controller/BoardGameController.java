@@ -1,6 +1,9 @@
 package edu.ntnu.iir.bidata.controller;
 
 import edu.ntnu.iir.bidata.model.*;
+import edu.ntnu.iir.bidata.model.games.Game;
+import edu.ntnu.iir.bidata.model.games.MonopolyGame;
+import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
 import edu.ntnu.iir.bidata.view.gui.screens.ChooseBoardScreen;
 import edu.ntnu.iir.bidata.view.gui.screens.ChoosePlayerScreen;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
@@ -15,23 +18,25 @@ import java.util.Map;
  * Runs the game in a text-based version.
  */
 public class BoardGameController {
-  private BoardGame game;
+  private Game game;
   private GameplayScreen currentGameScreen;
   private Map<String, Integer> playerPreviousPositions = new HashMap<>();
 
   public void setup() {
-    game = new BoardGame();
-
     GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
       System.out.println("quitted");
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
-      // update model
-      game.setGameType(gameType);
+      // TODO: maybe use a factory pattern to create the game
+      switch (gameType) {
+        case SNAKES_AND_LADDERS -> game = new SnakesAndLaddersGame();
+        case MONOPOLY -> game = new MonopolyGame();
+        default -> throw new IllegalArgumentException("Invalid game type: " + gameType);
+      }
       // update view
       GameType retrievedGameType = game.getGameType();
-      List<Board> boards = game.getAllBoardsForGameType(gameType);
+      List<Board> boards = BoardFactory.getAllBoardsForGameType(gameType);
       GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards), true, true);
     });
 
@@ -39,7 +44,12 @@ public class BoardGameController {
       // update model
       game.setBoard(board);
       // update view
-      List<Player> players = game.getPlayers();
+
+      // TODO: players should be fetched from local storage
+      List<Player> players = List.of(
+              new Player("Atas"),
+              new Player("Stian")
+      );
       GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()), true, true);
     });
 
@@ -51,33 +61,32 @@ public class BoardGameController {
       }
       // update model
       game.setPlayers(players);
-      game.startGame();
+      //      game.startGame();
 
       // Store initial positions
-      updatePreviousPositions();
+//      updatePreviousPositions();
 
       // update view
       goToAndUpdateGameScreen();
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.DICE_ROLLED, diceRolls -> {
-      // Store previous positions before making the turn
-      updatePreviousPositions();
-
-      // Make the turn in the game model
-      game.makeTurn();
-
-      // Update the game screen with the new state and previous positions
-      // The animation will be handled by the GameplayScreen
-      goToAndUpdateGameScreen();
+    GUIApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
+      System.out.println("IN_GAME_EVENT");
+      game.handleEvent(event);
     });
 
-    // Create players
-    List<Player> players = List.of(
-            new Player("Atas"),
-            new Player("Stian")
-    );
-    game.setPlayers(players);
+
+    GUIApp.getInstance().addEventListener(AppEvent.DICE_ROLLED, diceRolls -> {
+//      // Store previous positions before making the turn
+//      updatePreviousPositions();
+//
+//      // Make the turn in the game model
+//      game.makeTurn();
+//
+//      // Update the game screen with the new state and previous positions
+//      // The animation will be handled by the GameplayScreen
+//      goToAndUpdateGameScreen();
+    });
   }
 
   private void updatePreviousPositions() {
@@ -99,7 +108,7 @@ public class BoardGameController {
               game.getPlayers(),
               game.getBoard(),
               game.getDiceCounts(),
-              game.getCurrentPlayerTurn(),
+              game.getCurrentPlayer(),
               positionsCopy // Pass previous positions to the screen
       );
       // Set content and specify that the back button should be hidden for gameplay screen

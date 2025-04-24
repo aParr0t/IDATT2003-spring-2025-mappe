@@ -3,12 +3,15 @@ package edu.ntnu.iir.bidata.view.gui.screens;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
 import edu.ntnu.iir.bidata.view.gui.DieRectangle;
+import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
@@ -66,6 +69,7 @@ public class MonopolyScreen extends StackPane {
 
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
+      die.setOnMouseClicked(event -> emitDiceRolledEvent());
       diceContainer.getChildren().add(die);
     }
 
@@ -83,6 +87,16 @@ public class MonopolyScreen extends StackPane {
 
     root.setRight(sidebar);
     getChildren().add(root);
+
+    // Add space key press handler
+    this.setOnKeyPressed(event -> {
+      if (event.getCode() == KeyCode.SPACE) {
+        emitDiceRolledEvent();
+      }
+    });
+
+    // Make the pane focusable to receive key events
+    this.setFocusTraversable(true);
   }
 
   private HBox createPlayerCard(Player player, boolean isActive) {
@@ -102,7 +116,7 @@ public class MonopolyScreen extends StackPane {
   }
 
   public void updateGameState(List<Player> players, List<Integer> diceCounts,
-                            Player currentPlayer, Map<String, Integer> previousPositions) {
+                              Player currentPlayer, Map<String, Integer> previousPositions) {
     // Update the board canvas with new player positions
     boardCanvas.setPlayers(players);
 
@@ -117,7 +131,12 @@ public class MonopolyScreen extends StackPane {
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
+      die.setOnMouseClicked(event -> emitDiceRolledEvent());
       diceContainer.getChildren().add(die);
     }
+  }
+  
+  private void emitDiceRolledEvent() {
+    GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
   }
 }

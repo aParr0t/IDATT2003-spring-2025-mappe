@@ -28,4 +28,6 @@ public interface AppEvent<T> {
   };
   AppEvent<Void> DICE_ROLLED = new AppEvent<>() {
   };
+  AppEvent<String> IN_GAME_EVENT = new AppEvent<>() {
+  };
 }
