@@ -44,4 +44,10 @@ public class Dice {
             .map(Die::getCount)
             .toList();
   }
+
+  public int getSum() {
+    return dice.stream()
+            .mapToInt(Die::getCount)
+            .sum();
+  }
 }
