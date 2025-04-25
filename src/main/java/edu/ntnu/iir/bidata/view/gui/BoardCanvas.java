@@ -172,28 +172,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
 
-      // Get the current and previous positions
-      int currentPos = player.getPosition();
-      int prevPos = getPreviousPosition(player);
-
-      // If animating, interpolate between positions
-      int displayPosition;
-      if (animating && prevPos != currentPos) {
-        double progress = animationProgress.getOrDefault(player, 0.0);
-        // Use linear interpolation for position
-        displayPosition = (int) Math.round(prevPos + (currentPos - prevPos) * progress);
-
-        // Debug animation progress at specific moments
-        if (progress > 0 && progress < 0.05 ||
-                Math.abs(progress - 0.5) < 0.05 ||
-                progress > 0.95 && progress < 1.0) {
-        }
-      } else {
-        displayPosition = currentPos;
-      }
-
       // Get the tile for the display position
-      Tile tile = board.getTile(displayPosition);
+      Tile tile = board.getTile(player.getPosition());
       double tileWidth = tile.getWidth();
       double tileHeight = tile.getHeight();
 
