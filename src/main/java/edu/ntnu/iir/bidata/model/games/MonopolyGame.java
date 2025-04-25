@@ -37,6 +37,7 @@ public class MonopolyGame extends Game {
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
   }
 
+  @Override
   public void start() {
     // make players start on position 0
     var players = getPlayers();
