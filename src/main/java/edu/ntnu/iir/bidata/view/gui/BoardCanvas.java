@@ -383,7 +383,13 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
             // Rotate by the specified degrees
             gc.rotate(rotation);
             // Draw the image centered (adjust coordinates to account for rotation around center)
-            gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
+            
+            // If the rotation is 90 or 270, we need to swap the width and height of the image
+            if (rotation == 90 || rotation == 270) {
+              gc.drawImage(tileImage, -tileHeight / 2, -tileWidth / 2, tileHeight, tileWidth);
+            } else {
+              gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
+            }
             
             // Restore the graphics context to its original state
             gc.restore();
