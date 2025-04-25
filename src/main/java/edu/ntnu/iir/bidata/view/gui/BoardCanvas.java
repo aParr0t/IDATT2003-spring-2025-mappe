@@ -23,6 +23,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private boolean animating = false;
   // Use instance variable instead of static to allow proper position tracking
   private Map<String, Integer> previousPositions = new HashMap<>();
+  private Map<String, Integer> lastKnownPositions = new HashMap<>(); // Added to track last known positions
   private Map<Player, Double> animationProgress = new HashMap<>();
   private AnimationTimer animationTimer;
   private Runnable onAnimationComplete;
@@ -54,8 +55,42 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   public void setPlayers(List<Player> players) {
+    // Store previous positions before updating players list
+    storePreviousPositions();
     this.players = players;
+    // After setting players, update lastKnownPositions
+    updateLastKnownPositions();
     draw();
+  }
+
+  /**
+   * Updates the last known positions map with current player positions
+   */
+  private void updateLastKnownPositions() {
+    for (Player player : players) {
+      if (player != null) {
+        lastKnownPositions.put(player.getName(), player.getPosition());
+      }
+    }
+  }
+
+  /**
+   * Animates player movement from their previous positions to current positions.
+   * This method should be called after updating player positions.
+   *
+   * @param onComplete Runnable to execute when animation completes
+   */
+  public void animatePlayers(Runnable onComplete) {
+    startAnimation(onComplete);
+  }
+
+  /**
+   * Stores the current positions of all players before they move.
+   * This ensures we have a reference point for animation.
+   * Call this before updating player positions.
+   */
+  protected void storePreviousPositions() {
+    previousPositions = new HashMap<>(lastKnownPositions);
   }
 
   @Override
@@ -81,6 +116,16 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   @Override
   public void startAnimation(Runnable onComplete) {
+    // print previous and new player positions
+    System.out.println("Previous positions: ");
+    for (Player player : players) {
+      System.out.println(player.getName() + ": " + previousPositions.get(player.getName()));
+    }
+    System.out.println("New positions: ");
+    for (Player player : players) {
+      System.out.println(player.getName() + ": " + player.getPosition());
+    }
+    
     if (players.isEmpty()) {
       if (onComplete != null) onComplete.run();
       return;
@@ -134,15 +179,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       }
 
       animationProgress.put(player, progress);
-
-      // Debug output at key points
-      if (progress > 0 && progress < 0.1 ||
-              progress > 0.45 && progress < 0.55 ||
-              progress > 0.9) {
-        int currentPos = player.getPosition();
-        int prevPos = getPreviousPosition(player);
-        int animatedPos = (int) Math.round(prevPos + (currentPos - prevPos) * progress);
-      }
     }
 
     if (allComplete) {
@@ -153,6 +189,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private void stopAnimation() {
     animating = false;
     animationTimer.stop();
+    
+    // Update lastKnownPositions after animation completes
+    updateLastKnownPositions();
 
     if (onAnimationComplete != null) {
       onAnimationComplete.run();
@@ -172,8 +211,32 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
 
+      // Get the current position or animated position if animating
+      int displayPosition = player.getPosition();
+      if (animating && animationProgress.containsKey(player)) {
+        int prevPos = getPreviousPosition(player);
+        int currentPos = player.getPosition();
+        double progress = animationProgress.get(player);
+
+        // Use tile connections for animation path
+        if (prevPos != currentPos) {
+          // Find the tile for the previous position
+          Tile prevTile = board.getTile(prevPos);
+          Tile currentTile = board.getTile(currentPos);
+
+          // If we're moving forward along connected tiles
+          if (shouldAnimateAlongPath(prevTile, currentTile)) {
+            // Use the tile connection path instead of direct interpolation
+            displayPosition = getIntermediatePosition(prevTile, currentTile, progress);
+          } else {
+            // Use interpolation for a smooth transition (for dice moves or teleports)
+            displayPosition = (int) Math.round(prevPos + (currentPos - prevPos) * progress);
+          }
+        }
+      }
+
       // Get the tile for the display position
-      Tile tile = board.getTile(player.getPosition());
+      Tile tile = board.getTile(displayPosition);
       double tileWidth = tile.getWidth();
       double tileHeight = tile.getHeight();
 
@@ -194,6 +257,58 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       gc.setLineWidth(2);
       gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
     }
+  }
+
+  /**
+   * Determines if animation should follow connected tile path
+   */
+  private boolean shouldAnimateAlongPath(Tile prevTile, Tile currentTile) {
+    // Check if current tile is reachable by following next tiles from prev
+    Tile temp = prevTile;
+    int maxSteps = board.getTiles().size(); // Prevent infinite loop
+
+    for (int i = 0; i < maxSteps; i++) {
+      if (temp == null) return false;
+
+      // If the next tile is our target, we can animate along the path
+      if (temp.getNextTile() != null && temp.getNextTile().getId() == currentTile.getId()) {
+        return true;
+      }
+      temp = temp.getNextTile();
+    }
+
+    return false;
+  }
+
+  /**
+   * Gets intermediate position following the path of connected tiles
+   */
+  private int getIntermediatePosition(Tile startTile, Tile endTile, double progress) {
+    if (progress >= 1.0) return endTile.getId();
+    if (progress <= 0.0) return startTile.getId();
+
+    // Count steps between tiles
+    Tile temp = startTile;
+    int steps = 0;
+    int maxSteps = board.getTiles().size(); // Prevent infinite loop
+
+    while (temp != null && temp.getId() != endTile.getId() && steps < maxSteps) {
+      temp = temp.getNextTile();
+      steps++;
+    }
+
+    if (steps == 0) return endTile.getId();
+
+    // Calculate how many steps to move based on progress
+    int stepsToMove = (int) Math.floor(progress * steps);
+
+    // Move that many steps from start tile
+    temp = startTile;
+    for (int i = 0; i < stepsToMove && temp != null; i++) {
+      temp = temp.getNextTile();
+    }
+
+    return temp != null ? temp.getId() : startTile.getId();
   }
 
   public void clearCanvas() {

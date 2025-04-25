@@ -4,10 +4,10 @@ import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
 import edu.ntnu.iir.bidata.view.gui.DieRectangle;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.games.MonopolyBoard;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -18,7 +18,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class MonopolyScreen extends StackPane {
-  private BoardCanvas boardCanvas;
+  private MonopolyBoard boardCanvas;
   private VBox playerCardsSection;
   private HBox diceContainer;
 
@@ -27,7 +27,7 @@ public class MonopolyScreen extends StackPane {
     BorderPane root = new BorderPane();
 
     // Center section - Game board
-    boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.MONOPOLY, board);
+    boardCanvas = (MonopolyBoard) BoardCanvasFactory.createBoardCanvas(GameType.MONOPOLY, board);
     boardCanvas.setWidth(600);
     boardCanvas.setHeight(600);
 
@@ -86,7 +86,13 @@ public class MonopolyScreen extends StackPane {
   }
 
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
-    boardCanvas.setPlayers(players);
+    // Update player positions with animation
+    // Position tracking is now handled automatically by boardCanvas
+    boardCanvas.updatePlayersWithAnimation(players, () -> {
+      // This is called when animation completes
+    });
+
+    // Update UI elements
     drawPlayerCards(players, currentPlayer);
     drawDice(diceCounts);
   }

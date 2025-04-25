@@ -5,6 +5,7 @@ import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.*;
+import edu.ntnu.iir.bidata.view.gui.games.SnakesAndLaddersBoard;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,18 +19,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.util.List;
-import java.util.Map;
 
 public class SnakesAndLaddersScreen extends StackPane {
   private Button rollButton;
   private BoardCanvas boardCanvas;
-  private Map<String, Integer> previousPositions;
   private HBox playerCardsSection;
   private HBox diceContainer;
 
   public SnakesAndLaddersScreen(Board board) {
-    this.previousPositions = previousPositions;
-
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
 
@@ -37,11 +34,6 @@ public class SnakesAndLaddersScreen extends StackPane {
     boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.SNAKES_AND_LADDERS, board);
     boardCanvas.setWidth(600);
     boardCanvas.setHeight(600);
-
-    // Set previous positions in the board canvas
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
-    }
 
     StackPane gameBoardContainer = new StackPane(boardCanvas);
     gameBoardContainer.setPadding(new Insets(10));
@@ -113,7 +105,7 @@ public class SnakesAndLaddersScreen extends StackPane {
 
   private void handleRollDice() {
     // Disable roll button during animation
-//    rollButton.setDisable(true);
+    rollButton.setDisable(true);
 
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
@@ -121,7 +113,13 @@ public class SnakesAndLaddersScreen extends StackPane {
   }
 
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
-    boardCanvas.setPlayers(players);
+    // Use animation for player movement
+    // Position tracking is now handled automatically by boardCanvas
+    ((SnakesAndLaddersBoard) boardCanvas).updatePlayersWithAnimation(players, () -> {
+      // Re-enable roll button after animation completes
+      rollButton.setDisable(false);
+    });
+
     drawPlayerCards(players, currentPlayer);
     drawDice(diceCounts);
   }
