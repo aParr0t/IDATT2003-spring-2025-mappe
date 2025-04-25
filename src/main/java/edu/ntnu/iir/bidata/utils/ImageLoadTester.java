@@ -5,11 +5,14 @@ import javafx.scene.image.Image;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Utility class for loading images in JavaFX from various sources
  */
 public class ImageLoadTester {
+    // Cache to store loaded images using path as key
+    private static final ConcurrentHashMap<String, Image> imageCache = new ConcurrentHashMap<>();
 
     /**
      * Attempts to load an image using multiple methods
@@ -17,6 +20,15 @@ public class ImageLoadTester {
      * @return The loaded image or null if all methods fail
      */
     public static Image attemptLoadImage(String imagePath) {
+        if (imagePath == null) {
+            return null;
+        }
+
+        // Check if image is already in cache
+        if (imageCache.containsKey(imagePath)) {
+            return imageCache.get(imagePath);
+        }
+
         // Normalize path
         String resourcePath = imagePath;
         if (resourcePath.startsWith("/")) {
@@ -33,6 +45,7 @@ public class ImageLoadTester {
             if (inputStream != null) {
                 image = new Image(inputStream);
                 if (!image.isError()) {
+                    imageCache.put(imagePath, image);
                     return image;
                 }
             }
@@ -42,6 +55,7 @@ public class ImageLoadTester {
         try {
             image = new Image("file:" + imagePath);
             if (!image.isError()) {
+                imageCache.put(imagePath, image);
                 return image;
             }
         } catch (Exception ignored) {}
@@ -50,6 +64,7 @@ public class ImageLoadTester {
         try {
             image = new Image(imagePath);
             if (!image.isError()) {
+                imageCache.put(imagePath, image);
                 return image;
             }
         } catch (Exception ignored) {}
@@ -59,6 +74,7 @@ public class ImageLoadTester {
             if (Files.exists(Paths.get(imagePath))) {
                 image = new Image(new FileInputStream(imagePath));
                 if (!image.isError()) {
+                    imageCache.put(imagePath, image);
                     return image;
                 }
             }
@@ -70,11 +86,19 @@ public class ImageLoadTester {
             if (Files.exists(resourcesPath)) {
                 image = new Image(new FileInputStream(resourcesPath.toFile()));
                 if (!image.isError()) {
+                    imageCache.put(imagePath, image);
                     return image;
                 }
             }
         } catch (Exception ignored) {}
         
         return null;
+    }
+
+    /**
+     * Clears the image cache to free memory
+     */
+    public static void clearCache() {
+        imageCache.clear();
     }
 } 

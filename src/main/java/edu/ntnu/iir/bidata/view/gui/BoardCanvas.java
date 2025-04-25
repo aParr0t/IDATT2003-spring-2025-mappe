@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas {
   protected final Board board;
@@ -53,6 +54,35 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
         }
       }
     };
+    
+    // Preload all tile images asynchronously
+    preloadImages();
+  }
+  
+  /**
+   * Preloads all tile images in the background to improve rendering performance
+   */
+  private void preloadImages() {
+    CompletableFuture.runAsync(() -> {
+      // Preload all tile images
+      for (Tile tile : board.getTiles()) {
+        if (tile.getStyling() != null && tile.getStyling().getImagePath() != null) {
+          ImageLoadTester.attemptLoadImage(tile.getStyling().getImagePath());
+        }
+      }
+    });
+  }
+
+  /**
+   * Preloads player piece images
+   */
+  private void preloadPlayerImages() {
+    for (Player player : players) {
+      if (player != null && player.getPlayingPiece() != null && 
+          player.getPlayingPiece().getImagePath() != null) {
+        ImageLoadTester.attemptLoadImage(player.getPlayingPiece().getImagePath());
+      }
+    }
   }
 
   public void setPlayers(List<Player> players) {
@@ -61,6 +91,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     this.players = players;
     // After setting players, update lastKnownPositions
     updateLastKnownPositions();
+    // Preload player images
+    preloadPlayerImages();
     draw();
   }
 
@@ -240,13 +272,18 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       Point2D offset = offsets.get(i % offsets.size()); // Use modulo for safety with more than 4 players
       Point2D playerPos = tile.getPosition().add(offset);
       double playerSize = tileWidth * 0.5 * getWidth();
+      
+      // Get the player image from cache
       String imagePath = player.getPlayingPiece().getImagePath();
-      Image image = new Image(imagePath);
-      gc.drawImage(image, playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
-      // draw outline of the tile
-      gc.setStroke(Color.BLACK);
-      gc.setLineWidth(2);
-      gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+      Image image = ImageLoadTester.attemptLoadImage(imagePath);
+      
+      if (image != null && !image.isError()) {
+        gc.drawImage(image, playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+        // draw outline of the tile
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+      }
     }
   }
 
@@ -331,33 +368,29 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
       // If there's an image, draw it on top of the background color
       if (tile.getStyling() != null && tile.getStyling().getImagePath() != null) {
-        try {
-          String imagePath = tile.getStyling().getImagePath();
-          Image tileImage = ImageLoadTester.attemptLoadImage(imagePath);
+        String imagePath = tile.getStyling().getImagePath();
+        Image tileImage = ImageLoadTester.attemptLoadImage(imagePath);
 
-          if (tileImage != null && !tileImage.isError()) {
-            // Check if rotation needed
-            double rotation = tile.getStyling().getImageRotation();
-            if (rotation != 0) {
-              // Save the current state
-              gc.save();
-              
-              // Translate to the center of the tile for rotation
-              gc.translate(canvasX + tileWidth / 2, canvasY + tileHeight / 2);
-              // Rotate by the specified degrees
-              gc.rotate(rotation);
-              // Draw the image centered (adjust coordinates to account for rotation around center)
-              gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
-              
-              // Restore the graphics context to its original state
-              gc.restore();
-            } else {
-              // Draw normally if no rotation
-              gc.drawImage(tileImage, canvasX, canvasY, tileWidth, tileHeight);
-            }
+        if (tileImage != null && !tileImage.isError()) {
+          // Check if rotation needed
+          double rotation = tile.getStyling().getImageRotation();
+          if (rotation != 0) {
+            // Save the current state
+            gc.save();
+            
+            // Translate to the center of the tile for rotation
+            gc.translate(canvasX + tileWidth / 2, canvasY + tileHeight / 2);
+            // Rotate by the specified degrees
+            gc.rotate(rotation);
+            // Draw the image centered (adjust coordinates to account for rotation around center)
+            gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
+            
+            // Restore the graphics context to its original state
+            gc.restore();
+          } else {
+            // Draw normally if no rotation
+            gc.drawImage(tileImage, canvasX, canvasY, tileWidth, tileHeight);
           }
-        } catch (Exception e) {
-          // Image loading failed, we'll fallback to the color that's already drawn
         }
       }
 
