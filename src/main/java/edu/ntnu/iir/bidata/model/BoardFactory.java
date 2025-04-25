@@ -146,6 +146,13 @@ public class BoardFactory {
     List<Tile> tiles = BoardTileLayout.monopoly();
     Board board = new Board(tiles);
     board.setName("Monopoly board");
+
+    Tile jailTile = board.getTile(30);
+    TileStyling tileStyling = new TileStyling();
+    String imagePath = "images/games/monopoly/tiles/go_to_jail.png";
+    tileStyling.setImagePath(imagePath);
+    jailTile.setStyling(tileStyling);
+
     return board;
   }
 

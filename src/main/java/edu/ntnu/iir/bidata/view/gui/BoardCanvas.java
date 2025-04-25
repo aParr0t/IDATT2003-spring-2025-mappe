@@ -3,6 +3,7 @@ package edu.ntnu.iir.bidata.view.gui;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.Tile;
+import edu.ntnu.iir.bidata.utils.ImageLoadTester;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -116,16 +117,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   @Override
   public void startAnimation(Runnable onComplete) {
-    // print previous and new player positions
-    System.out.println("Previous positions: ");
-    for (Player player : players) {
-      System.out.println(player.getName() + ": " + previousPositions.get(player.getName()));
-    }
-    System.out.println("New positions: ");
-    for (Player player : players) {
-      System.out.println(player.getName() + ": " + player.getPosition());
-    }
-    
     if (players.isEmpty()) {
       if (onComplete != null) onComplete.run();
       return;
@@ -189,7 +180,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private void stopAnimation() {
     animating = false;
     animationTimer.stop();
-    
+
     // Update lastKnownPositions after animation completes
     updateLastKnownPositions();
 
@@ -318,7 +309,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   public void drawTiles() {
-    // Draw the tiles
+    // Draw each tile on the board
     for (Tile tile : board.getTiles()) {
       // Get the normalized position (0-1 range)
       double normalizedX = tile.getPosition().getX();
@@ -335,29 +326,45 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       // Get the graphics context for drawing
       var gc = getGraphicsContext2D();
 
-      // determine tile color
-      Color fillColor = Color.WHITE;
-      if (tile.getStyling() != null) {
-        fillColor = Color.web(tile.getStyling().getColor());
+      // First draw the background color (for all tiles)
+      drawTileWithColor(gc, tile, canvasX, canvasY, tileWidth, tileHeight);
+
+      // If there's an image, draw it on top of the background color
+      if (tile.getStyling() != null && tile.getStyling().getImagePath() != null) {
+        try {
+          String imagePath = tile.getStyling().getImagePath();
+          Image tileImage = ImageLoadTester.attemptLoadImage(imagePath);
+
+          if (tileImage != null && !tileImage.isError()) {
+            gc.drawImage(tileImage, canvasX, canvasY, tileWidth, tileHeight);
+          }
+        } catch (Exception e) {
+          // Image loading failed, we'll fallback to the color that's already drawn
+        }
       }
 
-      // styling
+      // Draw tile border (always on top)
       gc.setStroke(Color.BLACK);
       gc.setLineWidth(1);
-
-      // Draw the tile background (rectangle)
-      gc.setFill(fillColor);
-      gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
-
-      // Draw tile border
-      gc.setStroke(Color.BLACK);
       gc.strokeRect(canvasX, canvasY, tileWidth, tileHeight);
 
-      // Draw the tile number
+      // Draw the tile number (always on top)
       gc.setFill(Color.BLACK);
       gc.fillText(String.valueOf(tile.getId()),
               canvasX + (tileWidth / 2) - 5,  // Better centering horizontally
               canvasY + (tileHeight / 2) + 5); // Better centering vertically
     }
+  }
+
+  private void drawTileWithColor(GraphicsContext gc, Tile tile, double canvasX, double canvasY, double tileWidth, double tileHeight) {
+    // determine tile color
+    Color fillColor = Color.WHITE;
+    if (tile.getStyling() != null) {
+      fillColor = Color.web(tile.getStyling().getColor());
+    }
+
+    // Fill with color
+    gc.setFill(fillColor);
+    gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
   }
 }
