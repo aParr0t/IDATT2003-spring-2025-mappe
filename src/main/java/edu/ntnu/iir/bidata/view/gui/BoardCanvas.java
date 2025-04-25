@@ -336,7 +336,25 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
           Image tileImage = ImageLoadTester.attemptLoadImage(imagePath);
 
           if (tileImage != null && !tileImage.isError()) {
-            gc.drawImage(tileImage, canvasX, canvasY, tileWidth, tileHeight);
+            // Check if rotation needed
+            double rotation = tile.getStyling().getImageRotation();
+            if (rotation != 0) {
+              // Save the current state
+              gc.save();
+              
+              // Translate to the center of the tile for rotation
+              gc.translate(canvasX + tileWidth / 2, canvasY + tileHeight / 2);
+              // Rotate by the specified degrees
+              gc.rotate(rotation);
+              // Draw the image centered (adjust coordinates to account for rotation around center)
+              gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
+              
+              // Restore the graphics context to its original state
+              gc.restore();
+            } else {
+              // Draw normally if no rotation
+              gc.drawImage(tileImage, canvasX, canvasY, tileWidth, tileHeight);
+            }
           }
         } catch (Exception e) {
           // Image loading failed, we'll fallback to the color that's already drawn
