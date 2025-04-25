@@ -122,6 +122,15 @@ public class BoardTileLayout {
       tiles.add(sideTile);
     }
 
+    // connect the tiles
+    for (int i = 0; i < tiles.size(); i++) {
+      if (i < tiles.size() - 1) {
+        tiles.get(i).setNextTile(tiles.get(i + 1));
+      }
+    }
+    // connect the last tile to the first tile
+    tiles.get(tiles.size() - 1).setNextTile(tiles.get(0));
+
     return tiles;
   }
 }
