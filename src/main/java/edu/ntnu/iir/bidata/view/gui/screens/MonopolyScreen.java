@@ -16,22 +16,18 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
 import java.util.List;
-import java.util.Map;
 
 public class MonopolyScreen extends StackPane {
   private BoardCanvas boardCanvas;
   private VBox playerCardsSection;
   private HBox diceContainer;
 
-  public MonopolyScreen(List<Player> players, Board board,
-                        List<Integer> diceCounts, Player currentPlayer,
-                        Map<String, Integer> previousPositions) {
+  public MonopolyScreen(Board board) {
     // Root layout
     BorderPane root = new BorderPane();
 
     // Center section - Game board
     boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.MONOPOLY, board);
-    boardCanvas.setPlayers(players);
     boardCanvas.setWidth(600);
     boardCanvas.setHeight(600);
 
@@ -53,10 +49,6 @@ public class MonopolyScreen extends StackPane {
     // Player cards
     playerCardsSection = new VBox(10);
     playerCardsSection.setAlignment(Pos.CENTER);
-    for (Player player : players) {
-      boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
     sidebar.getChildren().add(playerCardsSection);
 
     // Dice section
@@ -66,12 +58,6 @@ public class MonopolyScreen extends StackPane {
 
     diceContainer = new HBox(10);
     diceContainer.setAlignment(Pos.CENTER);
-
-    for (Integer diceCount : diceCounts) {
-      DieRectangle die = new DieRectangle(diceCount, 70);
-      die.setOnMouseClicked(event -> emitDiceRolledEvent());
-      diceContainer.getChildren().add(die);
-    }
 
     diceSection.getChildren().add(diceContainer);
     sidebar.getChildren().add(diceSection);
@@ -99,6 +85,12 @@ public class MonopolyScreen extends StackPane {
     this.setFocusTraversable(true);
   }
 
+  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
+    boardCanvas.setPlayers(players);
+    drawPlayerCards(players, currentPlayer);
+    drawDice(diceCounts);
+  }
+
   private HBox createPlayerCard(Player player, boolean isActive) {
     VBox card = new VBox(5);
     card.setPadding(new Insets(10));
@@ -115,27 +107,22 @@ public class MonopolyScreen extends StackPane {
     return new HBox(card);
   }
 
-  public void updateGameState(List<Player> players, List<Integer> diceCounts,
-                              Player currentPlayer, Map<String, Integer> previousPositions) {
-    // Update the board canvas with new player positions
-    boardCanvas.setPlayers(players);
-
-    // Update player cards section
+  private void drawPlayerCards(List<Player> players, Player currentPlayer) {
     playerCardsSection.getChildren().clear();
     for (Player player : players) {
       boolean isActive = player.equals(currentPlayer);
       playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
     }
+  }
 
-    // Update dice section
+  private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
-      die.setOnMouseClicked(event -> emitDiceRolledEvent());
       diceContainer.getChildren().add(die);
     }
   }
-  
+
   private void emitDiceRolledEvent() {
     GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
   }

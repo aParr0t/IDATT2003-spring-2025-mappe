@@ -23,15 +23,11 @@ import java.util.Map;
 public class SnakesAndLaddersScreen extends StackPane {
   private Button rollButton;
   private BoardCanvas boardCanvas;
-  private List<Player> players;
   private Map<String, Integer> previousPositions;
   private HBox playerCardsSection;
   private HBox diceContainer;
 
-  public SnakesAndLaddersScreen(List<Player> players, Board board,
-                                List<Integer> diceCounts, Player currentPlayer,
-                                Map<String, Integer> previousPositions) {
-    this.players = players;
+  public SnakesAndLaddersScreen(Board board) {
     this.previousPositions = previousPositions;
 
     // Create the main layout
@@ -39,7 +35,6 @@ public class SnakesAndLaddersScreen extends StackPane {
 
     // Center section - Game board
     boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.SNAKES_AND_LADDERS, board);
-    boardCanvas.setPlayers(players);
     boardCanvas.setWidth(600);
     boardCanvas.setHeight(600);
 
@@ -65,13 +60,6 @@ public class SnakesAndLaddersScreen extends StackPane {
     HBox.setHgrow(playerCardsSection, javafx.scene.layout.Priority.ALWAYS);
     playerCardsSection.setAlignment(Pos.CENTER);
 
-    // create player cards
-    playerCardsSection.getChildren().clear();
-    for (Player player : players) {
-      boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
-
     // Dice section
     VBox diceSection = new VBox(10);
     diceSection.setAlignment(Pos.CENTER);
@@ -82,11 +70,6 @@ public class SnakesAndLaddersScreen extends StackPane {
 
     diceContainer = new HBox(10);
     diceContainer.setAlignment(Pos.CENTER);
-
-    for (Integer diceCount : diceCounts) {
-      DieRectangle die = new DieRectangle(diceCount, 70);
-      diceContainer.getChildren().add(die);
-    }
 
     rollButton = new Button("Roll");
     rollButton.setPrefSize(120, 40);
@@ -130,50 +113,32 @@ public class SnakesAndLaddersScreen extends StackPane {
 
   private void handleRollDice() {
     // Disable roll button during animation
-    rollButton.setDisable(true);
+//    rollButton.setDisable(true);
 
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
-    GUIApp.getInstance().emitEvent(AppEvent.DICE_ROLLED);
-
-    // After the game state and screen are updated, start the animation
-    // The animation will use the previousPositions that were passed during updateGameState
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).startAnimation(() -> {
-        // Re-enable roll button when animation completes
-        rollButton.setDisable(false);
-      });
-    } else {
-      // No animation support, just re-enable the button
-      rollButton.setDisable(false);
-    }
+    GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "snakes_and_ladders_dice_rolled");
   }
 
-  public void updateGameState(List<Player> players, List<Integer> diceCounts,
-                              Player currentPlayer, Map<String, Integer> previousPositions) {
-    this.players = players;
-    this.previousPositions = previousPositions;
-
-    // Update the board canvas with new player positions but keep the same instance
+  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
     boardCanvas.setPlayers(players);
+    drawPlayerCards(players, currentPlayer);
+    drawDice(diceCounts);
+  }
 
-    // Set previous positions in the board canvas
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
-    }
-
-    // Update player cards section
-    playerCardsSection.getChildren().clear();
-    for (Player player : players) {
-      boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
-
-    // Update dice section
+  private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);
+    }
+  }
+
+  private void drawPlayerCards(List<Player> players, Player currentPlayer) {
+    playerCardsSection.getChildren().clear();
+    for (Player player : players) {
+      boolean isActive = player.equals(currentPlayer);
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
     }
   }
 }

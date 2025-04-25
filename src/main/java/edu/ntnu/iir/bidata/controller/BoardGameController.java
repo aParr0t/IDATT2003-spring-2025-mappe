@@ -4,11 +4,10 @@ import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.model.games.Game;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
 import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
-import edu.ntnu.iir.bidata.view.gui.screens.ChooseBoardScreen;
-import edu.ntnu.iir.bidata.view.gui.screens.ChoosePlayerScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.*;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
-import edu.ntnu.iir.bidata.view.gui.screens.GameplayScreen;
 import edu.ntnu.iir.bidata.view.AppEvent;
+import javafx.scene.layout.StackPane;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +18,7 @@ import java.util.Map;
  */
 public class BoardGameController {
   private Game game;
-  private GameplayScreen currentGameScreen;
-  private Map<String, Integer> playerPreviousPositions = new HashMap<>();
+  private StackPane gameplayScreen;
 
   public void setup() {
     GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
@@ -29,22 +27,22 @@ public class BoardGameController {
 
     GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
       // TODO: maybe use a factory pattern to create the game
-      switch (gameType) {
-        case SNAKES_AND_LADDERS -> game = new SnakesAndLaddersGame();
-        case MONOPOLY -> game = new MonopolyGame();
-        default -> throw new IllegalArgumentException("Invalid game type: " + gameType);
+      if (gameType == GameType.SNAKES_AND_LADDERS) {
+        game = new SnakesAndLaddersGame();
+      } else if (gameType == GameType.MONOPOLY) {
+        game = new MonopolyGame();
+      } else {
+        throw new IllegalArgumentException("Invalid game type: " + gameType);
       }
       // update view
-      GameType retrievedGameType = game.getGameType();
       List<Board> boards = BoardFactory.getAllBoardsForGameType(gameType);
-      GUIApp.setContent(new ChooseBoardScreen(retrievedGameType, boards), true, true);
+      GUIApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
       // update model
       game.setBoard(board);
       // update view
-
       // TODO: players should be fetched from local storage
       List<Player> players = List.of(
               new Player("Atas"),
@@ -63,16 +61,27 @@ public class BoardGameController {
       game.setPlayers(players);
 
       // start game
+      // TODO: maybe use a factory pattern to create the game screen
       game.start();
-
-      // update view
-      goToAndUpdateGameScreen();
+      switch (game.getGameType()) {
+        case SNAKES_AND_LADDERS:
+          gameplayScreen = new SnakesAndLaddersScreen(game.getBoard());
+          break;
+        case MONOPOLY:
+          gameplayScreen = new MonopolyScreen(
+                  game.getBoard()
+          );
+          break;
+        default:
+          throw new IllegalArgumentException("Invalid game type: " + game.getGameType());
+      }
+      GUIApp.setContent(gameplayScreen, true, false);
+      updateGameScreen();
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
-      System.out.println("IN_GAME_EVENT");
       game.handleEvent(event);
-      goToAndUpdateGameScreen();
+      updateGameScreen();
     });
 
 
@@ -80,19 +89,23 @@ public class BoardGameController {
     });
   }
 
-  private void goToAndUpdateGameScreen() {
-    // Create a new screen with the current game state and previous positions
-    Map<String, Integer> positionsCopy = new HashMap<>(playerPreviousPositions);
-
-    currentGameScreen = new GameplayScreen(
-            game.getGameType(),
-            game.getPlayers(),
-            game.getBoard(),
-            game.getDiceCounts(),
-            game.getCurrentPlayer(),
-            positionsCopy // Pass previous positions to the screen
-    );
-    GUIApp.setContent(currentGameScreen, true, false);
+  private void updateGameScreen() {
+    // TODO: may need different controller for each game screen
+    if (gameplayScreen instanceof SnakesAndLaddersScreen) {
+      ((SnakesAndLaddersScreen) gameplayScreen).update(
+              game.getPlayers(),
+              game.getCurrentPlayer(),
+              game.getDiceCounts()
+      );
+    } else if (gameplayScreen instanceof MonopolyScreen) {
+      ((MonopolyScreen) gameplayScreen).update(
+              game.getPlayers(),
+              game.getCurrentPlayer(),
+              game.getDiceCounts()
+      );
+    } else {
+      throw new IllegalArgumentException("Invalid game screen type: " + gameplayScreen.getClass());
+    }
   }
 
   public void run() {
