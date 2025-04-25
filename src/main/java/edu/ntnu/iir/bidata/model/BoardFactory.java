@@ -5,6 +5,7 @@ import edu.ntnu.iir.bidata.utils.RandomMath;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Factory class responsible for creating different Board configurations.
@@ -147,79 +148,69 @@ public class BoardFactory {
     Board board = new Board(tiles);
     board.setName("Monopoly board");
 
-    // go tile
-    Tile startTile = board.getTile(0);
-    TileStyling startTileStyling = new TileStyling();
-    String imagePath = "images/games/monopoly/tiles/start.jpg";
-    startTileStyling.setImagePath(imagePath);
-    startTile.setStyling(startTileStyling);
+    // Define tile styling configurations in a concise format
+    List<Map<String, Object>> stylingConfigs = List.of(
+            Map.of(
+                    "tileIds", List.of(0),
+                    "imagePath", "images/games/monopoly/tiles/start.jpg",
+                    "rotations", List.of(0.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(10),
+                    "imagePath", "images/games/monopoly/tiles/just_visiting.jpg",
+                    "rotations", List.of(0.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(20),
+                    "imagePath", "images/games/monopoly/tiles/parking.jpg",
+                    "rotations", List.of(180.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(30),
+                    "imagePath", "images/games/monopoly/tiles/go_to_jail.png",
+                    "rotations", List.of(180.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(2, 17, 33),
+                    "imagePath", "images/games/monopoly/tiles/community_chest.jpg",
+                    "rotations", List.of(0.0, 90.0, 270.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(7, 22, 36),
+                    "imagePath", "images/games/monopoly/tiles/chance.jpg",
+                    "rotations", List.of(0.0, 180.0, 270.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(4),
+                    "imagePath", "images/games/monopoly/tiles/income tax.jpg",
+                    "rotations", List.of(0.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(38),
+                    "imagePath", "images/games/monopoly/tiles/luxury tax.jpg",
+                    "rotations", List.of(0.0)
+            ),
+            Map.of(
+                    "tileIds", List.of(5, 15, 25, 35),
+                    "imagePath", "images/games/monopoly/tiles/reading railroad.jpg",
+                    "rotations", List.of(0.0, 90.0, 180.0, 270.0)
+            )
+    );
 
-    // just visiting tile
-    Tile justVisitingTile = board.getTile(10);
-    TileStyling justVisitingTileStyling = new TileStyling();
-    String justVisitingImagePath = "images/games/monopoly/tiles/just_visiting.jpg";
-    justVisitingTileStyling.setImagePath(justVisitingImagePath);
-    justVisitingTile.setStyling(justVisitingTileStyling);
+    // Apply styling to tiles
+    for (Map<String, Object> config : stylingConfigs) {
+      List<Integer> tileIds = (List<Integer>) config.get("tileIds");
+      String imagePath = (String) config.get("imagePath");
+      List<Double> rotations = (List<Double>) config.get("rotations");
 
-    // free parking tile
-    Tile freeParkingTile = board.getTile(20);
-    TileStyling freeParkingTileStyling = new TileStyling();
-    String freeParkingImagePath = "images/games/monopoly/tiles/parking.jpg";
-    freeParkingTileStyling.setImagePath(freeParkingImagePath);
-    freeParkingTile.setStyling(freeParkingTileStyling);
-
-    // go to jail tile
-    Tile jailTile = board.getTile(30);
-    TileStyling jailTileStyling = new TileStyling();
-    String jailImagePath = "images/games/monopoly/tiles/go_to_jail.png";
-    jailTileStyling.setImagePath(jailImagePath);
-    jailTile.setStyling(jailTileStyling);
-
-    // community chest tiles
-    List<Integer> communityChestTiles = List.of(2, 17, 36);
-    for (Integer tile : communityChestTiles) {
-      Tile communityChestTile = board.getTile(tile);
-      TileStyling communityChestTileStyling = new TileStyling();
-      String communityChestImagePath = "images/games/monopoly/tiles/community_chest.jpg";
-      communityChestTileStyling.setImagePath(communityChestImagePath);
-      communityChestTile.setStyling(communityChestTileStyling);
+      for (int i = 0; i < tileIds.size(); i++) {
+        Tile tile = board.getTile(tileIds.get(i));
+        TileStyling styling = new TileStyling();
+        styling.setImagePath(imagePath);
+        styling.setImageRotation(rotations.get(i));
+        tile.setStyling(styling);
+      }
     }
-
-    // chance tiles
-    List<Integer> chanceTiles = List.of(7, 22, 36);
-    for (Integer tile : chanceTiles) {
-      Tile chanceTile = board.getTile(tile);
-      TileStyling chanceTileStyling = new TileStyling();
-      String chanceImagePath = "images/games/monopoly/tiles/chance.jpg";
-      chanceTileStyling.setImagePath(chanceImagePath);
-      chanceTile.setStyling(chanceTileStyling);
-    }
-
-    // income tax tile
-    Tile incomeTaxTile = board.getTile(4);
-    TileStyling incomeTaxTileStyling = new TileStyling();
-    String incomeTaxImagePath = "images/games/monopoly/tiles/income tax.jpg";
-    incomeTaxTileStyling.setImagePath(incomeTaxImagePath);
-    incomeTaxTile.setStyling(incomeTaxTileStyling);
-
-    // luxury tax tile
-    Tile luxuryTaxTile = board.getTile(38);
-    TileStyling luxuryTaxTileStyling = new TileStyling();
-    String luxuryTaxImagePath = "images/games/monopoly/tiles/luxury tax.jpg";
-    luxuryTaxTileStyling.setImagePath(luxuryTaxImagePath);
-    luxuryTaxTile.setStyling(luxuryTaxTileStyling);
-
-    // railroad tiles
-    List<Integer> railroadTiles = List.of(5, 15, 25, 35);
-    for (Integer tile : railroadTiles) {
-      Tile railroadTile = board.getTile(tile);
-      TileStyling railroadTileStyling = new TileStyling();
-      String railroadImagePath = "images/games/monopoly/tiles/reading railroad.jpg";
-      railroadTileStyling.setImagePath(railroadImagePath);
-      railroadTile.setStyling(railroadTileStyling);
-    }
-
-    //
 
     return board;
   }
