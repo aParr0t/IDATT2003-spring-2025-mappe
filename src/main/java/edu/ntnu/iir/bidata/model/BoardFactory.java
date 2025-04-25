@@ -147,11 +147,79 @@ public class BoardFactory {
     Board board = new Board(tiles);
     board.setName("Monopoly board");
 
+    // go tile
+    Tile startTile = board.getTile(0);
+    TileStyling startTileStyling = new TileStyling();
+    String imagePath = "images/games/monopoly/tiles/start.jpg";
+    startTileStyling.setImagePath(imagePath);
+    startTile.setStyling(startTileStyling);
+
+    // just visiting tile
+    Tile justVisitingTile = board.getTile(10);
+    TileStyling justVisitingTileStyling = new TileStyling();
+    String justVisitingImagePath = "images/games/monopoly/tiles/just_visiting.jpg";
+    justVisitingTileStyling.setImagePath(justVisitingImagePath);
+    justVisitingTile.setStyling(justVisitingTileStyling);
+
+    // free parking tile
+    Tile freeParkingTile = board.getTile(20);
+    TileStyling freeParkingTileStyling = new TileStyling();
+    String freeParkingImagePath = "images/games/monopoly/tiles/parking.jpg";
+    freeParkingTileStyling.setImagePath(freeParkingImagePath);
+    freeParkingTile.setStyling(freeParkingTileStyling);
+
+    // go to jail tile
     Tile jailTile = board.getTile(30);
-    TileStyling tileStyling = new TileStyling();
-    String imagePath = "images/games/monopoly/tiles/go_to_jail.png";
-    tileStyling.setImagePath(imagePath);
-    jailTile.setStyling(tileStyling);
+    TileStyling jailTileStyling = new TileStyling();
+    String jailImagePath = "images/games/monopoly/tiles/go_to_jail.png";
+    jailTileStyling.setImagePath(jailImagePath);
+    jailTile.setStyling(jailTileStyling);
+
+    // community chest tiles
+    List<Integer> communityChestTiles = List.of(2, 17, 36);
+    for (Integer tile : communityChestTiles) {
+      Tile communityChestTile = board.getTile(tile);
+      TileStyling communityChestTileStyling = new TileStyling();
+      String communityChestImagePath = "images/games/monopoly/tiles/community_chest.jpg";
+      communityChestTileStyling.setImagePath(communityChestImagePath);
+      communityChestTile.setStyling(communityChestTileStyling);
+    }
+
+    // chance tiles
+    List<Integer> chanceTiles = List.of(7, 22, 36);
+    for (Integer tile : chanceTiles) {
+      Tile chanceTile = board.getTile(tile);
+      TileStyling chanceTileStyling = new TileStyling();
+      String chanceImagePath = "images/games/monopoly/tiles/chance.jpg";
+      chanceTileStyling.setImagePath(chanceImagePath);
+      chanceTile.setStyling(chanceTileStyling);
+    }
+
+    // income tax tile
+    Tile incomeTaxTile = board.getTile(4);
+    TileStyling incomeTaxTileStyling = new TileStyling();
+    String incomeTaxImagePath = "images/games/monopoly/tiles/income tax.jpg";
+    incomeTaxTileStyling.setImagePath(incomeTaxImagePath);
+    incomeTaxTile.setStyling(incomeTaxTileStyling);
+
+    // luxury tax tile
+    Tile luxuryTaxTile = board.getTile(38);
+    TileStyling luxuryTaxTileStyling = new TileStyling();
+    String luxuryTaxImagePath = "images/games/monopoly/tiles/luxury tax.jpg";
+    luxuryTaxTileStyling.setImagePath(luxuryTaxImagePath);
+    luxuryTaxTile.setStyling(luxuryTaxTileStyling);
+
+    // railroad tiles
+    List<Integer> railroadTiles = List.of(5, 15, 25, 35);
+    for (Integer tile : railroadTiles) {
+      Tile railroadTile = board.getTile(tile);
+      TileStyling railroadTileStyling = new TileStyling();
+      String railroadImagePath = "images/games/monopoly/tiles/reading railroad.jpg";
+      railroadTileStyling.setImagePath(railroadImagePath);
+      railroadTile.setStyling(railroadTileStyling);
+    }
+
+    //
 
     return board;
   }
