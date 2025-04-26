@@ -9,6 +9,7 @@ import java.util.Map;
 public class MonopolyGame extends Game {
   private final Map<Player, Integer> playerMoney;
   private static final int STARTING_MONEY = 1500;
+  private static final int PASSING_GO_MONEY = 200;
 
   public MonopolyGame() {
     super();
@@ -101,7 +102,15 @@ public class MonopolyGame extends Game {
 
     // move current player
     Player currentPlayer = getCurrentPlayer();
-    int newPosition = (currentPlayer.getPosition() + sum) % getBoard().getTiles().size();
+    int oldPosition = currentPlayer.getPosition();
+    int newPosition = (oldPosition + sum) % getBoard().getTiles().size();
+    
+    // Check if player passed GO (tile 0)
+    if (oldPosition > 0 && (newPosition == 0 || newPosition < oldPosition)) {
+      // Player passed GO, add $200
+      addMoney(currentPlayer, PASSING_GO_MONEY);
+    }
+    
     currentPlayer.setPosition(newPosition);
 
     // increment current player index
