@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas {
   protected final Board board;
   protected List<Player> players = List.of();
+  protected boolean showTileNumbers = true; // Controls whether tile numbers are displayed
 
   // Animation properties
   // (Help from AI: most animation logic was done with AI as this is not essential to the task)
@@ -405,11 +406,13 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       gc.setLineWidth(1);
       gc.strokeRect(canvasX, canvasY, tileWidth, tileHeight);
 
-      // Draw the tile number (always on top)
-      gc.setFill(Color.BLACK);
-      gc.fillText(String.valueOf(tile.getId()),
-              canvasX + (tileWidth / 2) - 5,  // Better centering horizontally
-              canvasY + (tileHeight / 2) + 5); // Better centering vertically
+      // Draw the tile number (if enabled)
+      if (showTileNumbers) {
+        gc.setFill(Color.BLACK);
+        gc.fillText(String.valueOf(tile.getId()),
+                canvasX + (tileWidth / 2) - 5,  // Better centering horizontally
+                canvasY + (tileHeight / 2) + 5); // Better centering vertically
+      }
     }
   }
 
@@ -423,5 +426,15 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     // Fill with color
     gc.setFill(fillColor);
     gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
+  }
+  
+  /**
+   * Sets whether tile numbers should be displayed on the board
+   * 
+   * @param showTileNumbers true to show tile numbers, false to hide them
+   */
+  public void setShowTileNumbers(boolean showTileNumbers) {
+    this.showTileNumbers = showTileNumbers;
+    draw(); // Redraw the board to reflect the change
   }
 }

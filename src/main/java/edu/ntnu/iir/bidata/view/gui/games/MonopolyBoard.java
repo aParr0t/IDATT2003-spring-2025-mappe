@@ -11,6 +11,7 @@ public class MonopolyBoard extends BoardCanvas {
 
   public MonopolyBoard(Board board) {
     super(board);
+    this.showTileNumbers = false; // Hide tile numbers for Monopoly board
   }
 
   @Override
