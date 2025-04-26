@@ -7,11 +7,7 @@ import edu.ntnu.iir.bidata.model.tileaction.GoToJailAction;
 import edu.ntnu.iir.bidata.model.tileaction.JailAction;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MonopolyGame extends Game {
   private final Map<Player, Integer> playerMoney;
@@ -28,7 +24,7 @@ public class MonopolyGame extends Game {
 
   /**
    * Gets the current money amount for a player.
-   * 
+   *
    * @param player the player to check
    * @return the amount of money the player has
    */
@@ -38,7 +34,7 @@ public class MonopolyGame extends Game {
 
   /**
    * Adds money to a player's balance.
-   * 
+   *
    * @param player the player to give money to
    * @param amount the amount to add (must be positive)
    * @return the new balance
@@ -47,7 +43,7 @@ public class MonopolyGame extends Game {
     if (amount <= 0) {
       throw new IllegalArgumentException("Amount must be positive");
     }
-    
+
     int currentAmount = playerMoney.getOrDefault(player, 0);
     int newAmount = currentAmount + amount;
     playerMoney.put(player, newAmount);
@@ -56,7 +52,7 @@ public class MonopolyGame extends Game {
 
   /**
    * Removes money from a player's balance.
-   * 
+   *
    * @param player the player to take money from
    * @param amount the amount to remove (must be positive)
    * @return the new balance
@@ -66,12 +62,12 @@ public class MonopolyGame extends Game {
     if (amount <= 0) {
       throw new IllegalArgumentException("Amount must be positive");
     }
-    
+
     int currentAmount = playerMoney.getOrDefault(player, 0);
     if (currentAmount < amount) {
       throw new IllegalArgumentException("Player doesn't have enough money");
     }
-    
+
     int newAmount = currentAmount - amount;
     playerMoney.put(player, newAmount);
     return newAmount;
@@ -79,9 +75,9 @@ public class MonopolyGame extends Game {
 
   /**
    * Transfers money from one player to another.
-   * 
-   * @param from the player paying money
-   * @param to the player receiving money
+   *
+   * @param from   the player paying money
+   * @param to     the player receiving money
    * @param amount the amount to transfer (must be positive)
    * @throws IllegalArgumentException if the paying player doesn't have enough money
    */
@@ -114,7 +110,7 @@ public class MonopolyGame extends Game {
   public void sendToJail(Player player) {
     playersInJail.add(player);
     int jailPosition = findJailPosition();
-      
+
     if (jailPosition != -1) {
       player.setPosition(jailPosition);
     }
@@ -157,30 +153,33 @@ public class MonopolyGame extends Game {
     // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
+    List<Integer> counts = this.dice.getCounts();
+    boolean rolledEqual = Objects.equals(counts.get(0), counts.get(1));
 
     // move current player
     Player currentPlayer = getCurrentPlayer();
-    
-    // Check if player is in jail
+
+    if (rolledEqual) {
+      releaseFromJail(currentPlayer);
+    }
+
     if (isInJail(currentPlayer)) {
-      // Handle jail turn logic here
-      // For now, we'll just skip their turn
       setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
       return;
     }
-    
+
     int oldPosition = currentPlayer.getPosition();
     int newPosition = (oldPosition + sum) % getBoard().getTiles().size();
-    
+
     // Check if player passed GO (tile 0)
     if (oldPosition > 0 && (newPosition == 0 || newPosition < oldPosition)) {
       // Player passed GO, add $200
       addMoney(currentPlayer, PASSING_GO_MONEY);
     }
-    
+
     currentPlayer.setPosition(newPosition);
-    
-    // Check if the new position has a GoToJailAction
+
+    // Process tile action for the new position
     TileAction tileAction = getBoard().getTile(newPosition).getAction();
     if (tileAction instanceof GoToJailAction) {
       sendToJail(currentPlayer);
