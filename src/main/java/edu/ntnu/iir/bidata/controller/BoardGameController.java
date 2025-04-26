@@ -9,6 +9,7 @@ import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.scene.layout.StackPane;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,10 +99,21 @@ public class BoardGameController {
               game.getDiceCounts()
       );
     } else if (gameplayScreen instanceof MonopolyScreen) {
+      List<Integer> playerMoney = new ArrayList<>();
+      
+      // Get player money if this is a MonopolyGame
+      if (game instanceof MonopolyGame) {
+        MonopolyGame monopolyGame = (MonopolyGame) game;
+        for (Player player : game.getPlayers()) {
+          playerMoney.add(monopolyGame.getPlayerMoney(player));
+        }
+      }
+      
       ((MonopolyScreen) gameplayScreen).update(
               game.getPlayers(),
               game.getCurrentPlayer(),
-              game.getDiceCounts()
+              game.getDiceCounts(),
+              playerMoney
       );
     } else {
       throw new IllegalArgumentException("Invalid game screen type: " + gameplayScreen.getClass());

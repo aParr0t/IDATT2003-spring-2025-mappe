@@ -85,7 +85,7 @@ public class MonopolyScreen extends StackPane {
     this.setFocusTraversable(true);
   }
 
-  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
+  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts, List<Integer> playerMoney) {
     // Update player positions with animation
     // Position tracking is now handled automatically by boardCanvas
     boardCanvas.updatePlayersWithAnimation(players, () -> {
@@ -93,11 +93,11 @@ public class MonopolyScreen extends StackPane {
     });
 
     // Update UI elements
-    drawPlayerCards(players, currentPlayer);
+    drawPlayerCards(players, currentPlayer, playerMoney);
     drawDice(diceCounts);
   }
 
-  private HBox createPlayerCard(Player player, boolean isActive) {
+  private HBox createPlayerCard(Player player, boolean isActive, int money) {
     VBox card = new VBox(5);
     card.setPadding(new Insets(10));
     card.setStyle("-fx-border-color: " + (isActive ? "#4CAF50" : "lightgray") + "; -fx-border-width: 2px; -fx-border-radius: 5; -fx-background-color: #f9f9f9;");
@@ -106,18 +106,21 @@ public class MonopolyScreen extends StackPane {
     // Player name and money
     Label nameLabel = new Label(player.getName());
     nameLabel.setFont(new Font(14));
-    Label moneyLabel = new Label("$" + 100);
+    Label moneyLabel = new Label("$" + money);
+    moneyLabel.setStyle("-fx-font-weight: bold;");
     Label stats = new Label("🏠 " + 5 + "   🏘 " + 3);
 
     card.getChildren().addAll(nameLabel, moneyLabel, stats);
     return new HBox(card);
   }
 
-  private void drawPlayerCards(List<Player> players, Player currentPlayer) {
+  private void drawPlayerCards(List<Player> players, Player currentPlayer, List<Integer> playerMoney) {
     playerCardsSection.getChildren().clear();
-    for (Player player : players) {
+    for (int i = 0; i < players.size(); i++) {
+      Player player = players.get(i);
       boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
+      int money = (i < playerMoney.size()) ? playerMoney.get(i) : 0;
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive, money));
     }
   }
 
