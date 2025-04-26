@@ -1,6 +1,9 @@
 package edu.ntnu.iir.bidata.model;
 
+import edu.ntnu.iir.bidata.model.tileaction.GoToJailAction;
+import edu.ntnu.iir.bidata.model.tileaction.JailAction;
 import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
 
 import java.util.ArrayList;
@@ -159,7 +162,8 @@ public class BoardFactory {
             Map.of(
                     "tileIds", List.of(10),
                     "imagePath", "images/games/monopoly/tiles/just_visiting.png",
-                    "rotations", List.of(0.0)
+                    "rotations", List.of(0.0),
+                    "special_tile", new JailAction()
             ),
             Map.of(
                     "tileIds", List.of(20),
@@ -169,7 +173,8 @@ public class BoardFactory {
             Map.of(
                     "tileIds", List.of(30),
                     "imagePath", "images/games/monopoly/tiles/go_to_jail.png",
-                    "rotations", List.of(180.0)
+                    "rotations", List.of(180.0),
+                    "special_tile", new GoToJailAction()
             ),
             // non property tiles
             Map.of(
@@ -332,6 +337,9 @@ public class BoardFactory {
         styling.setImagePath(imagePath);
         styling.setImageRotation(rotations.get(i));
         tile.setStyling(styling);
+        if (config.containsKey("special_tile")) {
+          tile.setAction((TileAction) config.get("special_tile"));
+        }
       }
     }
 

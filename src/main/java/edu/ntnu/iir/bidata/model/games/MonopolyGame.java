@@ -2,12 +2,20 @@ package edu.ntnu.iir.bidata.model.games;
 
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.Tile;
+import edu.ntnu.iir.bidata.model.tileaction.GoToJailAction;
+import edu.ntnu.iir.bidata.model.tileaction.JailAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MonopolyGame extends Game {
   private final Map<Player, Integer> playerMoney;
+  private final Set<Player> playersInJail;
   private static final int STARTING_MONEY = 1500;
   private static final int PASSING_GO_MONEY = 200;
 
@@ -15,6 +23,7 @@ public class MonopolyGame extends Game {
     super();
     gameType = GameType.MONOPOLY;
     playerMoney = new HashMap<>();
+    playersInJail = new HashSet<>();
   }
 
   /**
@@ -81,6 +90,55 @@ public class MonopolyGame extends Game {
     addMoney(to, amount);
   }
 
+  /**
+   * Finds the jail tile position in the board.
+   *
+   * @return the position of the jail tile, or -1 if not found
+   */
+  public int findJailPosition() {
+    List<Tile> tiles = getBoard().getTiles();
+    for (int i = 0; i < tiles.size(); i++) {
+      TileAction action = tiles.get(i).getAction();
+      if (action instanceof JailAction) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * Sends a player to jail.
+   *
+   * @param player the player to send to jail
+   */
+  public void sendToJail(Player player) {
+    playersInJail.add(player);
+    int jailPosition = findJailPosition();
+      
+    if (jailPosition != -1) {
+      player.setPosition(jailPosition);
+    }
+  }
+
+  /**
+   * Releases a player from jail.
+   *
+   * @param player the player to release from jail
+   */
+  public void releaseFromJail(Player player) {
+    playersInJail.remove(player);
+  }
+
+  /**
+   * Checks if a player is in jail.
+   *
+   * @param player the player to check
+   * @return true if the player is in jail, false otherwise
+   */
+  public boolean isInJail(Player player) {
+    return playersInJail.contains(player);
+  }
+
   @Override
   public boolean isGameOver() {
     return false;
@@ -99,9 +157,19 @@ public class MonopolyGame extends Game {
     // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
+    sum = 1;
 
     // move current player
     Player currentPlayer = getCurrentPlayer();
+    
+    // Check if player is in jail
+    if (isInJail(currentPlayer)) {
+      // Handle jail turn logic here
+      // For now, we'll just skip their turn
+      setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
+      return;
+    }
+    
     int oldPosition = currentPlayer.getPosition();
     int newPosition = (oldPosition + sum) % getBoard().getTiles().size();
     
@@ -112,6 +180,12 @@ public class MonopolyGame extends Game {
     }
     
     currentPlayer.setPosition(newPosition);
+    
+    // Check if the new position has a GoToJailAction
+    TileAction tileAction = getBoard().getTile(newPosition).getAction();
+    if (tileAction instanceof GoToJailAction) {
+      sendToJail(currentPlayer);
+    }
 
     // increment current player index
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
@@ -125,6 +199,8 @@ public class MonopolyGame extends Game {
       player.setPosition(0);
       // Give each player the starting amount of money
       playerMoney.put(player, STARTING_MONEY);
+      // Ensure no players start in jail
+      playersInJail.remove(player);
     }
   }
 }
