@@ -159,12 +159,17 @@ public class MonopolyGame extends Game {
     // move current player
     Player currentPlayer = getCurrentPlayer();
 
+    boolean escapedJail = false;
+
     if (rolledEqual) {
+      if (isInJail(currentPlayer)) {
+        escapedJail = true;
+      }
       releaseFromJail(currentPlayer);
     }
 
     if (isInJail(currentPlayer)) {
-      setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
+      incrementPlayerTurn();
       return;
     }
 
@@ -183,9 +188,17 @@ public class MonopolyGame extends Game {
     TileAction tileAction = getBoard().getTile(newPosition).getAction();
     if (tileAction instanceof GoToJailAction) {
       sendToJail(currentPlayer);
+      incrementPlayerTurn();
+      return;
     }
 
     // increment current player index
+    if (!rolledEqual || escapedJail) {
+      incrementPlayerTurn();
+    }
+  }
+
+  private void incrementPlayerTurn() {
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
   }
 
