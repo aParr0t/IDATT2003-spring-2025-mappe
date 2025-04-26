@@ -157,7 +157,6 @@ public class MonopolyGame extends Game {
     // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
-    sum = 1;
 
     // move current player
     Player currentPlayer = getCurrentPlayer();
