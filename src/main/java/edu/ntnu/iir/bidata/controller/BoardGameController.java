@@ -83,10 +83,13 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
       game.handleEvent(event);
       updateGameScreen();
+      if (game.isGameOver()) {
+        GUIApp.setContent(new GameOverScreen(game.getWinner().getName()), false, false);
+      }
     });
 
-
-    GUIApp.getInstance().addEventListener(AppEvent.DICE_ROLLED, diceRolls -> {
+    GUIApp.getInstance().addEventListener(AppEvent.PLAY_AGAIN, event -> {
+      GUIApp.setContent(new HomeScreen(), false, false);
     });
   }
 
@@ -100,7 +103,7 @@ public class BoardGameController {
       );
     } else if (gameplayScreen instanceof MonopolyScreen) {
       List<Integer> playerMoney = new ArrayList<>();
-      
+
       // Get player money if this is a MonopolyGame
       if (game instanceof MonopolyGame) {
         MonopolyGame monopolyGame = (MonopolyGame) game;
@@ -108,7 +111,7 @@ public class BoardGameController {
           playerMoney.add(monopolyGame.getPlayerMoney(player));
         }
       }
-      
+
       ((MonopolyScreen) gameplayScreen).update(
               game.getPlayers(),
               game.getCurrentPlayer(),
