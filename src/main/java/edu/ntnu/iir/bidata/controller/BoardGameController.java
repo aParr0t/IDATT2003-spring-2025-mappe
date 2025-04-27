@@ -49,7 +49,7 @@ public class BoardGameController {
               new Player("Atas"),
               new Player("Stian")
       );
-      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces()), true, true);
+      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces(), game.getMaxPlayers()), true, true);
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
