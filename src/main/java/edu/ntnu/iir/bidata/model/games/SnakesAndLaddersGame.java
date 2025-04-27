@@ -10,11 +10,6 @@ public class SnakesAndLaddersGame extends Game {
   }
 
   @Override
-  public boolean isGameOver() {
-    return false;
-  }
-
-  @Override
   public void handleEvent(String event) {
     switch (event) {
       case "snakes_and_ladders_dice_rolled":
@@ -24,17 +19,30 @@ public class SnakesAndLaddersGame extends Game {
   }
 
   private void makeTurn() {
+    Player playerThatMadeTurn = getCurrentPlayer();
+    turnLogic();
+    afterTurn(playerThatMadeTurn);
+  }
+
+  private void turnLogic() {
     // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
 
     // move current player
     Player currentPlayer = getCurrentPlayer();
-    int newPosition = Math.min(currentPlayer.getPosition() + sum, getBoard().getTiles().size());
+    int numberOfTiles = getBoard().getTiles().size();
+    int newPosition = Math.min(currentPlayer.getPosition() + sum, numberOfTiles);
     currentPlayer.setPosition(newPosition);
 
     // increment current player index
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
+  }
+
+  private void afterTurn(Player playerThatMadeTurn) {
+    if (playerThatMadeTurn.getPosition() == getBoard().getTiles().size()) {
+      setWinner(playerThatMadeTurn);
+    }
   }
 
   @Override
