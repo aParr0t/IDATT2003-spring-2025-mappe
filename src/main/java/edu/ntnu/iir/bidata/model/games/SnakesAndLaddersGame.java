@@ -2,6 +2,8 @@ package edu.ntnu.iir.bidata.model.games;
 
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
 public class SnakesAndLaddersGame extends Game {
   public SnakesAndLaddersGame() {
@@ -34,6 +36,12 @@ public class SnakesAndLaddersGame extends Game {
     int numberOfTiles = getBoard().getTiles().size();
     int newPosition = Math.min(currentPlayer.getPosition() + sum, numberOfTiles);
     currentPlayer.setPosition(newPosition);
+
+    // check if player landed on a snake or ladder
+    TileAction tileAction = getBoard().getTile(newPosition).getAction();
+    if (tileAction instanceof MoveAction) {
+      currentPlayer.setPosition(((MoveAction) tileAction).getEnd());
+    }
 
     // increment current player index
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
