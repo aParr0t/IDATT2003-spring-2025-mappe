@@ -26,8 +26,8 @@ public interface AppEvent<T> {
   };
   AppEvent<List<Player>> PLAYERS_CHOSEN = new AppEvent<>() {
   };
-  AppEvent<Void> DICE_ROLLED = new AppEvent<>() {
-  };
   AppEvent<String> IN_GAME_EVENT = new AppEvent<>() {
+  };
+  AppEvent<Void> PLAY_AGAIN = new AppEvent<>() {
   };
 }
