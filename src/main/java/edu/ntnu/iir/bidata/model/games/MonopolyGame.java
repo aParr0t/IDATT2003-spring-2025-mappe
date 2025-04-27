@@ -14,6 +14,7 @@ public class MonopolyGame extends Game {
   private final Set<Player> playersInJail;
   private static final int STARTING_MONEY = 1500;
   private static final int PASSING_GO_MONEY = 200;
+  private static final int WINNING_MONEY = 2000;
 
   public MonopolyGame() {
     super();
@@ -136,11 +137,6 @@ public class MonopolyGame extends Game {
   }
 
   @Override
-  public boolean isGameOver() {
-    return false;
-  }
-
-  @Override
   public void handleEvent(String event) {
     switch (event) {
       case "monopoly_dice_rolled":
@@ -149,8 +145,8 @@ public class MonopolyGame extends Game {
     }
   }
 
-  private void makeTurn() {
-    // roll dice
+  private void turnLogic() {
+        // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
     List<Integer> counts = this.dice.getCounts();
@@ -195,6 +191,18 @@ public class MonopolyGame extends Game {
     // increment current player index
     if (!rolledEqual || escapedJail) {
       incrementPlayerTurn();
+    }
+  }
+
+  private void makeTurn() {
+    Player playerThatMadeTurn = getCurrentPlayer();
+    turnLogic();
+    afterTurn(playerThatMadeTurn);
+  }
+
+  private void afterTurn(Player playerThatMadeTurn) {
+    if (getPlayerMoney(playerThatMadeTurn) >= WINNING_MONEY) {
+      setWinner(playerThatMadeTurn);
     }
   }
 
