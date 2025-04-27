@@ -3,6 +3,7 @@ package edu.ntnu.iir.bidata.view.gui.screens;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
 import edu.ntnu.iir.bidata.view.gui.DieRectangle;
@@ -13,6 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -21,6 +24,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.application.Platform;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MonopolyScreen extends StackPane {
   private MonopolyBoard boardCanvas;
@@ -174,14 +178,47 @@ public class MonopolyScreen extends StackPane {
     card.setStyle("-fx-border-color: " + (isActive ? "#4CAF50" : "lightgray") + "; -fx-border-width: 2px; -fx-border-radius: 5; -fx-background-color: #f9f9f9;");
     card.setPrefWidth(200);
 
-    // Player name and money
+    // Create a horizontal box for the player name and playing piece
+    HBox nameAndPieceBox = new HBox(10);
+    nameAndPieceBox.setAlignment(Pos.CENTER_LEFT);
+    
+    // Player name
     Label nameLabel = new Label(player.getName());
     nameLabel.setFont(new Font(14));
+    
+    // Playing piece icon
+    ImageView pieceImageView = null;
+    PlayingPiece playingPiece = player.getPlayingPiece();
+    
+    if (playingPiece != null) {
+      try {
+        String imagePath = playingPiece.getImagePath();
+        Image pieceImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+        pieceImageView = new ImageView(pieceImage);
+        pieceImageView.setFitHeight(36);
+        pieceImageView.setFitWidth(36);
+        pieceImageView.setPreserveRatio(true);
+      } catch (Exception e) {
+        System.err.println("Could not load playing piece image: " + e.getMessage());
+      }
+    }
+    
+    // Add name to the horizontal box
+    nameAndPieceBox.getChildren().add(nameLabel);
+    
+    // Add playing piece image if available
+    if (pieceImageView != null) {
+      nameAndPieceBox.getChildren().add(pieceImageView);
+    }
+
+    // Money label
     Label moneyLabel = new Label("$" + money);
     moneyLabel.setStyle("-fx-font-weight: bold;");
+    
+    // Stats label
     Label stats = new Label("🏠 " + 5 + "   🏘 " + 3);
 
-    card.getChildren().addAll(nameLabel, moneyLabel, stats);
+    card.getChildren().addAll(nameAndPieceBox, moneyLabel, stats);
     return new HBox(card);
   }
 
