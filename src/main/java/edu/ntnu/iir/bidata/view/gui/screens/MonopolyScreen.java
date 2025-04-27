@@ -197,6 +197,16 @@ public class MonopolyScreen extends StackPane {
 
   private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
+    
+    // Check if dice are equal (doubles)
+    boolean areEqual = diceCounts.size() >= 2 && 
+                      diceCounts.stream().distinct().count() == 1;
+    
+    // Set background color based on whether dice are equal
+    diceContainer.setStyle("-fx-background-color: " + (areEqual ? "#FFD700;" : "#ffffff;"));
+    diceContainer.setPadding(new Insets(10));
+    diceContainer.setAlignment(Pos.CENTER);
+    
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);
