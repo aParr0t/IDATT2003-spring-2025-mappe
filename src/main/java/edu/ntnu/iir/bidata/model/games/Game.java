@@ -13,9 +13,18 @@ public abstract class Game {
   protected GameType gameType;
   protected int currentPlayerIndex;
   protected Player winner;
+  private int maxPlayers = 4;
 
   public Game() {
     this.dice = new Dice(2, 6);
+  }
+
+  public int getMaxPlayers() {
+    return maxPlayers;
+  }
+
+  protected void setMaxPlayers(int maxPlayers) {
+    this.maxPlayers = maxPlayers;
   }
 
   protected void validateGameType() {
