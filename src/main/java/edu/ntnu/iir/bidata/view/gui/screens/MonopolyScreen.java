@@ -10,10 +10,15 @@ import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.gui.games.MonopolyBoard;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import javafx.application.Platform;
 
 import java.util.List;
 
@@ -71,8 +76,18 @@ public class MonopolyScreen extends StackPane {
     statusBox.getChildren().addAll(gameStatus, round);
     sidebar.getChildren().add(statusBox);
 
+    // Help button (question mark)
+    Button helpButton = createHelpButton();
+    StackPane helpButtonContainer = new StackPane(helpButton);
+    helpButtonContainer.setAlignment(Pos.TOP_RIGHT);
+    helpButtonContainer.setPadding(new Insets(10));
+
     root.setRight(sidebar);
-    getChildren().add(root);
+
+    // Add the root and help button to a stack pane to overlay the help button
+    StackPane contentPane = new StackPane();
+    contentPane.getChildren().addAll(root, helpButtonContainer);
+    getChildren().add(contentPane);
 
     // Add space key press handler
     this.setOnKeyPressed(event -> {
@@ -83,11 +98,67 @@ public class MonopolyScreen extends StackPane {
 
     // Make the pane focusable to receive key events
     this.setFocusTraversable(true);
+
+    // Show the rules dialog when the screen is loaded
+    Platform.runLater(this::showRulesDialog);
+  }
+
+  /**
+   * Creates a circular help button with a question mark.
+   *
+   * @return A styled help button
+   */
+  private Button createHelpButton() {
+    Button helpButton = new Button("?");
+    helpButton.setFont(Font.font("System", FontWeight.BOLD, 14));
+    helpButton.setStyle(
+            "-fx-background-radius: 15; " +
+                    "-fx-min-width: 30; " +
+                    "-fx-min-height: 30; " +
+                    "-fx-background-color: #4285F4; " +
+                    "-fx-text-fill: white;"
+    );
+
+    // Prevent the button from receiving focus to avoid intercepting space key presses
+    helpButton.setFocusTraversable(false);
+
+    // Show rules dialog when clicked
+    helpButton.setOnAction(e -> showRulesDialog());
+
+    return helpButton;
+  }
+
+  /**
+   * Display a dialog with the rules of the Monopoly game.
+   */
+  private void showRulesDialog() {
+    Alert rulesDialog = new Alert(Alert.AlertType.INFORMATION);
+    rulesDialog.setTitle("Monopoly Rules");
+    rulesDialog.setHeaderText("Welcome to Monopoly!");
+
+    // Create a label with the rules text
+    Label rulesLabel = new Label(
+            "Rules of the Game:\n\n" +
+                    "• Roll the dice using the SPACE key to move around the board\n" +
+                    "• Buy properties, collect rent, and build houses\n" +
+                    "• Increase your money by strategic buying and trading\n" +
+                    "• First player to reach $2000 wins the game!"
+    );
+    rulesLabel.setTextAlignment(TextAlignment.LEFT);
+    rulesLabel.setWrapText(true);
+    rulesLabel.setFont(Font.font("System", FontWeight.NORMAL, 14));
+    rulesLabel.setPrefWidth(400);
+
+    // Set the content of the dialog to the label
+    rulesDialog.getDialogPane().setContent(rulesLabel);
+    rulesDialog.getDialogPane().setPrefWidth(420);
+
+    // Show the dialog
+    rulesDialog.showAndWait();
   }
 
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts, List<Integer> playerMoney) {
     // Update player positions with animation
-    // Position tracking is now handled automatically by boardCanvas
     boardCanvas.updatePlayersWithAnimation(players, () -> {
       // This is called when animation completes
     });
