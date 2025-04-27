@@ -77,6 +77,9 @@ public class ChoosePlayerScreen extends StackPane {
     for (Player player : players) {
       VBox playerCard = new VBox();
       playerCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+      playerCard.setAlignment(Pos.CENTER);
+      playerCard.setPrefWidth(200);
+      playerCard.setMaxWidth(200);
 
       // playing piece image
       Rectangle imageContainer = new Rectangle(200, 200);
@@ -93,6 +96,8 @@ public class ChoosePlayerScreen extends StackPane {
       TextField playerNameField = new TextField(player.getName());
       playerNameField.setFont(new Font(18));
       playerNameField.setStyle("-fx-padding: 10px;");
+      playerNameField.setPrefWidth(180);
+      playerNameField.setMaxWidth(180);
 
       playerCard.getChildren().addAll(imageContainer, playerNameField);
       playersContainer.getChildren().add(playerCard);
