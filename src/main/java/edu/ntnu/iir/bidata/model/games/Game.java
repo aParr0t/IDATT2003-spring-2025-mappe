@@ -12,6 +12,7 @@ public abstract class Game {
   protected Dice dice;
   protected GameType gameType;
   protected int currentPlayerIndex;
+  protected Player winner;
 
   public Game() {
     this.dice = new Dice(2, 6);
@@ -55,6 +56,14 @@ public abstract class Game {
     return dice.getCounts();
   }
 
+  public Player getWinner() {
+    return winner;
+  }
+
+  protected void setWinner(Player winner) {
+    this.winner = winner;
+  }
+
   public List<PlayingPiece> getAllPlayingPieces() {
     return Arrays.stream(PlayingPieceType.values()).map(PlayingPiece::new).toList();
   }
@@ -86,7 +95,9 @@ public abstract class Game {
     }
   }
 
-  public abstract boolean isGameOver();
+  public boolean isGameOver() {
+    return winner != null;
+  }
 
   public abstract void handleEvent(String event);
 
