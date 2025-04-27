@@ -55,11 +55,11 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
         }
       }
     };
-    
+
     // Preload all tile images asynchronously
     preloadImages();
   }
-  
+
   /**
    * Preloads all tile images in the background to improve rendering performance
    */
@@ -79,8 +79,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
    */
   private void preloadPlayerImages() {
     for (Player player : players) {
-      if (player != null && player.getPlayingPiece() != null && 
-          player.getPlayingPiece().getImagePath() != null) {
+      if (player != null && player.getPlayingPiece() != null &&
+              player.getPlayingPiece().getImagePath() != null) {
         ImageLoadTester.attemptLoadImage(player.getPlayingPiece().getImagePath());
       }
     }
@@ -272,12 +272,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       );
       Point2D offset = offsets.get(i % offsets.size()); // Use modulo for safety with more than 4 players
       Point2D playerPos = tile.getPosition().add(offset);
-      double playerSize = tileWidth * 0.5 * getWidth();
-      
+      double playerSize = Math.min(tileWidth, tileHeight) * 0.5 * getWidth();
+
       // Get the player image from cache
       String imagePath = player.getPlayingPiece().getImagePath();
       Image image = ImageLoadTester.attemptLoadImage(imagePath);
-      
+
       if (image != null && !image.isError()) {
         gc.drawImage(image, playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
         // draw outline of the tile
@@ -378,20 +378,20 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
           if (rotation != 0) {
             // Save the current state
             gc.save();
-            
+
             // Translate to the center of the tile for rotation
             gc.translate(canvasX + tileWidth / 2, canvasY + tileHeight / 2);
             // Rotate by the specified degrees
             gc.rotate(rotation);
             // Draw the image centered (adjust coordinates to account for rotation around center)
-            
+
             // If the rotation is 90 or 270, we need to swap the width and height of the image
             if (rotation == 90 || rotation == 270) {
               gc.drawImage(tileImage, -tileHeight / 2, -tileWidth / 2, tileHeight, tileWidth);
             } else {
               gc.drawImage(tileImage, -tileWidth / 2, -tileHeight / 2, tileWidth, tileHeight);
             }
-            
+
             // Restore the graphics context to its original state
             gc.restore();
           } else {
@@ -427,10 +427,10 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     gc.setFill(fillColor);
     gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
   }
-  
+
   /**
    * Sets whether tile numbers should be displayed on the board
-   * 
+   *
    * @param showTileNumbers true to show tile numbers, false to hide them
    */
   public void setShowTileNumbers(boolean showTileNumbers) {
