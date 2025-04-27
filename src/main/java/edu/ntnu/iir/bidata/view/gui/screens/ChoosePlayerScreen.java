@@ -73,6 +73,11 @@ public class ChoosePlayerScreen extends StackPane {
     redrawPlayers();
   }
 
+  private void removePlayer(Player player) {
+    players.remove(player);
+    redrawPlayers();
+  }
+
   private void addNewPlayer() {
     Player newPlayer = new Player("Player " + (players.size() + 1));
     players.add(newPlayer);
@@ -86,7 +91,9 @@ public class ChoosePlayerScreen extends StackPane {
     // draw the players
     for (Player player : players) {
       VBox playerCard = createPlayerCard(player);
-      playerCard.setOnMouseClicked(event -> playerClickHandler(player));
+      // Make the image clickable to cycle through playing pieces
+      Rectangle imageContainer = (Rectangle) playerCard.getChildren().get(0);
+      imageContainer.setOnMouseClicked(event -> playerClickHandler(player));
       playersContainer.getChildren().add(playerCard);
     }
 
@@ -122,8 +129,18 @@ public class ChoosePlayerScreen extends StackPane {
     playerNameField.setStyle("-fx-padding: 10px;");
     playerNameField.setPrefWidth(180);
     playerNameField.setMaxWidth(180);
+    
+    // Add a listener to update the player name when the text field changes
+    playerNameField.textProperty().addListener((observable, oldValue, newValue) -> {
+      player.setName(newValue);
+    });
 
-    playerCard.getChildren().addAll(imageContainer, playerNameField);
+    // Delete button
+    Button deleteButton = new Button("Delete");
+    deleteButton.setOnAction(event -> removePlayer(player));
+    deleteButton.setPrefWidth(180);
+    
+    playerCard.getChildren().addAll(imageContainer, playerNameField, deleteButton);
     return playerCard;
   }
 
