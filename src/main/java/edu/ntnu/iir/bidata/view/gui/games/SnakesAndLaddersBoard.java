@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui.games;
 
 import edu.ntnu.iir.bidata.model.Board;
+import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class SnakesAndLaddersBoard extends BoardCanvas {
   private final Map<String, Color> snakeColors = new HashMap<>();
   private final Map<String, Color> ladderColors = new HashMap<>();
+  private Runnable onAnimationCompleteCallback;
 
   private static final List<Color> SNAKE_COLOR_OPTIONS = List.of(
           Color.rgb(182, 70, 95),
@@ -196,5 +198,27 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     if (!players.isEmpty()) {
       drawPlayers(players);
     }
+  }
+  
+  /**
+   * Updates the players on the board with animation.
+   * This method automatically handles tracking previous positions.
+   * 
+   * @param players The list of players to display
+   * @param onComplete Callback to run when animation completes
+   */
+  public void updatePlayersWithAnimation(List<Player> players, Runnable onComplete) {
+    // Store the callback
+    this.onAnimationCompleteCallback = onComplete;
+    
+    // Update with new players - position tracking is handled in the parent class
+    setPlayers(players);
+    
+    // Start animation
+    animatePlayers(() -> {
+      if (onAnimationCompleteCallback != null) {
+        onAnimationCompleteCallback.run();
+      }
+    });
   }
 }

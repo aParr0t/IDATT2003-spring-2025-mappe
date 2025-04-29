@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui;
 
 import edu.ntnu.iir.bidata.view.UIApp;
+import edu.ntnu.iir.bidata.view.gui.screens.HomeScreen;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -26,6 +27,7 @@ public class GUIApp extends Application implements UIApp {
   private static Stage stage;
   private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
   private static GUIApp instance;
+  private static boolean showBackButton = true;  // Flag to control back button visibility
 
   public GUIApp() {
     instance = this;
@@ -62,6 +64,10 @@ public class GUIApp extends Application implements UIApp {
   }
 
   public static void setContent(Node content, boolean addToHistory) {
+    setContent(content, addToHistory, true);
+  }
+
+  public static void setContent(Node content, boolean addToHistory, boolean showBackButton) {
     // Add current screen to history before changing
     if (addToHistory && sceneContent.getCenter() != null) {
       screenHistory.push(sceneContent.getCenter());
@@ -69,6 +75,9 @@ public class GUIApp extends Application implements UIApp {
 
     // Change content
     sceneContent.setCenter(content);
+    
+    // Set the back button visibility flag
+    GUIApp.showBackButton = showBackButton;
 
     // Update back button visibility
     updateBackButton();
@@ -83,8 +92,8 @@ public class GUIApp extends Application implements UIApp {
   }
 
   private static void updateBackButton() {
-    if (screenHistory.isEmpty()) {
-      sceneContent.setTop(null); // No back history, remove button
+    if (screenHistory.isEmpty() || !showBackButton) {
+      sceneContent.setTop(null); // No back history or back button disabled
     } else {
       Button backButton = new Button("Go back");
       backButton.setOnAction(e -> goBack());

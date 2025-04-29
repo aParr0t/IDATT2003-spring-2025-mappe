@@ -1,55 +1,39 @@
-package edu.ntnu.iir.bidata.view.gui;
+package edu.ntnu.iir.bidata.view.gui.screens;
 
-import edu.ntnu.iir.bidata.model.*;
+import edu.ntnu.iir.bidata.model.Board;
+import edu.ntnu.iir.bidata.model.GameType;
+import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.AppEvent;
+import edu.ntnu.iir.bidata.view.gui.*;
+import edu.ntnu.iir.bidata.view.gui.games.SnakesAndLaddersBoard;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.util.List;
-import java.util.Map;
 
-public class GameplayScreen extends StackPane {
+public class SnakesAndLaddersScreen extends StackPane {
   private Button rollButton;
   private BoardCanvas boardCanvas;
-  private List<Player> players;
-  private Map<String, Integer> previousPositions;
   private HBox playerCardsSection;
   private HBox diceContainer;
 
-  public GameplayScreen(List<Player> players, GameType gameType, Board board,
-                        List<Integer> diceCounts, Player currentPlayer,
-                        Map<String, Integer> previousPositions) {
-    this.players = players;
-    this.previousPositions = previousPositions;
-
+  public SnakesAndLaddersScreen(Board board) {
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
-    boardCanvas = BoardCanvasFactory.createBoardCanvas(gameType, board);
-    boardCanvas.setPlayers(players);
+    boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.SNAKES_AND_LADDERS, board);
     boardCanvas.setWidth(600);
     boardCanvas.setHeight(600);
-
-    // Set previous positions in the board canvas
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
-    }
 
     StackPane gameBoardContainer = new StackPane(boardCanvas);
     gameBoardContainer.setPadding(new Insets(10));
@@ -68,13 +52,6 @@ public class GameplayScreen extends StackPane {
     HBox.setHgrow(playerCardsSection, javafx.scene.layout.Priority.ALWAYS);
     playerCardsSection.setAlignment(Pos.CENTER);
 
-    // create player cards
-    playerCardsSection.getChildren().clear();
-    for (Player player : players) {
-      boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
-
     // Dice section
     VBox diceSection = new VBox(10);
     diceSection.setAlignment(Pos.CENTER);
@@ -85,11 +62,6 @@ public class GameplayScreen extends StackPane {
 
     diceContainer = new HBox(10);
     diceContainer.setAlignment(Pos.CENTER);
-
-    for (Integer diceCount : diceCounts) {
-      DieRectangle die = new DieRectangle(diceCount, 70);
-      diceContainer.getChildren().add(die);
-    }
 
     rollButton = new Button("Roll");
     rollButton.setPrefSize(120, 40);
@@ -137,46 +109,34 @@ public class GameplayScreen extends StackPane {
 
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
-    GUIApp.getInstance().emitEvent(AppEvent.DICE_ROLLED);
-
-    // After the game state and screen are updated, start the animation
-    // The animation will use the previousPositions that were passed during updateGameState
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).startAnimation(() -> {
-        // Re-enable roll button when animation completes
-        rollButton.setDisable(false);
-      });
-    } else {
-      // No animation support, just re-enable the button
-      rollButton.setDisable(false);
-    }
+    GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "snakes_and_ladders_dice_rolled");
   }
 
-  public void updateGameState(List<Player> players, List<Integer> diceCounts,
-                              Player currentPlayer, Map<String, Integer> previousPositions) {
-    this.players = players;
-    this.previousPositions = previousPositions;
+  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
+    // Use animation for player movement
+    // Position tracking is now handled automatically by boardCanvas
+    ((SnakesAndLaddersBoard) boardCanvas).updatePlayersWithAnimation(players, () -> {
+      // Re-enable roll button after animation completes
+      rollButton.setDisable(false);
+    });
 
-    // Update the board canvas with new player positions but keep the same instance
-    boardCanvas.setPlayers(players);
+    drawPlayerCards(players, currentPlayer);
+    drawDice(diceCounts);
+  }
 
-    // Set previous positions in the board canvas
-    if (boardCanvas instanceof AnimatedBoardCanvas) {
-      ((AnimatedBoardCanvas) boardCanvas).setPreviousPositions(previousPositions);
-    }
-
-    // Update player cards section
-    playerCardsSection.getChildren().clear();
-    for (Player player : players) {
-      boolean isActive = player.equals(currentPlayer);
-      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
-    }
-
-    // Update dice section
+  private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);
+    }
+  }
+
+  private void drawPlayerCards(List<Player> players, Player currentPlayer) {
+    playerCardsSection.getChildren().clear();
+    for (Player player : players) {
+      boolean isActive = player.equals(currentPlayer);
+      playerCardsSection.getChildren().add(createPlayerCard(player, isActive));
     }
   }
 }
