@@ -179,6 +179,13 @@ public class BoardGameController {
           PlayerConfigResponse response = game.isPlayerConfigOk(players);
           if (response.isPlayerConfigOk()) {
             game.setPlayers(players);
+            
+            // Update the ChoosePlayerScreen if it's the current screen
+            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen) {
+              ChoosePlayerScreen choosePlayerScreen = (ChoosePlayerScreen) GUIApp.getCurrentContent();
+              choosePlayerScreen.updatePlayers(players);
+            }
+            
             GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
           } else {
             GUIApp.getInstance().showMessage("Invalid player configuration: " + response.getErrorMessage());

@@ -101,6 +101,20 @@ public class ChoosePlayerScreen extends StackPane {
     redrawPlayers();
   }
 
+  /**
+   * Updates the players list with new players and redraws the UI.
+   * 
+   * @param newPlayers The new list of players to display
+   */
+  public void updatePlayers(List<Player> newPlayers) {
+    // Clear the current players list
+    this.players.clear();
+    // Add all the new players
+    this.players.addAll(newPlayers);
+    // Redraw the UI
+    redrawPlayers();
+  }
+
   private void redrawPlayers() {
     // clear the container
     playersContainer.getChildren().clear();
