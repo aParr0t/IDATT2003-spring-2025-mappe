@@ -1,5 +1,7 @@
 package edu.ntnu.iir.bidata.filehandling;
 
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,11 +18,15 @@ public class FileUtils {
    * Ensures that the directory exists, creating it if necessary.
    *
    * @param directory the directory to ensure exists
-   * @throws IOException if an I/O error occurs
+   * @throws DirectoryCreationException if the directory cannot be created
    */
-  public static void ensureDirectoryExists(Path directory) throws IOException {
+  public static void ensureDirectoryExists(Path directory) throws DirectoryCreationException {
     if (!Files.exists(directory)) {
-      Files.createDirectories(directory);
+      try {
+        Files.createDirectories(directory);
+      } catch (IOException e) {
+        throw new DirectoryCreationException(directory, e);
+      }
     }
   }
 }
