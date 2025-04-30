@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
 import edu.ntnu.iir.bidata.model.PlayingPiece;
@@ -103,7 +104,7 @@ public class ChoosePlayerScreen extends StackPane {
 
   /**
    * Updates the players list with new players and redraws the UI.
-   * 
+   *
    * @param newPlayers The new list of players to display
    */
   public void updatePlayers(List<Player> newPlayers) {
@@ -218,7 +219,7 @@ public class ChoosePlayerScreen extends StackPane {
     try {
       FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
       fileChooser.setInitialDirectory(playersDir);
-    } catch (IOException e) {
+    } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
     }
 
@@ -247,7 +248,7 @@ public class ChoosePlayerScreen extends StackPane {
     try {
       FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
       fileChooser.setInitialDirectory(playersDir);
-    } catch (IOException e) {
+    } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
     }
 

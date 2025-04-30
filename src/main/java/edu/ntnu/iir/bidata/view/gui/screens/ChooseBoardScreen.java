@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
 import edu.ntnu.iir.bidata.model.Board;
@@ -137,17 +138,17 @@ public class ChooseBoardScreen extends StackPane {
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("JSON Files", "*.json")
     );
-    
+
     // Set the initial directory to the boards directory in the project
     File boardsDir = FileConstants.BOARDS_DIR.toFile();
     // Ensure the directory exists
     try {
       FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
       fileChooser.setInitialDirectory(boardsDir);
-    } catch (IOException e) {
+    } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
     }
-    
+
     fileChooser.setInitialFileName(selectedBoard.getName() + ".json");
 
     // Show the save dialog
@@ -166,14 +167,14 @@ public class ChooseBoardScreen extends StackPane {
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("JSON Files", "*.json")
     );
-    
+
     // Set the initial directory to the boards directory in the project
     File boardsDir = FileConstants.BOARDS_DIR.toFile();
     // Ensure the directory exists
     try {
       FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
       fileChooser.setInitialDirectory(boardsDir);
-    } catch (IOException e) {
+    } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
     }
 

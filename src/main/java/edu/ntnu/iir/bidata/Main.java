@@ -1,6 +1,7 @@
 package edu.ntnu.iir.bidata;
 
 import edu.ntnu.iir.bidata.controller.BoardGameController;
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
 
@@ -13,10 +14,10 @@ public class Main {
       FileUtils.ensureDirectoryExists(FileConstants.USER_FILES_DIR);
       FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
       FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
-    } catch (IOException e) {
+    } catch (DirectoryCreationException e) {
       System.err.println("Error creating directories: " + e.getMessage());
     }
-    
+
     // Start the application
     BoardGameController app = new BoardGameController();
     app.setup();
