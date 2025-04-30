@@ -1,5 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
+import edu.ntnu.iir.bidata.filehandling.FileConstants;
+import edu.ntnu.iir.bidata.filehandling.FileUtils;
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
 import edu.ntnu.iir.bidata.view.AppEvent;
@@ -20,6 +22,7 @@ import javafx.stage.FileChooser;
 import edu.ntnu.iir.bidata.model.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,6 +196,17 @@ public class ChoosePlayerScreen extends StackPane {
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("CSV Files", "*.csv")
     );
+    
+    // Set the initial directory to the players directory in the project
+    File playersDir = FileConstants.PLAYERS_DIR.toFile();
+    // Ensure the directory exists
+    try {
+      FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
+      fileChooser.setInitialDirectory(playersDir);
+    } catch (IOException e) {
+      GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
+    }
+    
     fileChooser.setInitialFileName("players.csv");
 
     // Show the save dialog
@@ -211,6 +225,16 @@ public class ChoosePlayerScreen extends StackPane {
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("CSV Files", "*.csv")
     );
+    
+    // Set the initial directory to the players directory in the project
+    File playersDir = FileConstants.PLAYERS_DIR.toFile();
+    // Ensure the directory exists
+    try {
+      FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
+      fileChooser.setInitialDirectory(playersDir);
+    } catch (IOException e) {
+      GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
+    }
 
     // Show the open dialog
     File file = fileChooser.showOpenDialog(this.getScene().getWindow());

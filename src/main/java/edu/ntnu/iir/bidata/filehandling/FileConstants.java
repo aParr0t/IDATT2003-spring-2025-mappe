@@ -9,8 +9,9 @@ import java.nio.file.Paths;
 public class FileConstants {
     /**
      * The directory where user files are stored.
+     * Files are stored in the project directory as per requirements.
      */
-    public static final Path USER_FILES_DIR = Paths.get(System.getProperty("user.home"), "boardgame_files");
+    public static final Path USER_FILES_DIR = Paths.get("data");
 
     /**
      * The directory where board files are stored.
