@@ -1,11 +1,11 @@
 package edu.ntnu.iir.bidata.controller;
 
+import edu.ntnu.iir.bidata.exceptions.*;
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.service.FileHandlerService;
 import edu.ntnu.iir.bidata.model.games.Game;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
 import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
-import edu.ntnu.iir.bidata.utils.Tuple;
 import edu.ntnu.iir.bidata.view.gui.screens.*;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
@@ -116,6 +116,10 @@ public class BoardGameController {
         fileHandlerService.saveBoard(game.getBoard(), filePath);
 
         GUIApp.getInstance().showMessage("Board saved successfully to " + filePath);
+      } catch (DirectoryCreationException e) {
+        GUIApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
+      } catch (InvalidConfigurationException e) {
+        GUIApp.getInstance().showMessage("Invalid board configuration: " + e.getMessage());
       } catch (IOException e) {
         GUIApp.getInstance().showMessage("Error saving board: " + e.getMessage());
       }
@@ -143,6 +147,12 @@ public class BoardGameController {
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the board into");
         }
+      } catch (FileNotFoundException e) {
+        GUIApp.getInstance().showMessage("Board file not found: " + e.getFilePath());
+      } catch (JsonParsingException e) {
+        GUIApp.getInstance().showMessage("Error parsing board file: " + e.getMessage());
+      } catch (BoardDataException e) {
+        GUIApp.getInstance().showMessage("Invalid board data: " + e.getMessage());
       } catch (IOException e) {
         GUIApp.getInstance().showMessage("Error loading board: " + e.getMessage());
       }
@@ -163,6 +173,10 @@ public class BoardGameController {
         fileHandlerService.savePlayers(players, filePath);
 
         GUIApp.getInstance().showMessage("Players saved successfully to " + filePath);
+      } catch (DirectoryCreationException e) {
+        GUIApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
+      } catch (InvalidConfigurationException e) {
+        GUIApp.getInstance().showMessage("Invalid player configuration: " + e.getMessage());
       } catch (IOException e) {
         GUIApp.getInstance().showMessage("Error saving players: " + e.getMessage());
       }
@@ -179,13 +193,13 @@ public class BoardGameController {
           PlayerConfigResponse response = game.isPlayerConfigOk(players);
           if (response.isPlayerConfigOk()) {
             game.setPlayers(players);
-            
+
             // Update the ChoosePlayerScreen if it's the current screen
             if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen) {
               ChoosePlayerScreen choosePlayerScreen = (ChoosePlayerScreen) GUIApp.getCurrentContent();
               choosePlayerScreen.updatePlayers(players);
             }
-            
+
             GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
           } else {
             GUIApp.getInstance().showMessage("Invalid player configuration: " + response.getErrorMessage());
@@ -193,6 +207,12 @@ public class BoardGameController {
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the players into");
         }
+      } catch (FileNotFoundException e) {
+        GUIApp.getInstance().showMessage("Player file not found: " + e.getFilePath());
+      } catch (CsvParsingException e) {
+        GUIApp.getInstance().showMessage("Error parsing player file: " + e.getMessage());
+      } catch (PlayerDataException e) {
+        GUIApp.getInstance().showMessage("Invalid player data: " + e.getMessage());
       } catch (IOException e) {
         GUIApp.getInstance().showMessage("Error loading players: " + e.getMessage());
       }
