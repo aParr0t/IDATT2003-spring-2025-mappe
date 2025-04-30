@@ -3,7 +3,7 @@ package edu.ntnu.iir.bidata.view;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
-
+import edu.ntnu.iir.bidata.utils.Tuple;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public interface AppEvent<T> {
   };
   AppEvent<Path> LOAD_BOARD = new AppEvent<>() {
   };
-  AppEvent<Path> SAVE_PLAYERS = new AppEvent<>() {
+  AppEvent<Tuple<Path, List<Player>>> SAVE_PLAYERS = new AppEvent<>() {
   };
   AppEvent<Path> LOAD_PLAYERS = new AppEvent<>() {
   };

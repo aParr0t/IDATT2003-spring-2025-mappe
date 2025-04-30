@@ -5,12 +5,14 @@ import edu.ntnu.iir.bidata.service.FileHandlerService;
 import edu.ntnu.iir.bidata.model.games.Game;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
 import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
+import edu.ntnu.iir.bidata.utils.Tuple;
 import edu.ntnu.iir.bidata.view.gui.screens.*;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,20 +125,20 @@ public class BoardGameController {
       try {
         // Use the file handler service to load the board
         Board board = fileHandlerService.loadBoard(filePath);
-        
+
         // Set a fixed name for the loaded board
         board.setName("Loaded board");
 
         // Update the game with the loaded board
         if (game != null) {
           game.setBoard(board);
-          
+
           // Get the current screen
           if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen) {
             ChooseBoardScreen chooseBoardScreen = (ChooseBoardScreen) GUIApp.getCurrentContent();
             chooseBoardScreen.addLoadedBoard(board);
           }
-          
+
           GUIApp.getInstance().showMessage("Board loaded successfully from " + filePath);
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the board into");
@@ -146,16 +148,19 @@ public class BoardGameController {
       }
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, filePath -> {
+    GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, tuple -> {
       try {
+        Path filePath = tuple.getFirst();
+        List<Player> players = tuple.getSecond();
+
         // Ensure players exist
-        if (game == null || game.getPlayers() == null || game.getPlayers().isEmpty()) {
+        if (players.isEmpty()) {
           GUIApp.getInstance().showMessage("No players to save");
           return;
         }
 
         // Use the file handler service to save the players
-        fileHandlerService.savePlayers(game.getPlayers(), filePath);
+        fileHandlerService.savePlayers(players, filePath);
 
         GUIApp.getInstance().showMessage("Players saved successfully to " + filePath);
       } catch (IOException e) {
