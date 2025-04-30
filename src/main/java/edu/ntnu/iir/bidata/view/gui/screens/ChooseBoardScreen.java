@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseBoardScreen extends StackPane {
@@ -26,17 +27,18 @@ public class ChooseBoardScreen extends StackPane {
   private final GameType gameType;
   private final List<Board> boards;
   private final VBox boardCardContainer = new VBox(10);
+  private final HBox gamesContainer = new HBox(20);
+  private HBox buttonContainer;
 
   public ChooseBoardScreen(GameType gameType, List<Board> boards) {
     this.gameType = gameType;
-    this.boards = boards;
+    this.boards = new ArrayList<>(boards); // Create a mutable copy of the list
 
     // Create title label
     Label titleLabel = new Label("Choose a board");
     titleLabel.setFont(new Font(32));
 
     // Draw board previews
-    HBox gamesContainer = new HBox(20);
     for (Board board : boards) {
       VBox boardCard = createBoardCard(board);
       gamesContainer.getChildren().add(boardCard);
@@ -44,7 +46,7 @@ public class ChooseBoardScreen extends StackPane {
     gamesContainer.setAlignment(Pos.CENTER);
 
     // Create buttons for file operations
-    HBox buttonContainer = new HBox(20);
+    buttonContainer = new HBox(20);
     buttonContainer.setAlignment(Pos.CENTER);
 
     Button continueButton = new Button("Continue with Selected Board");
@@ -105,17 +107,12 @@ public class ChooseBoardScreen extends StackPane {
     boardCard.setOnMouseClicked(event -> {
       selectedBoard = board;
       updateSelectedBoardInfo();
-      
+
       // Emit the BOARD_SELECTED event so the controller can update the game model
       GUIApp.getInstance().emitEvent(AppEvent.BOARD_SELECTED, board);
 
       // Enable the buttons
-      for (javafx.scene.Node node : ((HBox) ((VBox) this.getChildren().get(0)).getChildren().get(3)).getChildren()) {
-        if (node instanceof Button) {
-          Button button = (Button) node;
-          button.setDisable(false);
-        }
-      }
+      enableButtons();
     });
 
     return boardCard;
@@ -163,6 +160,48 @@ public class ChooseBoardScreen extends StackPane {
     if (file != null) {
       // Emit the load event
       GUIApp.getInstance().emitEvent(AppEvent.LOAD_BOARD, file.toPath());
+    }
+  }
+
+  /**
+   * Adds a loaded board to the board selection screen.
+   * This method is called from the BoardGameController when a board is loaded from a file.
+   *
+   * @param board The loaded board to add to the UI
+   */
+  public void addLoadedBoard(Board board) {
+    // Add the board to the list if it's not already there
+    if (!boards.contains(board)) {
+      boards.add(board);
+    }
+
+    // Clear existing board cards
+    gamesContainer.getChildren().clear();
+
+    // Redraw all board cards
+    for (Board b : boards) {
+      VBox boardCard = createBoardCard(b);
+      gamesContainer.getChildren().add(boardCard);
+    }
+
+    // Select the loaded board
+    selectedBoard = board;
+    updateSelectedBoardInfo();
+
+    // Enable the buttons
+    enableButtons();
+  }
+
+  /**
+   * Helper method to enable all buttons in the button container.
+   * This simplifies the code and makes it more readable.
+   */
+  private void enableButtons() {
+    for (javafx.scene.Node node : buttonContainer.getChildren()) {
+      if (node instanceof Button) {
+        Button button = (Button) node;
+        button.setDisable(false);
+      }
     }
   }
 }

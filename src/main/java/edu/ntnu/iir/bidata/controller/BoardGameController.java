@@ -123,10 +123,20 @@ public class BoardGameController {
       try {
         // Use the file handler service to load the board
         Board board = fileHandlerService.loadBoard(filePath);
+        
+        // Set a fixed name for the loaded board
+        board.setName("Loaded board");
 
         // Update the game with the loaded board
         if (game != null) {
           game.setBoard(board);
+          
+          // Get the current screen
+          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen) {
+            ChooseBoardScreen chooseBoardScreen = (ChooseBoardScreen) GUIApp.getCurrentContent();
+            chooseBoardScreen.addLoadedBoard(board);
+          }
+          
           GUIApp.getInstance().showMessage("Board loaded successfully from " + filePath);
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the board into");
