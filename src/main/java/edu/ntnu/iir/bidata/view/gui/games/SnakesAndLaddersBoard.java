@@ -50,9 +50,10 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
         if (isMoveAction) {
           int start = ((MoveAction) tile.getAction()).getStart();
           int end = ((MoveAction) tile.getAction()).getEnd();
+          Tile startTile = board.getTile(start);
           Tile endTile = board.getTile(end);
           Point2D centerOffset = new Point2D(1, 1).multiply(normalizedWidth / 2);
-          Point2D startTilePos = tile.getPosition().add(centerOffset);
+          Point2D startTilePos = startTile.getPosition().add(centerOffset);
           Point2D endTilePos = endTile.getPosition().add(centerOffset);
           boolean isLadder = start < end;
 

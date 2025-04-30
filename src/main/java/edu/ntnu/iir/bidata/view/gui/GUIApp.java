@@ -161,4 +161,13 @@ public class GUIApp extends Application implements UIApp {
     alert.setContentText(message);
     alert.showAndWait();
   }
+  
+  /**
+   * Gets the current content displayed in the application.
+   * 
+   * @return The current content node
+   */
+  public static Node getCurrentContent() {
+    return sceneContent.getCenter();
+  }
 }
