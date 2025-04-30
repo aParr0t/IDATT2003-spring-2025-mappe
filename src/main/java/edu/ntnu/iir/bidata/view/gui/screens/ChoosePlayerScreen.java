@@ -1,12 +1,9 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
-import edu.ntnu.iir.bidata.filehandling.FileConstants;
-import edu.ntnu.iir.bidata.filehandling.FileUtils;
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,7 +20,6 @@ import javafx.stage.FileChooser;
 import edu.ntnu.iir.bidata.model.Player;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +46,13 @@ public class ChoosePlayerScreen extends StackPane {
     // Create buttons for file operations and starting the game
     HBox buttonContainer = new HBox(20);
     buttonContainer.setAlignment(Pos.CENTER);
-    
+
     Button startGameButton = new Button("Start Game");
     Button savePlayersButton = new Button("Save Players");
     Button loadPlayersButton = new Button("Load Players");
-    
+
     buttonContainer.getChildren().addAll(startGameButton, savePlayersButton, loadPlayersButton);
-    
+
     // Set button actions
     startGameButton.setOnAction(event -> startGameHandler());
     savePlayersButton.setOnAction(event -> savePlayers());
@@ -146,7 +142,7 @@ public class ChoosePlayerScreen extends StackPane {
     playerNameField.setStyle("-fx-padding: 10px;");
     playerNameField.setPrefWidth(180);
     playerNameField.setMaxWidth(180);
-    
+
     // Add a listener to update the player name when the text field changes
     playerNameField.textProperty().addListener((observable, oldValue, newValue) -> {
       player.setName(newValue);
@@ -156,7 +152,7 @@ public class ChoosePlayerScreen extends StackPane {
     Button deleteButton = new Button("Delete");
     deleteButton.setOnAction(event -> removePlayer(player));
     deleteButton.setPrefWidth(180);
-    
+
     playerCard.getChildren().addAll(imageContainer, playerNameField, deleteButton);
     return playerCard;
   }
@@ -189,55 +185,39 @@ public class ChoosePlayerScreen extends StackPane {
   private void startGameHandler() {
     GUIApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
   }
-  
+
   private void savePlayers() {
-    try {
-      // Ensure the directory exists
-      FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
-      
-      // Create a file chooser
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setTitle("Save Players");
-      fileChooser.setInitialDirectory(FileConstants.PLAYERS_DIR.toFile());
-      fileChooser.getExtensionFilters().add(
-          new FileChooser.ExtensionFilter("CSV Files", "*" + FileConstants.PLAYER_FILE_EXTENSION)
-      );
-      fileChooser.setInitialFileName("players" + FileConstants.PLAYER_FILE_EXTENSION);
-      
-      // Show the save dialog
-      File file = fileChooser.showSaveDialog(this.getScene().getWindow());
-      
-      if (file != null) {
-        // Emit the save event
-        GUIApp.getInstance().emitEvent(AppEvent.SAVE_PLAYERS, file.toPath());
-      }
-    } catch (IOException e) {
-      GUIApp.getInstance().showMessage("Error preparing to save players: " + e.getMessage());
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Players");
+    fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+    );
+    fileChooser.setInitialFileName("players.csv");
+
+    // Show the save dialog
+    File file = fileChooser.showSaveDialog(this.getScene().getWindow());
+
+    if (file != null) {
+      // Emit the save event
+      GUIApp.getInstance().emitEvent(AppEvent.SAVE_PLAYERS, file.toPath());
     }
   }
-  
+
   private void loadPlayers() {
-    try {
-      // Ensure the directory exists
-      FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
-      
-      // Create a file chooser
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setTitle("Load Players");
-      fileChooser.setInitialDirectory(FileConstants.PLAYERS_DIR.toFile());
-      fileChooser.getExtensionFilters().add(
-          new FileChooser.ExtensionFilter("CSV Files", "*" + FileConstants.PLAYER_FILE_EXTENSION)
-      );
-      
-      // Show the open dialog
-      File file = fileChooser.showOpenDialog(this.getScene().getWindow());
-      
-      if (file != null) {
-        // Emit the load event
-        GUIApp.getInstance().emitEvent(AppEvent.LOAD_PLAYERS, file.toPath());
-      }
-    } catch (IOException e) {
-      GUIApp.getInstance().showMessage("Error preparing to load players: " + e.getMessage());
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Load Players");
+    fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+    );
+
+    // Show the open dialog
+    File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+
+    if (file != null) {
+      // Emit the load event
+      GUIApp.getInstance().emitEvent(AppEvent.LOAD_PLAYERS, file.toPath());
     }
   }
 }

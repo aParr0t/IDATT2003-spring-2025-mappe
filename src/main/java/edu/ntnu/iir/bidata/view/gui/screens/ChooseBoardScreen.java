@@ -1,7 +1,5 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
-import edu.ntnu.iir.bidata.filehandling.FileConstants;
-import edu.ntnu.iir.bidata.filehandling.FileUtils;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.view.AppEvent;
@@ -134,53 +132,37 @@ public class ChooseBoardScreen extends StackPane {
   }
 
   private void saveBoard() {
-    try {
-      // Ensure the directory exists
-      FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Board");
+    fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("JSON Files", "*.json")
+    );
+    fileChooser.setInitialFileName(selectedBoard.getName() + ".json");
 
-      // Create a file chooser
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setTitle("Save Board");
-      fileChooser.setInitialDirectory(FileConstants.BOARDS_DIR.toFile());
-      fileChooser.getExtensionFilters().add(
-              new FileChooser.ExtensionFilter("JSON Files", "*" + FileConstants.BOARD_FILE_EXTENSION)
-      );
-      fileChooser.setInitialFileName(selectedBoard.getName() + FileConstants.BOARD_FILE_EXTENSION);
+    // Show the save dialog
+    File file = fileChooser.showSaveDialog(this.getScene().getWindow());
 
-      // Show the save dialog
-      File file = fileChooser.showSaveDialog(this.getScene().getWindow());
-
-      if (file != null) {
-        // Emit the save event
-        GUIApp.getInstance().emitEvent(AppEvent.SAVE_BOARD, file.toPath());
-      }
-    } catch (IOException e) {
-      GUIApp.getInstance().showMessage("Error preparing to save board: " + e.getMessage());
+    if (file != null) {
+      // Emit the save event
+      GUIApp.getInstance().emitEvent(AppEvent.SAVE_BOARD, file.toPath());
     }
   }
 
   private void loadBoard() {
-    try {
-      // Ensure the directory exists
-      FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Load Board");
+    fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("JSON Files", "*.json")
+    );
 
-      // Create a file chooser
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setTitle("Load Board");
-      fileChooser.setInitialDirectory(FileConstants.BOARDS_DIR.toFile());
-      fileChooser.getExtensionFilters().add(
-              new FileChooser.ExtensionFilter("JSON Files", "*" + FileConstants.BOARD_FILE_EXTENSION)
-      );
+    // Show the open dialog
+    File file = fileChooser.showOpenDialog(this.getScene().getWindow());
 
-      // Show the open dialog
-      File file = fileChooser.showOpenDialog(this.getScene().getWindow());
-
-      if (file != null) {
-        // Emit the load event
-        GUIApp.getInstance().emitEvent(AppEvent.LOAD_BOARD, file.toPath());
-      }
-    } catch (IOException e) {
-      GUIApp.getInstance().showMessage("Error preparing to load board: " + e.getMessage());
+    if (file != null) {
+      // Emit the load event
+      GUIApp.getInstance().emitEvent(AppEvent.LOAD_BOARD, file.toPath());
     }
   }
 }
