@@ -23,6 +23,8 @@ public interface AppEvent<T> {
   };
   AppEvent<GameType> GAME_CHOSEN = new AppEvent<>() {
   };
+  AppEvent<Board> BOARD_SELECTED = new AppEvent<>() {
+  };
   AppEvent<Board> BOARD_CHOSEN = new AppEvent<>() {
   };
   AppEvent<List<Player>> PLAYERS_CHOSEN = new AppEvent<>() {

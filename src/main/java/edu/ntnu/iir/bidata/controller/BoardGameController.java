@@ -1,5 +1,6 @@
 package edu.ntnu.iir.bidata.controller;
 
+import edu.ntnu.iir.bidata.filehandling.*;
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.model.games.Game;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
@@ -9,6 +10,10 @@ import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import javafx.scene.layout.StackPane;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +45,14 @@ public class BoardGameController {
       GUIApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
-      // update model
+    GUIApp.getInstance().addEventListener(AppEvent.BOARD_SELECTED, board -> {
+      // Update model immediately when a board is selected
       game.setBoard(board);
-      // update view
+    });
+
+    GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
+      // Board is already set in the game model from BOARD_SELECTED event
+      // Just proceed to the next screen
       // TODO: players should be fetched from local storage
       List<Player> players = List.of(
               new Player("Atas"),
@@ -90,6 +99,99 @@ public class BoardGameController {
 
     GUIApp.getInstance().addEventListener(AppEvent.PLAY_AGAIN, event -> {
       GUIApp.setContent(new HomeScreen(), false, false);
+    });
+    
+    // File handling event listeners
+    GUIApp.getInstance().addEventListener(AppEvent.SAVE_BOARD, filePath -> {
+      try {
+        // Ensure the board exists
+        if (game == null || game.getBoard() == null) {
+          GUIApp.getInstance().showMessage("No board to save");
+          return;
+        }
+        
+        // Create the file handler
+        BoardFileWriter writer = FileHandlerFactory.createBoardFileWriter();
+        
+        // Ensure directories exist
+        FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
+        
+        // Save the board
+        writer.writeBoard(game.getBoard(), filePath);
+        
+        GUIApp.getInstance().showMessage("Board saved successfully to " + filePath);
+      } catch (IOException e) {
+        GUIApp.getInstance().showMessage("Error saving board: " + e.getMessage());
+      }
+    });
+    
+    GUIApp.getInstance().addEventListener(AppEvent.LOAD_BOARD, filePath -> {
+      try {
+        // Create the file handler
+        BoardFileReader reader = FileHandlerFactory.createBoardFileReader();
+        
+        // Load the board
+        Board board = reader.readBoard(filePath);
+        
+        // Update the game with the loaded board
+        if (game != null) {
+          game.setBoard(board);
+          GUIApp.getInstance().showMessage("Board loaded successfully from " + filePath);
+        } else {
+          GUIApp.getInstance().showMessage("No game selected to load the board into");
+        }
+      } catch (IOException e) {
+        GUIApp.getInstance().showMessage("Error loading board: " + e.getMessage());
+      }
+    });
+    
+    GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, filePath -> {
+      try {
+        // Ensure players exist
+        if (game == null || game.getPlayers() == null || game.getPlayers().isEmpty()) {
+          GUIApp.getInstance().showMessage("No players to save");
+          return;
+        }
+        
+        // Create the file handler
+        PlayerFileWriter writer = FileHandlerFactory.createPlayerFileWriter();
+        
+        // Ensure directories exist
+        FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
+        
+        // Save the players
+        writer.writePlayers(game.getPlayers(), filePath);
+        
+        GUIApp.getInstance().showMessage("Players saved successfully to " + filePath);
+      } catch (IOException e) {
+        GUIApp.getInstance().showMessage("Error saving players: " + e.getMessage());
+      }
+    });
+    
+    GUIApp.getInstance().addEventListener(AppEvent.LOAD_PLAYERS, filePath -> {
+      try {
+        // Create the file handler
+        PlayerFileReader reader = FileHandlerFactory.createPlayerFileReader();
+        
+        // Load the players
+        List<Player> players = reader.readPlayers(filePath);
+        
+        // Update the game with the loaded players or update the player selection screen
+        if (game != null) {
+          // Check if the player configuration is valid
+          PlayerConfigResponse response = game.isPlayerConfigOk(players);
+          if (response.isPlayerConfigOk()) {
+            game.setPlayers(players);
+            GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
+          } else {
+            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.getErrorMessage());
+          }
+        } else {
+          GUIApp.getInstance().showMessage("No game selected to load the players into");
+        }
+      } catch (IOException e) {
+        GUIApp.getInstance().showMessage("Error loading players: " + e.getMessage());
+      }
     });
   }
 
