@@ -5,12 +5,26 @@ import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
+/**
+ * Represents a Snakes and Ladders game implementation.
+ * This class handles the game logic specific to Snakes and Ladders,
+ * including player movement, dice rolling, and win conditions.
+ */
 public class SnakesAndLaddersGame extends Game {
+  /**
+   * Constructs a new Snakes and Ladders game.
+   * Sets the game type to SNAKES_AND_LADDERS.
+   */
   public SnakesAndLaddersGame() {
     super();
     gameType = GameType.SNAKES_AND_LADDERS;
   }
 
+  /**
+   * Handles game events for Snakes and Ladders.
+   *
+   * @param event the event to be handled, as a string identifier
+   */
   @Override
   public void handleEvent(String event) {
     switch (event) {
@@ -20,12 +34,21 @@ public class SnakesAndLaddersGame extends Game {
     }
   }
 
+  /**
+   * Executes a player's turn.
+   * Gets the current player, executes turn logic, and checks for game-ending conditions.
+   */
   private void makeTurn() {
     Player playerThatMadeTurn = getCurrentPlayer();
     turnLogic();
     afterTurn(playerThatMadeTurn);
   }
 
+  /**
+   * Implements the core turn logic for Snakes and Ladders.
+   * Rolls dice, moves the player, handles special tile actions (snakes/ladders),
+   * and advances to the next player.
+   */
   private void turnLogic() {
     // roll dice
     this.dice.rollAll();
@@ -47,12 +70,22 @@ public class SnakesAndLaddersGame extends Game {
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
   }
 
+  /**
+   * Performs post-turn operations.
+   * Checks if the player who just took a turn has won the game.
+   *
+   * @param playerThatMadeTurn the player who just completed their turn
+   */
   private void afterTurn(Player playerThatMadeTurn) {
     if (playerThatMadeTurn.getPosition() == getBoard().getTiles().size()) {
       setWinner(playerThatMadeTurn);
     }
   }
 
+  /**
+   * Initializes the game by setting all players to the starting position.
+   * In Snakes and Ladders, all players start at position 1.
+   */
   @Override
   public void start() {
     // make players start on position 1

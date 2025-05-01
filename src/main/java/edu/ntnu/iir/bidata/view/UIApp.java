@@ -1,47 +1,61 @@
 package edu.ntnu.iir.bidata.view;
 
+/**
+ * Interface defining the core UI application functionality.
+ * Provides methods for application lifecycle management and event handling.
+ */
 public interface UIApp {
+  /**
+   * Initializes and starts the application.
+   */
   void startApp();
 
+  /**
+   * Terminates the application gracefully.
+   */
   void quitApp();
 
   /**
-   * (Help from AI: help with generics)
+   * Registers an event listener for the specified event type.
    *
-   * @param event
-   * @param listener
-   * @param <T>
+   * @param <T> the type of data associated with the event
+   * @param event the event to register the listener for
+   * @param listener the listener to be notified when the event occurs
    */
   <T> void addEventListener(AppEvent<T> event, GameEventListener<T> listener);
 
   /**
-   * (Help from AI: help with generics)
+   * Unregisters an event listener for the specified event type.
    *
-   * @param event
-   * @param listener
-   * @param <T>
+   * @param <T> the type of data associated with the event
+   * @param event the event to unregister the listener from
+   * @param listener the listener to be removed
    */
   <T> void removeEventListener(AppEvent<T> event, GameEventListener<T> listener);
 
   /**
-   * (Help from AI: help with generics)
+   * Triggers an event with associated data, notifying all registered listeners.
    *
-   * @param event
-   * @param data
-   * @param <T>
+   * @param <T> the type of data associated with the event
+   * @param event the event to be triggered
+   * @param data the data to be passed to listeners
    */
   <T> void emitEvent(AppEvent<T> event, T data);
 
-
   /**
-   * For events that don't need data (like QUIT)
-   * (Help from AI: help with generics)
+   * Triggers an event without data, notifying all registered listeners.
+   * Convenience method for events that don't require data.
    *
-   * @param event
+   * @param event the event to be triggered
    */
   default void emitEvent(AppEvent<Void> event) {
     emitEvent(event, null);
   }
 
+  /**
+   * Displays a message to the user through the UI.
+   *
+   * @param message the message to be displayed
+   */
   void showMessage(String message);
 }

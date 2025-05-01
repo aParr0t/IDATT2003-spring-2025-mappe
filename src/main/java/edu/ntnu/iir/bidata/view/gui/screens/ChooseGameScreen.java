@@ -16,12 +16,22 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
+/**
+ * A screen that allows users to choose which game they want to play.
+ * Displays available games as clickable preview cards with images.
+ */
 public class ChooseGameScreen extends StackPane {
+  /** List of available game previews to display on the screen. */
   List<GameTypePreview> gamePreviews = List.of(
           new GameTypePreview("Stigespill", "/images/games/stigespill.png", GameType.SNAKES_AND_LADDERS),
           new GameTypePreview("Monopoly", "/images/games/monopoly.png", GameType.MONOPOLY)
   );
 
+  /**
+   * Constructs a new ChooseGameScreen with game previews.
+   * Creates a UI that displays available games as clickable cards with images and names.
+   * When a game is selected, emits a GAME_CHOSEN event with the corresponding game type.
+   */
   public ChooseGameScreen() {
     // Create title label
     Label titleLabel = new Label("Choose a game");

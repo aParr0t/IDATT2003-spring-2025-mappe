@@ -17,17 +17,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Runs the game in a text-based version.
+ * Controller class for managing board game logic and GUI interactions.
+ * Handles game initialization, player configuration, board management, and event processing.
+ * Serves as the main controller linking the game model with the user interface.
  */
 public class BoardGameController {
   private Game game;
   private StackPane gameplayScreen;
   private final FileHandlerService fileHandlerService;
 
+  /**
+   * Constructs a new BoardGameController instance.
+   * Initializes the file handler service for managing game data persistence.
+   */
   public BoardGameController() {
     this.fileHandlerService = new FileHandlerService();
   }
 
+  /**
+   * Sets up all the event listeners for the application.
+   * Configures responses to various game events like game selection, board selection,
+   * player configuration, in-game actions, and file operations.
+   */
   public void setup() {
     GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
       System.out.println("quitted");
@@ -199,6 +210,12 @@ public class BoardGameController {
     });
   }
 
+  /**
+   * Updates the game screen with current game state.
+   * Handles different game screen types and updates them with appropriate data.
+   * 
+   * @throws IllegalArgumentException if the game screen type is invalid
+   */
   private void updateGameScreen() {
     if (gameplayScreen instanceof SnakesAndLaddersScreen) {
       ((SnakesAndLaddersScreen) gameplayScreen).update(
@@ -227,6 +244,10 @@ public class BoardGameController {
     }
   }
 
+  /**
+   * Starts the application.
+   * Initiates the GUI application instance to begin the game.
+   */
   public void run() {
     GUIApp.getInstance().startApp();
   }

@@ -26,11 +26,21 @@ import javafx.application.Platform;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * UI component that represents the Monopoly game screen.
+ * Displays the game board, player information cards, dice, and game status.
+ * Handles user interactions like rolling dice with space key.
+ */
 public class MonopolyScreen extends StackPane {
   private final MonopolyBoard boardCanvas;
   private final VBox playerCardsSection;
   private final HBox diceContainer;
 
+  /**
+   * Constructs a new Monopoly game screen.
+   *
+   * @param board the game board containing game state and tile information
+   */
   public MonopolyScreen(Board board) {
     // Root layout
     BorderPane root = new BorderPane();
@@ -110,7 +120,7 @@ public class MonopolyScreen extends StackPane {
   /**
    * Creates a circular help button with a question mark.
    *
-   * @return A styled help button
+   * @return a styled help button that shows the rules dialog when clicked
    */
   private Button createHelpButton() {
     Button helpButton = new Button("?");
@@ -133,7 +143,8 @@ public class MonopolyScreen extends StackPane {
   }
 
   /**
-   * Display a dialog with the rules of the Monopoly game.
+   * Displays a dialog with the rules of the Monopoly game.
+   * Shows information about how to play, including controls and winning conditions.
    */
   private void showRulesDialog() {
     Alert rulesDialog = new Alert(Alert.AlertType.INFORMATION);
@@ -163,6 +174,15 @@ public class MonopolyScreen extends StackPane {
     rulesDialog.showAndWait();
   }
 
+  /**
+   * Updates the UI components based on the current game state.
+   * Updates player positions on the board with animation, player cards, and dice display.
+   *
+   * @param players the list of players in the game
+   * @param currentPlayer the player whose turn it currently is
+   * @param diceCounts the list of dice values from the last roll
+   * @param playerMoney the list of money amounts for each player
+   */
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts, List<Integer> playerMoney) {
     // Update player positions with animation
     boardCanvas.updatePlayersWithAnimation(players, () -> {
@@ -174,6 +194,15 @@ public class MonopolyScreen extends StackPane {
     drawDice(diceCounts);
   }
 
+  /**
+   * Creates a visual card representation for a player.
+   * The card displays the player's name, playing piece, money, and property statistics.
+   *
+   * @param player the player to create a card for
+   * @param isActive whether this player is the current active player
+   * @param money the player's current money amount
+   * @return an HBox containing the styled player card
+   */
   private HBox createPlayerCard(Player player, boolean isActive, int money) {
     VBox card = new VBox(5);
     card.setPadding(new Insets(10));
@@ -224,6 +253,14 @@ public class MonopolyScreen extends StackPane {
     return new HBox(card);
   }
 
+  /**
+   * Updates the player cards section with current player information.
+   * Highlights the current active player and shows updated money amounts.
+   *
+   * @param players the list of players in the game
+   * @param currentPlayer the player whose turn it currently is
+   * @param playerMoney the list of money amounts for each player
+   */
   private void drawPlayerCards(List<Player> players, Player currentPlayer, List<Integer> playerMoney) {
     playerCardsSection.getChildren().clear();
     for (int i = 0; i < players.size(); i++) {
@@ -234,6 +271,12 @@ public class MonopolyScreen extends StackPane {
     }
   }
 
+  /**
+   * Updates the dice display with the current dice values.
+   * Highlights when doubles are rolled by changing the background color.
+   *
+   * @param diceCounts the list of dice values to display
+   */
   private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
 
@@ -252,6 +295,10 @@ public class MonopolyScreen extends StackPane {
     }
   }
 
+  /**
+   * Emits a dice roll event when the user presses the space key.
+   * The event is handled by the game controller to advance game state.
+   */
   private void emitDiceRolledEvent() {
     GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
   }

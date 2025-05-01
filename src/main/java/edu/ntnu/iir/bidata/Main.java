@@ -7,7 +7,17 @@ import edu.ntnu.iir.bidata.filehandling.FileUtils;
 
 import java.io.IOException;
 
+/**
+ * Main entry point for the board game application.
+ * Handles initial setup of file directories and launches the game controller.
+ */
 public class Main {
+  /**
+   * The application entry point.
+   * Creates necessary directories for file storage and starts the board game controller.
+   *
+   * @param args command line arguments (not used)
+   */
   public static void main(String[] args) {
     // Create necessary directories for file storage
     try {

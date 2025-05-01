@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Canvas component for rendering a Snakes and Ladders game board.
+ * Handles drawing the game board, snakes, ladders, and player pieces with animations.
+ */
 public class SnakesAndLaddersBoard extends BoardCanvas {
   private final Map<String, Color> snakeColors = new HashMap<>();
   private final Map<String, Color> ladderColors = new HashMap<>();
@@ -35,10 +39,20 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
           Color.rgb(123, 63, 0)
   );
 
+  /**
+   * Constructs a new SnakesAndLaddersBoard with the specified game board.
+   *
+   * @param board the game board to be rendered
+   */
   public SnakesAndLaddersBoard(Board board) {
     super(board);
   }
 
+  /**
+   * Draws all snakes and ladders on the board based on tile actions.
+   * Iterates through all tiles to find MoveAction instances and draws
+   * either a snake or a ladder depending on whether the move is forward or backward.
+   */
   public void drawSnakesAndLadders() {
     for (Tile tile : board.getTiles()) {
       double normalizedWidth = tile.getWidth();
@@ -67,6 +81,14 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     }
   }
 
+  /**
+   * Draws a ladder between two points on the board.
+   * Creates a visual ladder with two side rails and multiple rungs between them.
+   *
+   * @param start the starting point (bottom) of the ladder
+   * @param end the ending point (top) of the ladder
+   * @param ladderWidth the width of the ladder
+   */
   private void drawLadder(Point2D start, Point2D end, double ladderWidth) {
     // canvas width and height
     double canvasWidth = getWidth();
@@ -122,12 +144,12 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
   }
 
   /**
-   * Draw a snake from start to end with a wave effect.
-   * (Help from AI. Generated code for wave effect)
+   * Draws a snake from start to end with a wave effect.
+   * Creates a visual snake with a sinusoidal path and a distinct head.
    *
-   * @param start                The start position of the snake.
-   * @param end                  The end position of the snake.
-   * @param normalizedSnakeWidth The normalized width of the snake.
+   * @param start the starting point (head) of the snake
+   * @param end the ending point (tail) of the snake
+   * @param normalizedSnakeWidth the normalized width of the snake
    */
   private void drawSnake(Point2D start, Point2D end, double normalizedSnakeWidth) {
     // canvas width and height
@@ -191,6 +213,10 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     gc.fillOval(xPoints[0] - headSize / 2, yPoints[0] - headSize / 2, headSize, headSize);
   }
 
+  /**
+   * Renders the entire game board by drawing tiles, snakes, ladders, and players.
+   * Overrides the draw method from the parent class to include game-specific elements.
+   */
   @Override
   public void draw() {
     clearCanvas();
@@ -204,9 +230,9 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
   /**
    * Updates the players on the board with animation.
    * This method automatically handles tracking previous positions.
-   * 
-   * @param players The list of players to display
-   * @param onComplete Callback to run when animation completes
+   *
+   * @param players the list of players to display
+   * @param onComplete callback to run when animation completes
    */
   public void updatePlayersWithAnimation(List<Player> players, Runnable onComplete) {
     // Store the callback

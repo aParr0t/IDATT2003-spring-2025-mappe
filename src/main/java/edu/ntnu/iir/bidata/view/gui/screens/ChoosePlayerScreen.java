@@ -27,12 +27,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Screen for selecting and configuring players before starting a game.
+ * Allows adding, removing, and customizing players, as well as saving and loading player configurations.
+ */
 public class ChoosePlayerScreen extends StackPane {
   private final HBox playersContainer;
   private final List<Player> players;
   private final List<PlayingPiece> allPlayingPieces;
   private final int maxPlayers;
 
+  /**
+   * Constructs a new player selection screen.
+   *
+   * @param startingPlayers initial list of players to display
+   * @param allPlayingPieces list of all available playing pieces for selection
+   * @param maxPlayers maximum number of players allowed
+   */
   public ChoosePlayerScreen(List<Player> startingPlayers, List<PlayingPiece> allPlayingPieces, int maxPlayers) {
     this.players = new ArrayList<>(startingPlayers);
     this.allPlayingPieces = allPlayingPieces;
@@ -71,6 +82,12 @@ public class ChoosePlayerScreen extends StackPane {
     this.setAlignment(Pos.CENTER);
   }
 
+  /**
+   * Gets the next playing piece in the rotation sequence.
+   *
+   * @param playingPiece the current playing piece
+   * @return the next playing piece in the sequence
+   */
   private PlayingPiece getNextPlayingPiece(PlayingPiece playingPiece) {
     // get the index of the current playing piece
     int currentIndex = playingPiece.getType().ordinal();
@@ -78,6 +95,11 @@ public class ChoosePlayerScreen extends StackPane {
     return allPlayingPieces.get((currentIndex + 1) % allPlayingPieces.size());
   }
 
+  /**
+   * Handles clicking on a player's playing piece to cycle through available options.
+   *
+   * @param player the player whose playing piece is being changed
+   */
   private void playerClickHandler(Player player) {
     PlayingPiece currentPlayingPiece = player.getPlayingPiece();
     PlayingPiece nextPlayingPiece;
@@ -90,11 +112,19 @@ public class ChoosePlayerScreen extends StackPane {
     redrawPlayers();
   }
 
+  /**
+   * Removes a player from the game.
+   *
+   * @param player the player to remove
+   */
   private void removePlayer(Player player) {
     players.remove(player);
     redrawPlayers();
   }
 
+  /**
+   * Adds a new player to the game with a default name.
+   */
   private void addNewPlayer() {
     Player newPlayer = new Player("Player " + (players.size() + 1));
     players.add(newPlayer);
@@ -104,7 +134,7 @@ public class ChoosePlayerScreen extends StackPane {
   /**
    * Updates the players list with new players and redraws the UI.
    *
-   * @param newPlayers The new list of players to display
+   * @param newPlayers the new list of players to display
    */
   public void updatePlayers(List<Player> newPlayers) {
     // Clear the current players list
@@ -115,6 +145,10 @@ public class ChoosePlayerScreen extends StackPane {
     redrawPlayers();
   }
 
+  /**
+   * Redraws the player cards UI based on the current players list.
+   * Also adds a "New Player" card if more players can be added.
+   */
   private void redrawPlayers() {
     // clear the container
     playersContainer.getChildren().clear();
@@ -136,6 +170,12 @@ public class ChoosePlayerScreen extends StackPane {
     }
   }
 
+  /**
+   * Creates a UI card for displaying and editing a player.
+   *
+   * @param player the player to create a card for
+   * @return a VBox containing the player card UI elements
+   */
   private VBox createPlayerCard(Player player) {
     VBox playerCard = new VBox();
     playerCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -173,6 +213,11 @@ public class ChoosePlayerScreen extends StackPane {
     return playerCard;
   }
 
+  /**
+   * Creates a "plus" card for adding a new player.
+   *
+   * @return a VBox containing the "add new player" UI elements
+   */
   private VBox createPlusCard() {
     VBox newPlayerCard = new VBox();
     newPlayerCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -198,6 +243,9 @@ public class ChoosePlayerScreen extends StackPane {
     return newPlayerCard;
   }
 
+  /**
+   * Handles the "Start Game" button click by emitting a PLAYERS_CHOSEN event.
+   */
   private void startGameHandler() {
     GUIApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
   }
@@ -205,8 +253,8 @@ public class ChoosePlayerScreen extends StackPane {
   /**
    * Configures a FileChooser with common settings for player file operations.
    *
-   * @param fileChooser The FileChooser to configure
-   * @param title       The title to set for the FileChooser dialog
+   * @param fileChooser the FileChooser to configure
+   * @param title the title to set for the FileChooser dialog
    */
   private void configureFileChooser(FileChooser fileChooser, String title) {
     fileChooser.setTitle(title);
@@ -225,6 +273,10 @@ public class ChoosePlayerScreen extends StackPane {
     }
   }
 
+  /**
+   * Handles the "Save Players" button click by showing a save dialog
+   * and emitting a SAVE_PLAYERS event with the selected file path.
+   */
   private void savePlayers() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();
@@ -241,6 +293,10 @@ public class ChoosePlayerScreen extends StackPane {
     }
   }
 
+  /**
+   * Handles the "Load Players" button click by showing an open dialog
+   * and emitting a LOAD_PLAYERS event with the selected file path.
+   */
   private void loadPlayers() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();

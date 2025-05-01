@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a collection of dice.
+ * Represents a collection of dice for board games.
+ * This class manages multiple dice and provides methods to roll them and retrieve results.
  */
 public class Dice {
   private final List<Die> dice = new ArrayList<>();
 
   /**
-   * Creates a set of six-sided dice.
+   * Creates a set of dice with specified number of sides.
    *
    * @param numberOfDice the number of dice in the set
    * @param sides        the number of sides on each die (default should be 6)
@@ -39,12 +40,22 @@ public class Dice {
     return sum;
   }
 
+  /**
+   * Gets the current face value of each die.
+   *
+   * @return a list containing the face value of each die
+   */
   public List<Integer> getCounts() {
     return dice.stream()
             .map(Die::getCount)
             .toList();
   }
 
+  /**
+   * Calculates the sum of all current dice values.
+   *
+   * @return the sum of the current face values of all dice
+   */
   public int getSum() {
     return dice.stream()
             .mapToInt(Die::getCount)

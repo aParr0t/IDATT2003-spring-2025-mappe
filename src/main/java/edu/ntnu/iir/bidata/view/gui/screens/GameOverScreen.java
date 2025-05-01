@@ -11,8 +11,17 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
-
+/**
+ * A screen displayed when a game is over, showing the winner and a play again option.
+ * This screen is shown after a game has been completed.
+ */
 public class GameOverScreen extends StackPane {
+  
+  /**
+   * Creates a new game over screen with the specified winner name.
+   *
+   * @param winnerName the name of the player who won the game
+   */
   public GameOverScreen(String winnerName) {
 
     VBox vbox = new VBox(20);

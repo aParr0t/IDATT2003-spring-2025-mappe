@@ -9,13 +9,31 @@ import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 
 import java.util.*;
 
+/**
+ * Represents a Monopoly game implementation.
+ * This class extends the Game class and includes Monopoly-specific functionality
+ * such as money management, jail mechanics, and turn handling.
+ */
 public class MonopolyGame extends Game {
+  /** Map to track the amount of money each player has. */
   private final Map<Player, Integer> playerMoney;
+  
+  /** Set to track which players are currently in jail. */
   private final Set<Player> playersInJail;
+  
+  /** The amount of money each player starts with. */
   private static final int STARTING_MONEY = 1500;
+  
+  /** The amount of money received when passing GO. */
   private static final int PASSING_GO_MONEY = 200;
+  
+  /** The amount of money needed to win the game. */
   private static final int WINNING_MONEY = 2000;
 
+  /**
+   * Constructs a new Monopoly game with default values.
+   * Initializes the player money map and the players in jail set.
+   */
   public MonopolyGame() {
     super();
     gameType = GameType.MONOPOLY;
@@ -39,6 +57,7 @@ public class MonopolyGame extends Game {
    * @param player the player to give money to
    * @param amount the amount to add (must be positive)
    * @return the new balance
+   * @throws IllegalArgumentException if amount is not positive
    */
   public int addMoney(Player player, int amount) {
     if (amount <= 0) {
@@ -57,7 +76,7 @@ public class MonopolyGame extends Game {
    * @param player the player to take money from
    * @param amount the amount to remove (must be positive)
    * @return the new balance
-   * @throws IllegalArgumentException if the player doesn't have enough money
+   * @throws IllegalArgumentException if the player doesn't have enough money or amount is not positive
    */
   public int removeMoney(Player player, int amount) {
     if (amount <= 0) {
@@ -80,7 +99,7 @@ public class MonopolyGame extends Game {
    * @param from   the player paying money
    * @param to     the player receiving money
    * @param amount the amount to transfer (must be positive)
-   * @throws IllegalArgumentException if the paying player doesn't have enough money
+   * @throws IllegalArgumentException if the paying player doesn't have enough money or amount is not positive
    */
   public void transferMoney(Player from, Player to, int amount) {
     removeMoney(from, amount);
@@ -105,6 +124,7 @@ public class MonopolyGame extends Game {
 
   /**
    * Sends a player to jail.
+   * Adds the player to the jail set and updates their position.
    *
    * @param player the player to send to jail
    */
@@ -119,6 +139,7 @@ public class MonopolyGame extends Game {
 
   /**
    * Releases a player from jail.
+   * Removes the player from the jail set.
    *
    * @param player the player to release from jail
    */
@@ -136,6 +157,12 @@ public class MonopolyGame extends Game {
     return playersInJail.contains(player);
   }
 
+  /**
+   * Handles game events.
+   * Currently handles only the dice rolled event.
+   *
+   * @param event the event to handle
+   */
   @Override
   public void handleEvent(String event) {
     switch (event) {
@@ -145,6 +172,10 @@ public class MonopolyGame extends Game {
     }
   }
 
+  /**
+   * Executes the turn logic for a player's turn.
+   * Handles dice rolling, moving the player, jail mechanics, and tile actions.
+   */
   private void turnLogic() {
         // roll dice
     this.dice.rollAll();
@@ -194,22 +225,38 @@ public class MonopolyGame extends Game {
     }
   }
 
+  /**
+   * Makes a turn for the current player and processes the aftermath.
+   */
   private void makeTurn() {
     Player playerThatMadeTurn = getCurrentPlayer();
     turnLogic();
     afterTurn(playerThatMadeTurn);
   }
 
+  /**
+   * Processes actions after a player's turn.
+   * Checks if the player has won the game.
+   *
+   * @param playerThatMadeTurn the player that just completed their turn
+   */
   private void afterTurn(Player playerThatMadeTurn) {
     if (getPlayerMoney(playerThatMadeTurn) >= WINNING_MONEY) {
       setWinner(playerThatMadeTurn);
     }
   }
 
+  /**
+   * Increments the current player index to move to the next player's turn.
+   */
   private void incrementPlayerTurn() {
     setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
   }
 
+  /**
+   * Starts the game by initializing player positions and giving each player starting money.
+   * Ensures no players start in jail.
+   */
   @Override
   public void start() {
     // make players start on position 0

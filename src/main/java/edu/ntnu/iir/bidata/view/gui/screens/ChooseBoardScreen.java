@@ -23,6 +23,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A JavaFX screen for selecting, saving, and loading game boards.
+ * Displays a collection of board options for a specific game type and allows
+ * the user to select a board or load/save boards to files.
+ */
 public class ChooseBoardScreen extends StackPane {
   private Board selectedBoard;
   private final GameType gameType;
@@ -31,6 +36,12 @@ public class ChooseBoardScreen extends StackPane {
   private final HBox gamesContainer = new HBox(20);
   private final HBox buttonContainer;
 
+  /**
+   * Creates a new ChooseBoardScreen for selecting boards of a specific game type.
+   *
+   * @param gameType the type of game to display boards for
+   * @param boards the list of available boards to display
+   */
   public ChooseBoardScreen(GameType gameType, List<Board> boards) {
     this.gameType = gameType;
     this.boards = new ArrayList<>(boards); // Create a mutable copy of the list
@@ -89,6 +100,14 @@ public class ChooseBoardScreen extends StackPane {
     this.setAlignment(Pos.CENTER);
   }
 
+  /**
+   * Creates a visual card representation for a game board.
+   * The card includes a canvas preview of the board and its name.
+   * Clicking the card selects the board.
+   *
+   * @param board the board to create a card for
+   * @return a VBox containing the board preview and name
+   */
   private VBox createBoardCard(Board board) {
     VBox boardCard = new VBox();
     boardCard.setStyle("-fx-border-color: black; -fx-border-width: 1px;");
@@ -119,6 +138,10 @@ public class ChooseBoardScreen extends StackPane {
     return boardCard;
   }
 
+  /**
+   * Updates the display with information about the currently selected board.
+   * Clears previous information and shows the name of the selected board.
+   */
   private void updateSelectedBoardInfo() {
     boardCardContainer.getChildren().clear();
 
@@ -132,8 +155,8 @@ public class ChooseBoardScreen extends StackPane {
   /**
    * Configures a FileChooser with common settings for board file operations.
    *
-   * @param fileChooser The FileChooser to configure
-   * @param title The title to set for the FileChooser dialog
+   * @param fileChooser the FileChooser to configure
+   * @param title the title to set for the FileChooser dialog
    */
   private void configureFileChooser(FileChooser fileChooser, String title) {
     fileChooser.setTitle(title);
@@ -152,6 +175,10 @@ public class ChooseBoardScreen extends StackPane {
     }
   }
 
+  /**
+   * Opens a save dialog and saves the currently selected board to a file.
+   * Emits a SAVE_BOARD event with the selected file path.
+   */
   private void saveBoard() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();
@@ -168,6 +195,10 @@ public class ChooseBoardScreen extends StackPane {
     }
   }
 
+  /**
+   * Opens a load dialog and loads a board from the selected file.
+   * Emits a LOAD_BOARD event with the selected file path.
+   */
   private void loadBoard() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();
@@ -186,7 +217,7 @@ public class ChooseBoardScreen extends StackPane {
    * Adds a loaded board to the board selection screen.
    * This method is called from the BoardGameController when a board is loaded from a file.
    *
-   * @param board The loaded board to add to the UI
+   * @param board the loaded board to add to the UI
    */
   public void addLoadedBoard(Board board) {
     // Add the board to the list if it's not already there

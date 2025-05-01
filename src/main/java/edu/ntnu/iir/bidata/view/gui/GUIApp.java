@@ -17,6 +17,10 @@ import java.util.*;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.GameEventListener;
 
+/**
+ * JavaFX application class that implements the UIApp interface.
+ * Manages the GUI components, screen navigation, and event handling for the application.
+ */
 public class GUIApp extends Application implements UIApp {
   private static final Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
   private static BorderPane sceneContent;
@@ -25,10 +29,19 @@ public class GUIApp extends Application implements UIApp {
   private static GUIApp instance;
   private static boolean showBackButton = true;  // Flag to control back button visibility
 
+  /**
+   * Creates a new GUIApp instance and sets it as the singleton instance.
+   */
   public GUIApp() {
     instance = this;
   }
 
+  /**
+   * Initializes the JavaFX application with the primary stage.
+   * Sets up the main scene, key event handlers, and loads the initial screen.
+   *
+   * @param stage the primary stage for this application
+   */
   @Override
   public void start(Stage stage) {
     GUIApp.sceneContent = new BorderPane();
@@ -46,7 +59,12 @@ public class GUIApp extends Application implements UIApp {
     setContent(new HomeScreen(), false); // Don't add to history since it's first screen
   }
 
-  // Static method to get the instance
+  /**
+   * Returns the singleton instance of GUIApp.
+   * Creates a new instance if none exists.
+   *
+   * @return the singleton instance of GUIApp
+   */
   public static GUIApp getInstance() {
     if (instance == null) {
       instance = new GUIApp();
@@ -54,14 +72,35 @@ public class GUIApp extends Application implements UIApp {
     return instance;
   }
 
+  /**
+   * Sets the content of the application with the given node.
+   * Adds the current screen to the navigation history.
+   *
+   * @param content the node to set as the content
+   */
   public static void setContent(Node content) {
     GUIApp.setContent(content, true);
   }
 
+  /**
+   * Sets the content of the application with the given node.
+   * Controls whether to add the current screen to the navigation history.
+   *
+   * @param content the node to set as the content
+   * @param addToHistory whether to add the current screen to history
+   */
   public static void setContent(Node content, boolean addToHistory) {
     setContent(content, addToHistory, true);
   }
 
+  /**
+   * Sets the content of the application with the given node.
+   * Controls navigation history and back button visibility.
+   *
+   * @param content the node to set as the content
+   * @param addToHistory whether to add the current screen to history
+   * @param showBackButton whether to show the back navigation button
+   */
   public static void setContent(Node content, boolean addToHistory, boolean showBackButton) {
     // Add current screen to history before changing
     if (addToHistory && sceneContent.getCenter() != null) {
@@ -78,6 +117,10 @@ public class GUIApp extends Application implements UIApp {
     updateBackButton();
   }
 
+  /**
+   * Navigates back to the previous screen in the history stack.
+   * Does nothing if the history is empty.
+   */
   public static void goBack() {
     if (!screenHistory.isEmpty()) {
       Node previousScreen = screenHistory.pop();
@@ -86,6 +129,10 @@ public class GUIApp extends Application implements UIApp {
     }
   }
 
+  /**
+   * Updates the visibility and state of the back button based on
+   * the navigation history and the showBackButton flag.
+   */
   private static void updateBackButton() {
     if (screenHistory.isEmpty() || !showBackButton) {
       sceneContent.setTop(null); // No back history or back button disabled
@@ -97,17 +144,27 @@ public class GUIApp extends Application implements UIApp {
     }
   }
 
+  /**
+   * Quits the application by emitting a quit event and closing the stage.
+   */
   public void quitApp() {
     emitEvent(AppEvent.QUIT);
     stage.close();
   }
 
+  /**
+   * Starts the JavaFX application by calling the launch method.
+   */
   public void startApp() {
     launch();
   }
 
   /**
-   * (Help from AI: help with generics)
+   * Adds an event listener for the specified event type.
+   *
+   * @param <T> the type of data associated with the event
+   * @param event the event to listen for
+   * @param listener the listener to be notified when the event occurs
    */
   @Override
   public <T> void addEventListener(AppEvent<T> event, GameEventListener<T> listener) {
@@ -118,7 +175,11 @@ public class GUIApp extends Application implements UIApp {
   }
 
   /**
-   * (Help from AI: help with generics)
+   * Removes an event listener for the specified event type.
+   *
+   * @param <T> the type of data associated with the event
+   * @param event the event to stop listening for
+   * @param listener the listener to be removed
    */
   @Override
   public <T> void removeEventListener(AppEvent<T> event, GameEventListener<T> listener) {
@@ -128,7 +189,11 @@ public class GUIApp extends Application implements UIApp {
   }
 
   /**
-   * (Help from AI: help with generics)
+   * Emits an event with associated data to all registered listeners.
+   *
+   * @param <T> the type of data associated with the event
+   * @param event the event to emit
+   * @param data the data to pass to listeners
    */
   @SuppressWarnings("unchecked")
   @Override
@@ -141,13 +206,20 @@ public class GUIApp extends Application implements UIApp {
   }
 
   /**
-   * (Help from AI: help with generics)
+   * Emits an event without data to all registered listeners.
+   *
+   * @param event the event to emit
    */
   @Override
   public void emitEvent(AppEvent<Void> event) {
     UIApp.super.emitEvent(event);
   }
 
+  /**
+   * Displays an information message dialog to the user.
+   *
+   * @param message the message to display
+   */
   @Override
   public void showMessage(String message) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -160,7 +232,7 @@ public class GUIApp extends Application implements UIApp {
   /**
    * Gets the current content displayed in the application.
    *
-   * @return The current content node
+   * @return the current content node
    */
   public static Node getCurrentContent() {
     return sceneContent.getCenter();

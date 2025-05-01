@@ -12,22 +12,25 @@ import java.util.Map;
 
 /**
  * Factory class responsible for creating different Board configurations.
+ * This class provides methods to create various types of game boards like
+ * empty boards, Snakes and Ladders boards, and Monopoly boards with
+ * appropriate tile configurations and styling.
  */
 public class BoardFactory {
 
   /**
-   * Creates an empty board with no tiles.
+   * Creates a randomly generated Snakes and Ladders board with specified dimensions.
+   * The board will contain randomly placed ladders and snakes.
    *
-   * @return An empty board
-   */
-  public static Board createEmptyBoard() {
-    return new Board();
-  }
-
-  /**
-   * Creates a snakes and ladders board with a random layout.
+   * <p>This method generates up to 5 ladders and 5 snakes, placing them in valid positions
+   * on the board. A valid ladder position must not be in the last row, and a valid snake
+   * position must not be in the first row. The method ensures that ladder and snake positions
+   * do not overlap.</p>
    *
-   * @return A board with standard configuration
+   * @param columns Number of columns in the board (must be at least 3)
+   * @param rows    Number of rows in the board (must be at least 3)
+   * @return A configured board with random ladder and snake placements
+   * @throws IllegalArgumentException if columns or rows are less than 3
    */
   public static Board randomSnakesAndLadders(int columns, int rows) {
     // the random generation doesn't work for columns < 3 and rows < 3
@@ -96,6 +99,16 @@ public class BoardFactory {
     return board;
   }
 
+  /**
+   * Creates a standard Snakes and Ladders board with predefined ladder and snake positions.
+   *
+   * <p>This method creates a 10x10 board with classic ladder and snake placements.
+   * The board includes 8 ladders and 6 snakes at fixed positions that create
+   * a balanced game experience. The ladders and snakes are colored appropriately
+   * to distinguish them visually on the board.</p>
+   *
+   * @return A standard Snakes and Ladders board with fixed configuration
+   */
   public static Board normalSnakesAndLadders() {
     List<Tile> tiles = BoardTileLayout.snakesAndLadders(10, 10);
     Board board = new Board(tiles);
@@ -123,6 +136,14 @@ public class BoardFactory {
     return board;
   }
 
+  /**
+   * Creates a Chinese variant of Snakes and Ladders with special rules.
+   * In this variant, most tiles lead back to the starting position.
+   *
+   * <p>You have to roll double 6 every time to win</p>
+   *
+   * @return A Chinese-style Snakes and Ladders board
+   */
   public static Board chineseSnakesAndLadders() {
     int columns = 20, rows = 20;
     List<Tile> tiles = BoardTileLayout.snakesAndLadders(columns, rows);
@@ -141,11 +162,69 @@ public class BoardFactory {
     return board;
   }
 
+  /**
+   * Helper method to add move actions to a board's tiles.
+   *
+   * <p>This utility method creates a MoveAction with the specified start and end positions
+   * and attaches it to the appropriate tile on the board. It's used for creating
+   * both ladder actions (where end > start) and snake actions (where end < start).</p>
+   *
+   * @param board The board to add the move action to
+   * @param start The starting tile position
+   * @param end   The ending tile position
+   */
   private static void addMoveAction(Board board, int start, int end) {
     MoveAction action = new MoveAction(start, end);
     board.getTile(start).setAction(action);
   }
 
+  /**
+   * Applies color styling to a Snakes and Ladders board.
+   * Ladders are colored green and snakes are colored red.
+   *
+   * <p>This method iterates through all tiles on the board and applies
+   * appropriate color styling based on the tile's action:
+   * <ul>
+   *   <li>Ladders (actions where end > start) are colored green (#228B22)</li>
+   *   <li>Snakes (actions where end < start) are colored red (#ec4a27)</li>
+   * </ul>
+   * </p>
+   *
+   * @param board The board to apply coloring to
+   */
+  private static void colorSnakesAndLaddersBoard(Board board) {
+    // color the snakes and ladders
+    for (Tile tile : board.getTiles()) {
+      if (tile.getAction() instanceof MoveAction action) {
+        if (action.getStart() < action.getEnd()) {
+          tile.getStyling().setColor("#228B22");
+        } else {
+          tile.getStyling().setColor("#ec4a27");
+        }
+      }
+    }
+  }
+
+  /**
+   * Creates a standard Monopoly board with all the classic tiles and styling.
+   *
+   * <p>This method configures a complete Monopoly board with:
+   * <ul>
+   *   <li>Corner tiles (GO, Jail, Free Parking, Go to Jail)</li>
+   *   <li>Property tiles with appropriate styling and rotation</li>
+   *   <li>Utility tiles (Electric Company, Water Works)</li>
+   *   <li>Railroad tiles</li>
+   *   <li>Community Chest and Chance tiles</li>
+   *   <li>Tax tiles</li>
+   * </ul>
+   * </p>
+   *
+   * <p>Each tile is configured with appropriate image paths and rotations based on
+   * its position on the board. Special action tiles like Jail and Go to Jail
+   * are also assigned their appropriate actions.</p>
+   *
+   * @return A fully configured standard Monopoly board
+   */
   public static Board standardMonopoly() {
     List<Tile> tiles = BoardTileLayout.monopoly();
     Board board = new Board(tiles);
@@ -346,40 +425,33 @@ public class BoardFactory {
     return board;
   }
 
-  private static void colorSnakesAndLaddersBoard(Board board) {
-    // color the snakes and ladders
-    for (Tile tile : board.getTiles()) {
-      if (tile.getAction() instanceof MoveAction) {
-        MoveAction action = (MoveAction) tile.getAction();
-        if (action.getStart() < action.getEnd()) {
-          tile.getStyling().setColor("#228B22");
-        } else {
-          tile.getStyling().setColor("#ec4a27");
-        }
-      }
-    }
-  }
-
   /**
    * Gets all available boards for the specified game type.
    *
-   * @param gameType the type of game
-   * @return a list of available boards for the specified game type
+   * <p>For Snakes and Ladders, this returns three board variants:
+   * <ul>
+   *   <li>A random board (10x10)</li>
+   *   <li>A normal board with classic configuration</li>
+   *   <li>A Chinese variant</li>
+   * </ul>
+   * </p>
+   *
+   * <p>For Monopoly, this returns the standard monopoly board.</p>
+   *
+   * @param gameType The type of game to get boards for
+   * @return A list of available boards for the specified game type, or an empty list if
+   * the game type is not supported
    */
   public static List<Board> getAllBoardsForGameType(GameType gameType) {
-    switch (gameType) {
-      case GameType.SNAKES_AND_LADDERS:
-        return List.of(
-                randomSnakesAndLadders(10, 10),
-                normalSnakesAndLadders(),
-                chineseSnakesAndLadders()
-        );
-      case GameType.MONOPOLY:
-        return List.of(
-                standardMonopoly()
-        );
-      default:
-        return List.of();
-    }
+    return switch (gameType) {
+      case GameType.SNAKES_AND_LADDERS -> List.of(
+              randomSnakesAndLadders(10, 10),
+              normalSnakesAndLadders(),
+              chineseSnakesAndLadders()
+      );
+      case GameType.MONOPOLY -> List.of(
+              standardMonopoly()
+      );
+    };
   }
 }

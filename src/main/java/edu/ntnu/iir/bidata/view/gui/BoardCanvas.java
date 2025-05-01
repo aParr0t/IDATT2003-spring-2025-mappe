@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Abstract base class for drawing board games on a JavaFX Canvas with animation support.
+ * Handles rendering of tiles, players, and animations of player movements between tiles.
+ */
 public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas {
   protected final Board board;
   protected List<Player> players = List.of();
@@ -31,6 +35,11 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private final AnimationTimer animationTimer;
   private Runnable onAnimationComplete;
 
+  /**
+   * Creates a new BoardCanvas with the specified game board.
+   *
+   * @param board the game board to display
+   */
   public BoardCanvas(Board board) {
     this.board = board;
     // Set default size if not specified otherwise
@@ -61,7 +70,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   /**
-   * Preloads all tile images in the background to improve rendering performance
+   * Preloads all tile images in the background to improve rendering performance.
+   * Uses asynchronous loading to avoid blocking the UI thread.
    */
   private void preloadImages() {
     CompletableFuture.runAsync(() -> {
@@ -75,7 +85,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   /**
-   * Preloads player piece images
+   * Preloads player piece images to improve rendering performance.
    */
   private void preloadPlayerImages() {
     for (Player player : players) {
@@ -86,6 +96,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     }
   }
 
+  /**
+   * Sets the players to be displayed on the board.
+   * Stores previous positions before updating, then updates last known positions.
+   *
+   * @param players the list of players to display
+   */
   public void setPlayers(List<Player> players) {
     // Store previous positions before updating players list
     storePreviousPositions();
@@ -98,7 +114,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   /**
-   * Updates the last known positions map with current player positions
+   * Updates the last known positions map with current player positions.
    */
   private void updateLastKnownPositions() {
     for (Player player : players) {
@@ -127,6 +143,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     previousPositions = new HashMap<>(lastKnownPositions);
   }
 
+  /**
+   * Gets the previous position of a player before movement.
+   *
+   * @param player the player to get previous position for
+   * @return the previous position of the player
+   */
   private int getPreviousPosition(Player player) {
     if (player == null) {
       return 1; // Default position
@@ -139,6 +161,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     return prevPos;
   }
 
+  /**
+   * Starts the animation of player movements from previous to current positions.
+   * Animation only runs if there are players with changed positions.
+   *
+   * @param onComplete Runnable to execute when animation completes
+   */
   @Override
   public void startAnimation(Runnable onComplete) {
     if (players.isEmpty()) {
@@ -178,6 +206,10 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     }
   }
 
+  /**
+   * Updates the animation progress for each player.
+   * Called by the animation timer on each frame.
+   */
   private void updateAnimation() {
     if (!animating) return;
 
@@ -201,6 +233,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     }
   }
 
+  /**
+   * Stops the animation and executes the completion callback.
+   */
   private void stopAnimation() {
     animating = false;
     animationTimer.stop();
@@ -213,8 +248,17 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     }
   }
 
+  /**
+   * Draws the complete board, including tiles and players.
+   * Abstract method to be implemented by subclasses.
+   */
   public abstract void draw();
 
+  /**
+   * Draws the players on the board, handling animation of movement.
+   *
+   * @param players the list of players to draw
+   */
   protected void drawPlayers(List<Player> players) {
     GraphicsContext gc = getGraphicsContext2D();
 
@@ -275,7 +319,11 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   /**
-   * Determines if animation should follow connected tile path
+   * Determines if animation should follow connected tile path.
+   *
+   * @param prevTile the tile the player is moving from
+   * @param currentTile the tile the player is moving to
+   * @return true if animation should follow connected path, false otherwise
    */
   private boolean shouldAnimateAlongPath(Tile prevTile, Tile currentTile) {
     // Check if current tile is reachable by following next tiles from prev
@@ -296,7 +344,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   }
 
   /**
-   * Gets intermediate position following the path of connected tiles
+   * Gets intermediate position following the path of connected tiles.
+   *
+   * @param startTile the starting tile
+   * @param endTile the destination tile
+   * @param progress the animation progress (0.0 to 1.0)
+   * @return the ID of the intermediate tile based on current progress
    */
   private int getIntermediatePosition(Tile startTile, Tile endTile, double progress) {
     if (progress >= 1.0) return endTile.getId();
@@ -326,12 +379,18 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     return temp != null ? temp.getId() : startTile.getId();
   }
 
+  /**
+   * Clears the entire canvas.
+   */
   public void clearCanvas() {
     // Clear the canvas
     GraphicsContext gc = getGraphicsContext2D();
     gc.clearRect(0, 0, getWidth(), getHeight());
   }
 
+  /**
+   * Draws all tiles on the board with their appropriate styles and images.
+   */
   public void drawTiles() {
     // Draw each tile on the board
     for (Tile tile : board.getTiles()) {
@@ -402,6 +461,16 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     }
   }
 
+  /**
+   * Draws a single tile with its background color.
+   *
+   * @param gc the graphics context to draw on
+   * @param tile the tile to draw
+   * @param canvasX the x-coordinate on the canvas
+   * @param canvasY the y-coordinate on the canvas
+   * @param tileWidth the width of the tile
+   * @param tileHeight the height of the tile
+   */
   private void drawTileWithColor(GraphicsContext gc, Tile tile, double canvasX, double canvasY, double tileWidth, double tileHeight) {
     // determine tile color
     Color fillColor = Color.WHITE;
