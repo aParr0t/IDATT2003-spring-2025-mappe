@@ -7,33 +7,23 @@ import java.nio.file.Paths;
  * Constants for file handling.
  */
 public class FileConstants {
-    /**
-     * The directory where user files are stored.
-     * Files are stored in the project directory as per requirements.
-     */
-    public static final Path USER_FILES_DIR = Paths.get("data");
+  /**
+   * The directory where user files are stored.
+   * Files are stored in the project directory as per requirements.
+   */
+  public static final Path USER_FILES_DIR = Paths.get("data");
 
-    /**
-     * The directory where board files are stored.
-     */
-    public static final Path BOARDS_DIR = USER_FILES_DIR.resolve("boards");
+  /**
+   * The directory where board files are stored.
+   */
+  public static final Path BOARDS_DIR = USER_FILES_DIR.resolve("boards");
 
-    /**
-     * The directory where player files are stored.
-     */
-    public static final Path PLAYERS_DIR = USER_FILES_DIR.resolve("players");
+  /**
+   * The directory where player files are stored.
+   */
+  public static final Path PLAYERS_DIR = USER_FILES_DIR.resolve("players");
 
-    /**
-     * The file extension for board files.
-     */
-    public static final String BOARD_FILE_EXTENSION = ".json";
-
-    /**
-     * The file extension for player files.
-     */
-    public static final String PLAYER_FILE_EXTENSION = ".csv";
-
-    private FileConstants() {
-        // Private constructor to prevent instantiation
-    }
+  private FileConstants() {
+    // Private constructor to prevent instantiation
+  }
 }

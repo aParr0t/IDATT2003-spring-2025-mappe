@@ -31,7 +31,7 @@ public class ChooseBoardScreen extends StackPane {
   private final List<Board> boards;
   private final VBox boardCardContainer = new VBox(10);
   private final HBox gamesContainer = new HBox(20);
-  private HBox buttonContainer;
+  private final HBox buttonContainer;
 
   public ChooseBoardScreen(GameType gameType, List<Board> boards) {
     this.gameType = gameType;
@@ -222,8 +222,7 @@ public class ChooseBoardScreen extends StackPane {
    */
   private void enableButtons() {
     for (javafx.scene.Node node : buttonContainer.getChildren()) {
-      if (node instanceof Button) {
-        Button button = (Button) node;
+      if (node instanceof Button button) {
         button.setDisable(false);
       }
     }

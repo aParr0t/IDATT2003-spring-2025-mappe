@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class MonopolyScreen extends StackPane {
-  private MonopolyBoard boardCanvas;
-  private VBox playerCardsSection;
-  private HBox diceContainer;
+  private final MonopolyBoard boardCanvas;
+  private final VBox playerCardsSection;
+  private final HBox diceContainer;
 
   public MonopolyScreen(Board board) {
     // Root layout
@@ -142,11 +142,13 @@ public class MonopolyScreen extends StackPane {
 
     // Create a label with the rules text
     Label rulesLabel = new Label(
-            "Rules of the Game:\n\n" +
-                    "• Roll the dice using the SPACE key to move around the board\n" +
-                    "• Buy properties, collect rent, and build houses\n" +
-                    "• Increase your money by strategic buying and trading\n" +
-                    "• First player to reach $2000 wins the game!"
+            """
+                    Rules of the Game:
+                    
+                    • Roll the dice using the SPACE key to move around the board
+                    • Buy properties, collect rent, and build houses
+                    • Increase your money by strategic buying and trading
+                    • First player to reach $2000 wins the game!"""
     );
     rulesLabel.setTextAlignment(TextAlignment.LEFT);
     rulesLabel.setWrapText(true);
@@ -181,15 +183,15 @@ public class MonopolyScreen extends StackPane {
     // Create a horizontal box for the player name and playing piece
     HBox nameAndPieceBox = new HBox(10);
     nameAndPieceBox.setAlignment(Pos.CENTER_LEFT);
-    
+
     // Player name
     Label nameLabel = new Label(player.getName());
     nameLabel.setFont(new Font(14));
-    
+
     // Playing piece icon
     ImageView pieceImageView = null;
     PlayingPiece playingPiece = player.getPlayingPiece();
-    
+
     if (playingPiece != null) {
       try {
         String imagePath = playingPiece.getImagePath();
@@ -202,10 +204,10 @@ public class MonopolyScreen extends StackPane {
         System.err.println("Could not load playing piece image: " + e.getMessage());
       }
     }
-    
+
     // Add name to the horizontal box
     nameAndPieceBox.getChildren().add(nameLabel);
-    
+
     // Add playing piece image if available
     if (pieceImageView != null) {
       nameAndPieceBox.getChildren().add(pieceImageView);
@@ -214,7 +216,7 @@ public class MonopolyScreen extends StackPane {
     // Money label
     Label moneyLabel = new Label("$" + money);
     moneyLabel.setStyle("-fx-font-weight: bold;");
-    
+
     // Stats label
     Label stats = new Label("🏠 " + 5 + "   🏘 " + 3);
 
@@ -234,16 +236,16 @@ public class MonopolyScreen extends StackPane {
 
   private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
-    
+
     // Check if dice are equal (doubles)
-    boolean areEqual = diceCounts.size() >= 2 && 
-                      diceCounts.stream().distinct().count() == 1;
-    
+    boolean areEqual = diceCounts.size() >= 2 &&
+            diceCounts.stream().distinct().count() == 1;
+
     // Set background color based on whether dice are equal
     diceContainer.setStyle("-fx-background-color: " + (areEqual ? "#FFD700;" : "#ffffff;"));
     diceContainer.setPadding(new Insets(10));
     diceContainer.setAlignment(Pos.CENTER);
-    
+
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);

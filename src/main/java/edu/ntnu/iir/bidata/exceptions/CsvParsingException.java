@@ -6,23 +6,13 @@ package edu.ntnu.iir.bidata.exceptions;
  * making it easier to switch CSV parsing libraries in the future.
  */
 public class CsvParsingException extends FileParsingException {
-    
-    /**
-     * Constructs a new CsvParsingException with the specified detail message.
-     * 
-     * @param message the detail message
-     */
-    public CsvParsingException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructs a new CsvParsingException with the specified detail message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause of the exception
-     */
-    public CsvParsingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+
+  /**
+   * Constructs a new CsvParsingException with the specified detail message.
+   *
+   * @param message the detail message
+   */
+  public CsvParsingException(String message) {
+    super(message);
+  }
 }

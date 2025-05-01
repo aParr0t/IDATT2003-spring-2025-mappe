@@ -188,7 +188,7 @@ class GameTest {
 
     // Assert
     assertTrue(response.isPlayerConfigOk(), "Should return true for valid player config");
-    assertNull(response.getErrorMessage(), "Error message should be null for valid config");
+    assertNull(response.errorMessage(), "Error message should be null for valid config");
   }
 
   @Test
@@ -204,7 +204,7 @@ class GameTest {
 
     // Assert
     assertFalse(response.isPlayerConfigOk(), "Should return false for null playing piece");
-    assertNotNull(response.getErrorMessage(), "Error message should not be null for invalid config");
+    assertNotNull(response.errorMessage(), "Error message should not be null for invalid config");
   }
 
   @Test
@@ -220,7 +220,7 @@ class GameTest {
 
     // Assert
     assertFalse(response.isPlayerConfigOk(), "Should return false for duplicate playing pieces");
-    assertNotNull(response.getErrorMessage(), "Error message should not be null for invalid config");
+    assertNotNull(response.errorMessage(), "Error message should not be null for invalid config");
   }
 
   @Test

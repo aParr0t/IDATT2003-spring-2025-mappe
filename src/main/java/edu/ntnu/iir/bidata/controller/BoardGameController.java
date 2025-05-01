@@ -59,7 +59,7 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
       PlayerConfigResponse response = game.isPlayerConfigOk(players);
       if (!response.isPlayerConfigOk()) {
-        GUIApp.getInstance().showMessage(response.getErrorMessage());
+        GUIApp.getInstance().showMessage(response.errorMessage());
         return;
       }
       // update model
@@ -141,8 +141,8 @@ public class BoardGameController {
 
     GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, tuple -> {
       try {
-        Path filePath = tuple.getFirst();
-        List<Player> players = tuple.getSecond();
+        Path filePath = tuple.first();
+        List<Player> players = tuple.second();
 
         // Ensure players exist
         if (players.isEmpty()) {
@@ -182,7 +182,7 @@ public class BoardGameController {
 
             GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
           } else {
-            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.getErrorMessage());
+            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.errorMessage());
           }
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the players into");

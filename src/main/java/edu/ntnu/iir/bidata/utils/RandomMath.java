@@ -22,17 +22,4 @@ public class RandomMath {
     }
     return Optional.of(list.get(getRandomNumber(0, list.size())));
   }
-
-  public static Optional<Integer> getRandomNumberNotEq(int min, int max, List<Integer> notEq) {
-    List<Integer> available = new ArrayList<>();
-    for (int i = min; i < max; i++) {
-      if (!notEq.contains(i)) {
-        available.add(i);
-      }
-    }
-    if (available.isEmpty()) {
-      return Optional.empty();
-    }
-    return randomPick(available);
-  }
 }

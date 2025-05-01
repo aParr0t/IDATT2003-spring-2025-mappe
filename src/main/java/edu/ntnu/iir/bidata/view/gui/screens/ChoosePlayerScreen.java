@@ -24,7 +24,6 @@ import javafx.stage.FileChooser;
 import edu.ntnu.iir.bidata.model.Player;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +123,7 @@ public class ChoosePlayerScreen extends StackPane {
     for (Player player : players) {
       VBox playerCard = createPlayerCard(player);
       // Make the image clickable to cycle through playing pieces
-      Rectangle imageContainer = (Rectangle) playerCard.getChildren().get(0);
+      Rectangle imageContainer = (Rectangle) playerCard.getChildren().getFirst();
       imageContainer.setOnMouseClicked(event -> playerClickHandler(player));
       playersContainer.getChildren().add(playerCard);
     }
@@ -163,9 +162,7 @@ public class ChoosePlayerScreen extends StackPane {
     playerNameField.setMaxWidth(180);
 
     // Add a listener to update the player name when the text field changes
-    playerNameField.textProperty().addListener((observable, oldValue, newValue) -> {
-      player.setName(newValue);
-    });
+    playerNameField.textProperty().addListener((observable, oldValue, newValue) -> player.setName(newValue));
 
     // Delete button
     Button deleteButton = new Button("Delete");
@@ -205,10 +202,14 @@ public class ChoosePlayerScreen extends StackPane {
     GUIApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
   }
 
-  private void savePlayers() {
-    // Create a file chooser
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Players");
+  /**
+   * Configures a FileChooser with common settings for player file operations.
+   *
+   * @param fileChooser The FileChooser to configure
+   * @param title       The title to set for the FileChooser dialog
+   */
+  private void configureFileChooser(FileChooser fileChooser, String title) {
+    fileChooser.setTitle(title);
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("CSV Files", "*.csv")
     );
@@ -222,6 +223,12 @@ public class ChoosePlayerScreen extends StackPane {
     } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
     }
+  }
+
+  private void savePlayers() {
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    configureFileChooser(fileChooser, "Save Players");
 
     fileChooser.setInitialFileName("players.csv");
 
@@ -237,20 +244,7 @@ public class ChoosePlayerScreen extends StackPane {
   private void loadPlayers() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Load Players");
-    fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-    );
-
-    // Set the initial directory to the players directory in the project
-    File playersDir = FileConstants.PLAYERS_DIR.toFile();
-    // Ensure the directory exists
-    try {
-      FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
-      fileChooser.setInitialDirectory(playersDir);
-    } catch (DirectoryCreationException e) {
-      GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
-    }
+    configureFileChooser(fileChooser, "Load Players");
 
     // Show the open dialog
     File file = fileChooser.showOpenDialog(this.getScene().getWindow());

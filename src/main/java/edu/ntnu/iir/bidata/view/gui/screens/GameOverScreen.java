@@ -24,9 +24,7 @@ public class GameOverScreen extends StackPane {
 
     // play again button
     Button playAgainButton = new Button("Play Again");
-    playAgainButton.setOnAction(e -> {
-      GUIApp.getInstance().emitEvent(AppEvent.PLAY_AGAIN);
-    });
+    playAgainButton.setOnAction(e -> GUIApp.getInstance().emitEvent(AppEvent.PLAY_AGAIN));
 
     vbox.getChildren().addAll(winnerLabel, playAgainButton);
     vbox.setAlignment(Pos.CENTER);
