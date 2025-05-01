@@ -5,15 +5,5 @@ package edu.ntnu.iir.bidata.model;
  * Contains information about whether the configuration is valid and any error message
  * if validation failed.
  */
-public record PlayerConfigResponse(
-    /**
-     * Flag indicating if the player configuration is valid.
-     */
-    boolean isPlayerConfigOk,
-    
-    /**
-     * Error message detailing why the configuration failed validation.
-     * Empty or null if the configuration is valid.
-     */
-    String errorMessage) {
+public record PlayerConfigResponse(boolean isPlayerConfigOk, String errorMessage) {
 }
