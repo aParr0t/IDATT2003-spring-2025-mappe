@@ -6,13 +6,12 @@ import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Canvas component for rendering a Snakes and Ladders game board.
@@ -85,14 +84,14 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
    * Draws a ladder between two points on the board.
    * Creates a visual ladder with two side rails and multiple rungs between them.
    *
-   * @param start the starting point (bottom) of the ladder
-   * @param end the ending point (top) of the ladder
+   * @param start       the starting point (bottom) of the ladder
+   * @param end         the ending point (top) of the ladder
    * @param ladderWidth the width of the ladder
    */
   private void drawLadder(Point2D start, Point2D end, double ladderWidth) {
     // canvas width and height
     double canvasWidth = getWidth();
-    double canvasHeight = getHeight();
+    final double canvasHeight = getHeight();
     GraphicsContext gc = getGraphicsContext2D();
 
     // Get or create color for this ladder
@@ -147,14 +146,14 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
    * Draws a snake from start to end with a wave effect.
    * Creates a visual snake with a sinusoidal path and a distinct head.
    *
-   * @param start the starting point (head) of the snake
-   * @param end the ending point (tail) of the snake
+   * @param start                the starting point (head) of the snake
+   * @param end                  the ending point (tail) of the snake
    * @param normalizedSnakeWidth the normalized width of the snake
    */
   private void drawSnake(Point2D start, Point2D end, double normalizedSnakeWidth) {
     // canvas width and height
     double canvasWidth = getWidth();
-    double canvasHeight = getHeight();
+    final double canvasHeight = getHeight();
     GraphicsContext gc = getGraphicsContext2D();
 
     // Get or create color for this snake
@@ -182,8 +181,8 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
     double frequency = 3.0; // Number of waves
 
     // Create snake path using sine wave
-    double[] xPoints = new double[segments + 1];
-    double[] yPoints = new double[segments + 1];
+    double[] xpoints = new double[segments + 1];
+    double[] ypoints = new double[segments + 1];
 
     for (int i = 0; i <= segments; i++) {
       double t = (double) i / segments; // parametric value between 0 and 1
@@ -197,20 +196,20 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
       Point2D finalPos = pos.add(waveOffset);
 
       // Convert to canvas coordinates
-      xPoints[i] = finalPos.getX() * canvasWidth;
-      yPoints[i] = finalPos.getY() * canvasHeight;
+      xpoints[i] = finalPos.getX() * canvasWidth;
+      ypoints[i] = finalPos.getY() * canvasHeight;
     }
 
     // Draw snake body
     gc.setLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
     for (int i = 0; i < segments; i++) {
-      gc.strokeLine(xPoints[i], yPoints[i], xPoints[i + 1], yPoints[i + 1]);
+      gc.strokeLine(xpoints[i], ypoints[i], xpoints[i + 1], ypoints[i + 1]);
     }
 
     // Draw snake head (larger circle)
     double headSize = snakeWidth * 2;
     gc.setFill(snakeColor.brighter());
-    gc.fillOval(xPoints[0] - headSize / 2, yPoints[0] - headSize / 2, headSize, headSize);
+    gc.fillOval(xpoints[0] - headSize / 2, ypoints[0] - headSize / 2, headSize, headSize);
   }
 
   /**
@@ -226,21 +225,21 @@ public class SnakesAndLaddersBoard extends BoardCanvas {
       drawPlayers(players);
     }
   }
-  
+
   /**
    * Updates the players on the board with animation.
    * This method automatically handles tracking previous positions.
    *
-   * @param players the list of players to display
+   * @param players    the list of players to display
    * @param onComplete callback to run when animation completes
    */
   public void updatePlayersWithAnimation(List<Player> players, Runnable onComplete) {
     // Store the callback
     this.onAnimationCompleteCallback = onComplete;
-    
+
     // Update with new players - position tracking is handled in the parent class
     setPlayers(players);
-    
+
     // Start animation
     animatePlayers(() -> {
       if (onAnimationCompleteCallback != null) {

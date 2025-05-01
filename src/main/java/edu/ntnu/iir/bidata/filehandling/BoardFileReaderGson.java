@@ -1,14 +1,18 @@
 package edu.ntnu.iir.bidata.filehandling;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import edu.ntnu.iir.bidata.exceptions.FileNotFoundException;
 import edu.ntnu.iir.bidata.exceptions.JsonParsingException;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.TileStyling;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
-import javafx.geometry.Point2D;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -17,13 +21,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.geometry.Point2D;
 
 /**
  * Implementation of BoardFileReader that reads boards from a JSON file using Gson.
  */
 public class BoardFileReaderGson implements BoardFileReader {
   @Override
-  public Board readBoard(Path filePath) throws IOException, FileNotFoundException, JsonParsingException {
+  public Board readBoard(Path filePath) throws
+          IOException, FileNotFoundException, JsonParsingException {
     String json;
     try {
       json = Files.readString(filePath);

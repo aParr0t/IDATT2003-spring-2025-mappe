@@ -4,7 +4,6 @@ import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.view.gui.games.MonopolyBoard;
 import edu.ntnu.iir.bidata.view.gui.games.SnakesAndLaddersBoard;
-
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -19,13 +18,19 @@ public class BoardCanvasFactory {
    * Each function takes a Board instance and returns the appropriate BoardCanvas
    * implementation for that game type.
    */
-  private static final HashMap<GameType, Function<Board, BoardCanvas>> boardFactories = new HashMap<>() {{
-    put(GameType.SNAKES_AND_LADDERS, SnakesAndLaddersBoard::new);
-    put(GameType.MONOPOLY, MonopolyBoard::new);
-  }};
+  private static HashMap<GameType, Function<Board, BoardCanvas>> boardFactories;
+
+  static {
+    boardFactories = new HashMap<>() {
+      {
+        put(GameType.SNAKES_AND_LADDERS, SnakesAndLaddersBoard::new);
+        put(GameType.MONOPOLY, MonopolyBoard::new);
+      }
+    };
+  }
 
   /**
-   * Creates a BoardCanvas instance for the given game type and board
+   * Creates a BoardCanvas instance for the given game type and board.
    *
    * @param gameType the type of game
    * @param board    the board configuration

@@ -1,7 +1,6 @@
 package edu.ntnu.iir.bidata.utils;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -23,7 +22,7 @@ public class RandomMath {
   /**
    * Picks a random element from a list.
    *
-   * @param <T> The type of elements in the list
+   * @param <T>  The type of elements in the list
    * @param list The list to pick from
    * @return An Optional containing a random element from the list, or empty if the list is empty
    */

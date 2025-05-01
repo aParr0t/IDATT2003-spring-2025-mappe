@@ -4,7 +4,6 @@ import edu.ntnu.iir.bidata.controller.BoardGameController;
 import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
 
 /**
  * Main entry point for the board game application.

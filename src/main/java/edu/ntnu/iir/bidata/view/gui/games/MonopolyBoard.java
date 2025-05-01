@@ -3,7 +3,6 @@ package edu.ntnu.iir.bidata.view.gui.games;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
-
 import java.util.List;
 
 /**
@@ -36,22 +35,22 @@ public class MonopolyBoard extends BoardCanvas {
       drawPlayers(players);
     }
   }
-  
+
   /**
    * Updates the players on the board with animation.
    * This method automatically handles tracking previous positions and executes
    * the provided callback when animation completes.
-   * 
-   * @param players the list of players to display
+   *
+   * @param players    the list of players to display
    * @param onComplete callback to run when animation completes
    */
   public void updatePlayersWithAnimation(List<Player> players, Runnable onComplete) {
     // Store the callback
     this.onAnimationCompleteCallback = onComplete;
-    
+
     // Update with new players - position tracking is handled in the parent class
     setPlayers(players);
-    
+
     // Start animation
     animatePlayers(() -> {
       if (onAnimationCompleteCallback != null) {

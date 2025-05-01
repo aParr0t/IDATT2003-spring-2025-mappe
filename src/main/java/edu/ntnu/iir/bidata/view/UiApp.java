@@ -4,7 +4,7 @@ package edu.ntnu.iir.bidata.view;
  * Interface defining the core UI application functionality.
  * Provides methods for application lifecycle management and event handling.
  */
-public interface UIApp {
+public interface UiApp {
   /**
    * Initializes and starts the application.
    */
@@ -17,7 +17,8 @@ public interface UIApp {
 
   /**
    * Registers an event listener for the specified event type.
-   * (Help from AI: We got some help from AI with generics. I, aParrot, know typescript, but not java.)
+   * (Help from AI: We got some help from AI with generics.
+   * I, aParrot, know typescript, but not java.)
    *
    * @param <T>      the type of data associated with the event
    * @param event    the event to register the listener for
@@ -27,7 +28,8 @@ public interface UIApp {
 
   /**
    * Unregisters an event listener for the specified event type.
-   * (Help from AI: We got some help from AI with generics. I, aParrot, know typescript, but not java.)
+   * (Help from AI: We got some help from AI with generics.
+   * I, aParrot, know typescript, but not java.)
    *
    * @param <T>      the type of data associated with the event
    * @param event    the event to unregister the listener from
@@ -37,7 +39,8 @@ public interface UIApp {
 
   /**
    * Triggers an event with associated data, notifying all registered listeners.
-   * (Help from AI: We got some help from AI with generics. I, aParrot, know typescript, but not java.)
+   * (Help from AI: We got some help from AI with generics.
+   * I, aParrot, know typescript, but not java.)
    *
    * @param <T>   the type of data associated with the event
    * @param event the event to be triggered
@@ -48,7 +51,8 @@ public interface UIApp {
   /**
    * Triggers an event without data, notifying all registered listeners.
    * Convenience method for events that don't require data.
-   * (Help from AI: We got some help from AI with generics. I, aParrot, know typescript, but not java.)
+   * (Help from AI: We got some help from AI with generics.
+   * I, aParrot, know typescript, but not java.)
    *
    * @param event the event to be triggered
    */

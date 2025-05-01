@@ -116,10 +116,10 @@ public class Board {
    */
   @Override
   public String toString() {
-    return "Board{" +
-            "tileCount=" + getTileCount() +
-            ", width=" + width +
-            ", height=" + height +
-            '}';
+    return "Board{"
+            + "tileCount=" + getTileCount()
+            + ", width=" + width
+            + ", height=" + height
+            + '}';
   }
 }

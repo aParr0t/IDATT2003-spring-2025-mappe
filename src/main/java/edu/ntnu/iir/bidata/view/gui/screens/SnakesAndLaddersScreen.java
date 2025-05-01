@@ -4,21 +4,29 @@ import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.gui.*;
+import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
+import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
+import edu.ntnu.iir.bidata.view.gui.DieRectangle;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
 import edu.ntnu.iir.bidata.view.gui.games.SnakesAndLaddersBoard;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-
-import java.util.List;
 
 /**
  * A JavaFX UI component that displays the Snakes and Ladders game screen.
@@ -38,7 +46,7 @@ public class SnakesAndLaddersScreen extends StackPane {
    */
   public SnakesAndLaddersScreen(Board board) {
     // Create the main layout
-    BorderPane mainLayout = new BorderPane();
+    final BorderPane mainLayout = new BorderPane();
 
     // Center section - Game board
     boardCanvas = BoardCanvasFactory.createBoardCanvas(GameType.SNAKES_AND_LADDERS, board);
@@ -89,7 +97,7 @@ public class SnakesAndLaddersScreen extends StackPane {
   /**
    * Creates a player information card UI component.
    *
-   * @param player the player whose information to display
+   * @param player   the player whose information to display
    * @param isActive whether this player is the currently active player
    * @return a StackPane containing the player's information
    */
@@ -101,12 +109,16 @@ public class SnakesAndLaddersScreen extends StackPane {
 
     // give container an outline if the player is active
     if (isActive) {
-      playerCard.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+      playerCard.setBackground(
+              new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY))
+      );
     }
 
     // Create player avatar (circle)
     Rectangle avatar = new Rectangle(120, 120);
-    ImagePattern imagePattern = new ImagePattern(new Image(player.getPlayingPiece().getImagePath()));
+    ImagePattern imagePattern = new ImagePattern(
+            new Image(player.getPlayingPiece().getImagePath())
+    );
     avatar.setFill(imagePattern);
 
     // Create player name label
@@ -130,15 +142,15 @@ public class SnakesAndLaddersScreen extends StackPane {
 
     // First, notify that dice were rolled (this will update the game state in BoardGameApp)
     // This will trigger BoardGameApp.goToAndUpdateGameScreen(), which will update this screen
-    GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "snakes_and_ladders_dice_rolled");
+    GuiApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "snakes_and_ladders_dice_rolled");
   }
 
   /**
    * Updates the game screen with the current game state.
    *
-   * @param players list of all players in the game
+   * @param players       list of all players in the game
    * @param currentPlayer the player whose turn it currently is
-   * @param diceCounts list of dice values that were rolled
+   * @param diceCounts    list of dice values that were rolled
    */
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
     // Use animation for player movement
@@ -168,7 +180,7 @@ public class SnakesAndLaddersScreen extends StackPane {
   /**
    * Draws player information cards for all players, highlighting the current player.
    *
-   * @param players list of players to display
+   * @param players       list of players to display
    * @param currentPlayer the player whose turn it currently is
    */
   private void drawPlayerCards(List<Player> players, Player currentPlayer) {

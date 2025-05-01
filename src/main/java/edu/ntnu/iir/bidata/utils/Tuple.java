@@ -40,12 +40,18 @@ public record Tuple<A, B>(A first, B second) {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null || getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
 
     Tuple<?, ?> tuple = (Tuple<?, ?>) obj;
 
-    if (!Objects.equals(first, tuple.first)) return false;
+    if (!Objects.equals(first, tuple.first)) {
+      return false;
+    }
     return Objects.equals(second, tuple.second);
   }
 

@@ -13,7 +13,7 @@ public class BoardTileLayout {
    * Creates a snake and ladders board layout with the specified dimensions.
    *
    * @param columns the number of columns in the grid
-   * @param rows the number of rows in the grid
+   * @param rows    the number of rows in the grid
    * @return a list of tiles representing the snake and ladders board
    */
   public static List<Tile> snakesAndLadders(int columns, int rows) {
@@ -23,7 +23,7 @@ public class BoardTileLayout {
     double dy = 1.0 / rows;
     double x = 0;
     double y = 1 - dy;
-    int xDir = 1;
+    int xdir = 1;
 
     int tileCount = 0;
     int totalTileCount = columns * rows;
@@ -43,11 +43,11 @@ public class BoardTileLayout {
       }
 
       // move to the next position
-      x += xDir * dx;
-      boolean shouldChangeXDir = tileCount % columns == 0;
-      if (shouldChangeXDir) {
-        xDir = -xDir;  // reverse direction
-        x += xDir * dx;  // move back into the grid
+      x += xdir * dx;
+      boolean shouldChangeXdir = tileCount % columns == 0;
+      if (shouldChangeXdir) {
+        xdir = -xdir;  // reverse direction
+        x += xdir * dx;  // move back into the grid
         y -= dy;  // move up one row
         if (tileCount >= columns * rows) {
           break;
@@ -70,13 +70,13 @@ public class BoardTileLayout {
      * Constructs a new TileIndexManager with specified starting and maximum indices.
      *
      * @param startIndex the initial index value
-     * @param maxIndex the maximum index value before resetting to zero
+     * @param maxIndex   the maximum index value before resetting to zero
      */
     public TileIndexManager(int startIndex, int maxIndex) {
       this.tileIndex = startIndex;
       this.maxIndex = maxIndex;
     }
-    
+
     /**
      * Gets the next available index and increments the counter.
      * Resets to zero if maximum index is reached.
@@ -101,13 +101,13 @@ public class BoardTileLayout {
     List<Tile> tiles = new ArrayList<>();
 
     // tile configuration
-    double CORNER_TILE_SIZE = 0.15;
+    double cornerTileSize = 0.15;
     int sideTileCount = 9;
-    double SIDE_TILE_SIZE = (1 - 2 * CORNER_TILE_SIZE) / sideTileCount;
+    final double sideTileSize = (1 - 2 * cornerTileSize) / sideTileCount;
 
     double x = 0;
     double y = 0;
-    
+
     // Create index manager
     TileIndexManager indexManager = new TileIndexManager(20, 40);
 
@@ -115,63 +115,63 @@ public class BoardTileLayout {
     // GO tile
     Tile goTile = new Tile(indexManager.getNextIndex());
     goTile.setPosition(x, y);
-    goTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    goTile.setSize(cornerTileSize, cornerTileSize);
     tiles.add(goTile);
-    x += CORNER_TILE_SIZE;
+    x += cornerTileSize;
 
     // side 1
     for (int i = 0; i < sideTileCount; i++) {
       Tile sideTile = new Tile(indexManager.getNextIndex());
       sideTile.setPosition(x, y);
-      sideTile.setSize(SIDE_TILE_SIZE, CORNER_TILE_SIZE);
+      sideTile.setSize(sideTileSize, cornerTileSize);
       tiles.add(sideTile);
-      x += SIDE_TILE_SIZE;
+      x += sideTileSize;
     }
 
     // Prison tile
     Tile prisonTile = new Tile(indexManager.getNextIndex());
     prisonTile.setPosition(x, y);
-    prisonTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    prisonTile.setSize(cornerTileSize, cornerTileSize);
     tiles.add(prisonTile);
 
     // side 2
-    y += CORNER_TILE_SIZE;
+    y += cornerTileSize;
     for (int i = 0; i < sideTileCount; i++) {
       Tile sideTile = new Tile(indexManager.getNextIndex());
       sideTile.setPosition(x, y);
-      sideTile.setSize(CORNER_TILE_SIZE, SIDE_TILE_SIZE);
+      sideTile.setSize(cornerTileSize, sideTileSize);
       tiles.add(sideTile);
-      y += SIDE_TILE_SIZE;
+      y += sideTileSize;
     }
 
     // Parking tile
     Tile parkingTile = new Tile(indexManager.getNextIndex());
     parkingTile.setPosition(x, y);
-    parkingTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    parkingTile.setSize(cornerTileSize, cornerTileSize);
     tiles.add(parkingTile);
 
     // side 3
     for (int i = 0; i < sideTileCount; i++) {
-      x -= SIDE_TILE_SIZE;
+      x -= sideTileSize;
       Tile sideTile = new Tile(indexManager.getNextIndex());
       sideTile.setPosition(x, y);
-      sideTile.setSize(SIDE_TILE_SIZE, CORNER_TILE_SIZE);
+      sideTile.setSize(sideTileSize, cornerTileSize);
       tiles.add(sideTile);
     }
 
     // Go to jail tile
-    x -= CORNER_TILE_SIZE;
+    x -= cornerTileSize;
     Tile goToJailTile = new Tile(indexManager.getNextIndex());
     goToJailTile.setPosition(x, y);
-    goToJailTile.setSize(CORNER_TILE_SIZE, CORNER_TILE_SIZE);
+    goToJailTile.setSize(cornerTileSize, cornerTileSize);
     tiles.add(goToJailTile);
 
     // side 4
     for (int i = 0; i < sideTileCount; i++) {
-      y -= SIDE_TILE_SIZE;
+      y -= sideTileSize;
       Tile sideTile = new Tile(indexManager.getNextIndex());
       sideTile.setPosition(x, y);
-      sideTile.setSize(CORNER_TILE_SIZE, SIDE_TILE_SIZE);
+      sideTile.setSize(cornerTileSize, sideTileSize);
       tiles.add(sideTile);
     }
 
