@@ -20,8 +20,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,10 +129,14 @@ public class ChooseBoardScreen extends StackPane {
     }
   }
 
-  private void saveBoard() {
-    // Create a file chooser
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Board");
+  /**
+   * Configures a FileChooser with common settings for board file operations.
+   *
+   * @param fileChooser The FileChooser to configure
+   * @param title The title to set for the FileChooser dialog
+   */
+  private void configureFileChooser(FileChooser fileChooser, String title) {
+    fileChooser.setTitle(title);
     fileChooser.getExtensionFilters().add(
             new FileChooser.ExtensionFilter("JSON Files", "*.json")
     );
@@ -148,6 +150,12 @@ public class ChooseBoardScreen extends StackPane {
     } catch (DirectoryCreationException e) {
       GUIApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
     }
+  }
+
+  private void saveBoard() {
+    // Create a file chooser
+    FileChooser fileChooser = new FileChooser();
+    configureFileChooser(fileChooser, "Save Board");
 
     fileChooser.setInitialFileName(selectedBoard.getName() + ".json");
 
@@ -163,20 +171,7 @@ public class ChooseBoardScreen extends StackPane {
   private void loadBoard() {
     // Create a file chooser
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Load Board");
-    fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("JSON Files", "*.json")
-    );
-
-    // Set the initial directory to the boards directory in the project
-    File boardsDir = FileConstants.BOARDS_DIR.toFile();
-    // Ensure the directory exists
-    try {
-      FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
-      fileChooser.setInitialDirectory(boardsDir);
-    } catch (DirectoryCreationException e) {
-      GUIApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
-    }
+    configureFileChooser(fileChooser, "Load Board");
 
     // Show the open dialog
     File file = fileChooser.showOpenDialog(this.getScene().getWindow());
