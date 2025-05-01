@@ -4,8 +4,7 @@ import edu.ntnu.iir.bidata.controller.BoardGameController;
 import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
-
-import java.io.IOException;
+import edu.ntnu.iir.bidata.view.gui.GUIApp;
 
 /**
  * Main entry point for the board game application.
@@ -14,7 +13,7 @@ import java.io.IOException;
 public class Main {
   /**
    * The application entry point.
-   * Creates necessary directories for file storage and starts the board game controller.
+   * Creates necessary directories for file storage and starts the JavaFX application.
    *
    * @param args command line arguments (not used)
    */

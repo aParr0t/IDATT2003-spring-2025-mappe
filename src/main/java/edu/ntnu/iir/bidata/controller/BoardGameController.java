@@ -213,7 +213,7 @@ public class BoardGameController {
   /**
    * Updates the game screen with current game state.
    * Handles different game screen types and updates them with appropriate data.
-   * 
+   *
    * @throws IllegalArgumentException if the game screen type is invalid
    */
   private void updateGameScreen() {
