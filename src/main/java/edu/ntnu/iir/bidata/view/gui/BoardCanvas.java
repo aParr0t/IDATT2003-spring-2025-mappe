@@ -127,6 +127,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   /**
    * Animates player movement from their previous positions to current positions.
    * This method should be called after updating player positions.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    *
    * @param onComplete Runnable to execute when animation completes
    */
@@ -164,6 +165,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   /**
    * Starts the animation of player movements from previous to current positions.
    * Animation only runs if there are players with changed positions.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    *
    * @param onComplete Runnable to execute when animation completes
    */
@@ -209,6 +211,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   /**
    * Updates the animation progress for each player.
    * Called by the animation timer on each frame.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    */
   private void updateAnimation() {
     if (!animating) return;
@@ -235,6 +238,7 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   /**
    * Stops the animation and executes the completion callback.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    */
   private void stopAnimation() {
     animating = false;
@@ -320,8 +324,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   /**
    * Determines if animation should follow connected tile path.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    *
-   * @param prevTile the tile the player is moving from
+   * @param prevTile    the tile the player is moving from
    * @param currentTile the tile the player is moving to
    * @return true if animation should follow connected path, false otherwise
    */
@@ -345,10 +350,11 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
 
   /**
    * Gets intermediate position following the path of connected tiles.
+   * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    *
    * @param startTile the starting tile
-   * @param endTile the destination tile
-   * @param progress the animation progress (0.0 to 1.0)
+   * @param endTile   the destination tile
+   * @param progress  the animation progress (0.0 to 1.0)
    * @return the ID of the intermediate tile based on current progress
    */
   private int getIntermediatePosition(Tile startTile, Tile endTile, double progress) {
@@ -464,11 +470,11 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   /**
    * Draws a single tile with its background color.
    *
-   * @param gc the graphics context to draw on
-   * @param tile the tile to draw
-   * @param canvasX the x-coordinate on the canvas
-   * @param canvasY the y-coordinate on the canvas
-   * @param tileWidth the width of the tile
+   * @param gc         the graphics context to draw on
+   * @param tile       the tile to draw
+   * @param canvasX    the x-coordinate on the canvas
+   * @param canvasY    the y-coordinate on the canvas
+   * @param tileWidth  the width of the tile
    * @param tileHeight the height of the tile
    */
   private void drawTileWithColor(GraphicsContext gc, Tile tile, double canvasX, double canvasY, double tileWidth, double tileHeight) {

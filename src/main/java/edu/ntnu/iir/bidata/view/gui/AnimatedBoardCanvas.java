@@ -3,6 +3,7 @@ package edu.ntnu.iir.bidata.view.gui;
 
 /**
  * Interface for board canvases that support animation
+ * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
  */
 public interface AnimatedBoardCanvas {
   /**
