@@ -21,10 +21,10 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 public class SnakesAndLaddersScreen extends StackPane {
-  private Button rollButton;
-  private BoardCanvas boardCanvas;
-  private HBox playerCardsSection;
-  private HBox diceContainer;
+  private final Button rollButton;
+  private final BoardCanvas boardCanvas;
+  private final HBox playerCardsSection;
+  private final HBox diceContainer;
 
   public SnakesAndLaddersScreen(Board board) {
     // Create the main layout
