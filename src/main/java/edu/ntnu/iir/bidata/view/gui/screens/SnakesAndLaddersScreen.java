@@ -20,12 +20,22 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
+/**
+ * A JavaFX UI component that displays the Snakes and Ladders game screen.
+ * This screen includes the game board, player information cards, dice display,
+ * and roll button controls.
+ */
 public class SnakesAndLaddersScreen extends StackPane {
-  private Button rollButton;
-  private BoardCanvas boardCanvas;
-  private HBox playerCardsSection;
-  private HBox diceContainer;
+  private final Button rollButton;
+  private final BoardCanvas boardCanvas;
+  private final HBox playerCardsSection;
+  private final HBox diceContainer;
 
+  /**
+   * Creates a new Snakes and Ladders game screen.
+   *
+   * @param board the game board to display
+   */
   public SnakesAndLaddersScreen(Board board) {
     // Create the main layout
     BorderPane mainLayout = new BorderPane();
@@ -76,6 +86,13 @@ public class SnakesAndLaddersScreen extends StackPane {
     this.getChildren().add(mainLayout);
   }
 
+  /**
+   * Creates a player information card UI component.
+   *
+   * @param player the player whose information to display
+   * @param isActive whether this player is the currently active player
+   * @return a StackPane containing the player's information
+   */
   private StackPane createPlayerCard(Player player, boolean isActive) {
     // Create player card container
     StackPane playerCard = new StackPane();
@@ -103,6 +120,10 @@ public class SnakesAndLaddersScreen extends StackPane {
     return playerCard;
   }
 
+  /**
+   * Handles the roll dice button click event by triggering the dice roll game event.
+   * Disables the roll button during animation.
+   */
   private void handleRollDice() {
     // Disable roll button during animation
     rollButton.setDisable(true);
@@ -112,6 +133,13 @@ public class SnakesAndLaddersScreen extends StackPane {
     GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "snakes_and_ladders_dice_rolled");
   }
 
+  /**
+   * Updates the game screen with the current game state.
+   *
+   * @param players list of all players in the game
+   * @param currentPlayer the player whose turn it currently is
+   * @param diceCounts list of dice values that were rolled
+   */
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts) {
     // Use animation for player movement
     // Position tracking is now handled automatically by boardCanvas
@@ -124,6 +152,11 @@ public class SnakesAndLaddersScreen extends StackPane {
     drawDice(diceCounts);
   }
 
+  /**
+   * Draws the dice with their current values.
+   *
+   * @param diceCounts list of values to display on the dice
+   */
   private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
     for (Integer diceCount : diceCounts) {
@@ -132,6 +165,12 @@ public class SnakesAndLaddersScreen extends StackPane {
     }
   }
 
+  /**
+   * Draws player information cards for all players, highlighting the current player.
+   *
+   * @param players list of players to display
+   * @param currentPlayer the player whose turn it currently is
+   */
   private void drawPlayerCards(List<Player> players, Player currentPlayer) {
     playerCardsSection.getChildren().clear();
     for (Player player : players) {

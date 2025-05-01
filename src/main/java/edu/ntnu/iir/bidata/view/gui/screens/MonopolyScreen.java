@@ -26,11 +26,21 @@ import javafx.application.Platform;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * UI component that represents the Monopoly game screen.
+ * Displays the game board, player information cards, dice, and game status.
+ * Handles user interactions like rolling dice with space key.
+ */
 public class MonopolyScreen extends StackPane {
-  private MonopolyBoard boardCanvas;
-  private VBox playerCardsSection;
-  private HBox diceContainer;
+  private final MonopolyBoard boardCanvas;
+  private final VBox playerCardsSection;
+  private final HBox diceContainer;
 
+  /**
+   * Constructs a new Monopoly game screen.
+   *
+   * @param board the game board containing game state and tile information
+   */
   public MonopolyScreen(Board board) {
     // Root layout
     BorderPane root = new BorderPane();
@@ -110,7 +120,7 @@ public class MonopolyScreen extends StackPane {
   /**
    * Creates a circular help button with a question mark.
    *
-   * @return A styled help button
+   * @return a styled help button that shows the rules dialog when clicked
    */
   private Button createHelpButton() {
     Button helpButton = new Button("?");
@@ -133,7 +143,8 @@ public class MonopolyScreen extends StackPane {
   }
 
   /**
-   * Display a dialog with the rules of the Monopoly game.
+   * Displays a dialog with the rules of the Monopoly game.
+   * Shows information about how to play, including controls and winning conditions.
    */
   private void showRulesDialog() {
     Alert rulesDialog = new Alert(Alert.AlertType.INFORMATION);
@@ -142,11 +153,13 @@ public class MonopolyScreen extends StackPane {
 
     // Create a label with the rules text
     Label rulesLabel = new Label(
-            "Rules of the Game:\n\n" +
-                    "• Roll the dice using the SPACE key to move around the board\n" +
-                    "• Buy properties, collect rent, and build houses\n" +
-                    "• Increase your money by strategic buying and trading\n" +
-                    "• First player to reach $2000 wins the game!"
+            """
+                    Rules of the Game:
+                    
+                    • Roll the dice using the SPACE key to move around the board
+                    • Buy properties, collect rent, and build houses
+                    • Increase your money by strategic buying and trading
+                    • First player to reach $2000 wins the game!"""
     );
     rulesLabel.setTextAlignment(TextAlignment.LEFT);
     rulesLabel.setWrapText(true);
@@ -161,6 +174,15 @@ public class MonopolyScreen extends StackPane {
     rulesDialog.showAndWait();
   }
 
+  /**
+   * Updates the UI components based on the current game state.
+   * Updates player positions on the board with animation, player cards, and dice display.
+   *
+   * @param players the list of players in the game
+   * @param currentPlayer the player whose turn it currently is
+   * @param diceCounts the list of dice values from the last roll
+   * @param playerMoney the list of money amounts for each player
+   */
   public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts, List<Integer> playerMoney) {
     // Update player positions with animation
     boardCanvas.updatePlayersWithAnimation(players, () -> {
@@ -172,6 +194,15 @@ public class MonopolyScreen extends StackPane {
     drawDice(diceCounts);
   }
 
+  /**
+   * Creates a visual card representation for a player.
+   * The card displays the player's name, playing piece, money, and property statistics.
+   *
+   * @param player the player to create a card for
+   * @param isActive whether this player is the current active player
+   * @param money the player's current money amount
+   * @return an HBox containing the styled player card
+   */
   private HBox createPlayerCard(Player player, boolean isActive, int money) {
     VBox card = new VBox(5);
     card.setPadding(new Insets(10));
@@ -181,15 +212,15 @@ public class MonopolyScreen extends StackPane {
     // Create a horizontal box for the player name and playing piece
     HBox nameAndPieceBox = new HBox(10);
     nameAndPieceBox.setAlignment(Pos.CENTER_LEFT);
-    
+
     // Player name
     Label nameLabel = new Label(player.getName());
     nameLabel.setFont(new Font(14));
-    
+
     // Playing piece icon
     ImageView pieceImageView = null;
     PlayingPiece playingPiece = player.getPlayingPiece();
-    
+
     if (playingPiece != null) {
       try {
         String imagePath = playingPiece.getImagePath();
@@ -202,10 +233,10 @@ public class MonopolyScreen extends StackPane {
         System.err.println("Could not load playing piece image: " + e.getMessage());
       }
     }
-    
+
     // Add name to the horizontal box
     nameAndPieceBox.getChildren().add(nameLabel);
-    
+
     // Add playing piece image if available
     if (pieceImageView != null) {
       nameAndPieceBox.getChildren().add(pieceImageView);
@@ -214,7 +245,7 @@ public class MonopolyScreen extends StackPane {
     // Money label
     Label moneyLabel = new Label("$" + money);
     moneyLabel.setStyle("-fx-font-weight: bold;");
-    
+
     // Stats label
     Label stats = new Label("🏠 " + 5 + "   🏘 " + 3);
 
@@ -222,6 +253,14 @@ public class MonopolyScreen extends StackPane {
     return new HBox(card);
   }
 
+  /**
+   * Updates the player cards section with current player information.
+   * Highlights the current active player and shows updated money amounts.
+   *
+   * @param players the list of players in the game
+   * @param currentPlayer the player whose turn it currently is
+   * @param playerMoney the list of money amounts for each player
+   */
   private void drawPlayerCards(List<Player> players, Player currentPlayer, List<Integer> playerMoney) {
     playerCardsSection.getChildren().clear();
     for (int i = 0; i < players.size(); i++) {
@@ -232,24 +271,34 @@ public class MonopolyScreen extends StackPane {
     }
   }
 
+  /**
+   * Updates the dice display with the current dice values.
+   * Highlights when doubles are rolled by changing the background color.
+   *
+   * @param diceCounts the list of dice values to display
+   */
   private void drawDice(List<Integer> diceCounts) {
     diceContainer.getChildren().clear();
-    
+
     // Check if dice are equal (doubles)
-    boolean areEqual = diceCounts.size() >= 2 && 
-                      diceCounts.stream().distinct().count() == 1;
-    
+    boolean areEqual = diceCounts.size() >= 2 &&
+            diceCounts.stream().distinct().count() == 1;
+
     // Set background color based on whether dice are equal
     diceContainer.setStyle("-fx-background-color: " + (areEqual ? "#FFD700;" : "#ffffff;"));
     diceContainer.setPadding(new Insets(10));
     diceContainer.setAlignment(Pos.CENTER);
-    
+
     for (Integer diceCount : diceCounts) {
       DieRectangle die = new DieRectangle(diceCount, 70);
       diceContainer.getChildren().add(die);
     }
   }
 
+  /**
+   * Emits a dice roll event when the user presses the space key.
+   * The event is handled by the game controller to advance game state.
+   */
   private void emitDiceRolledEvent() {
     GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
   }

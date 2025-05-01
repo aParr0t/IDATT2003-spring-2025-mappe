@@ -7,8 +7,6 @@ import edu.ntnu.iir.bidata.utils.Tuple;
 import java.nio.file.Path;
 import java.util.List;
 
-// Base interface for all game events
-
 /**
  * Represents an event that can be emitted by the game.
  * (Help from AI: help with generics)

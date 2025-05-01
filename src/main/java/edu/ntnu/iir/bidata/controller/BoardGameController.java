@@ -4,8 +4,8 @@ import edu.ntnu.iir.bidata.exceptions.*;
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.service.FileHandlerService;
 import edu.ntnu.iir.bidata.model.games.Game;
+import edu.ntnu.iir.bidata.model.games.GameFactory;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
-import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
 import edu.ntnu.iir.bidata.view.gui.screens.*;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
@@ -17,31 +17,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Runs the game in a text-based version.
+ * Controller class for managing board game logic and GUI interactions.
+ * Handles game initialization, player configuration, board management, and event processing.
+ * Serves as the main controller linking the game model with the user interface.
  */
 public class BoardGameController {
   private Game game;
   private StackPane gameplayScreen;
   private final FileHandlerService fileHandlerService;
 
+  /**
+   * Constructs a new BoardGameController instance.
+   * Initializes the file handler service for managing game data persistence.
+   */
   public BoardGameController() {
     this.fileHandlerService = new FileHandlerService();
   }
 
+  /**
+   * Sets up all the event listeners for the application.
+   * Configures responses to various game events like game selection, board selection,
+   * player configuration, in-game actions, and file operations.
+   */
   public void setup() {
     GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
       System.out.println("quitted");
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
-      // TODO: maybe use a factory pattern to create the game
-      if (gameType == GameType.SNAKES_AND_LADDERS) {
-        game = new SnakesAndLaddersGame();
-      } else if (gameType == GameType.MONOPOLY) {
-        game = new MonopolyGame();
-      } else {
-        throw new IllegalArgumentException("Invalid game type: " + gameType);
-      }
+      // Create game using the GameFactory
+      game = GameFactory.createGame(gameType);
       // update view
       List<Board> boards = BoardFactory.getAllBoardsForGameType(gameType);
       GUIApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
@@ -55,7 +60,6 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
       // Board is already set in the game model from BOARD_SELECTED event
       // Just proceed to the next screen
-      // TODO: players should be fetched from local storage
       List<Player> players = List.of(
               new Player("Atas"),
               new Player("Stian")
@@ -66,27 +70,16 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
       PlayerConfigResponse response = game.isPlayerConfigOk(players);
       if (!response.isPlayerConfigOk()) {
-        GUIApp.getInstance().showMessage(response.getErrorMessage());
+        GUIApp.getInstance().showMessage(response.errorMessage());
         return;
       }
       // update model
       game.setPlayers(players);
 
       // start game
-      // TODO: maybe use a factory pattern to create the game screen
       game.start();
-      switch (game.getGameType()) {
-        case SNAKES_AND_LADDERS:
-          gameplayScreen = new SnakesAndLaddersScreen(game.getBoard());
-          break;
-        case MONOPOLY:
-          gameplayScreen = new MonopolyScreen(
-                  game.getBoard()
-          );
-          break;
-        default:
-          throw new IllegalArgumentException("Invalid game type: " + game.getGameType());
-      }
+      // Create game screen using the GameScreenFactory
+      gameplayScreen = GameScreenFactory.createGameScreen(game.getGameType(), game.getBoard());
       GUIApp.setContent(gameplayScreen, true, false);
       updateGameScreen();
     });
@@ -138,8 +131,7 @@ public class BoardGameController {
           game.setBoard(board);
 
           // Get the current screen
-          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen) {
-            ChooseBoardScreen chooseBoardScreen = (ChooseBoardScreen) GUIApp.getCurrentContent();
+          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen chooseBoardScreen) {
             chooseBoardScreen.addLoadedBoard(board);
           }
 
@@ -160,8 +152,8 @@ public class BoardGameController {
 
     GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, tuple -> {
       try {
-        Path filePath = tuple.getFirst();
-        List<Player> players = tuple.getSecond();
+        Path filePath = tuple.first();
+        List<Player> players = tuple.second();
 
         // Ensure players exist
         if (players.isEmpty()) {
@@ -195,14 +187,13 @@ public class BoardGameController {
             game.setPlayers(players);
 
             // Update the ChoosePlayerScreen if it's the current screen
-            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen) {
-              ChoosePlayerScreen choosePlayerScreen = (ChoosePlayerScreen) GUIApp.getCurrentContent();
+            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen choosePlayerScreen) {
               choosePlayerScreen.updatePlayers(players);
             }
 
             GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
           } else {
-            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.getErrorMessage());
+            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.errorMessage());
           }
         } else {
           GUIApp.getInstance().showMessage("No game selected to load the players into");
@@ -219,8 +210,13 @@ public class BoardGameController {
     });
   }
 
+  /**
+   * Updates the game screen with current game state.
+   * Handles different game screen types and updates them with appropriate data.
+   *
+   * @throws IllegalArgumentException if the game screen type is invalid
+   */
   private void updateGameScreen() {
-    // TODO: may need different controller for each game screen
     if (gameplayScreen instanceof SnakesAndLaddersScreen) {
       ((SnakesAndLaddersScreen) gameplayScreen).update(
               game.getPlayers(),
@@ -231,8 +227,7 @@ public class BoardGameController {
       List<Integer> playerMoney = new ArrayList<>();
 
       // Get player money if this is a MonopolyGame
-      if (game instanceof MonopolyGame) {
-        MonopolyGame monopolyGame = (MonopolyGame) game;
+      if (game instanceof MonopolyGame monopolyGame) {
         for (Player player : game.getPlayers()) {
           playerMoney.add(monopolyGame.getPlayerMoney(player));
         }
@@ -249,6 +244,10 @@ public class BoardGameController {
     }
   }
 
+  /**
+   * Starts the application.
+   * Initiates the GUI application instance to begin the game.
+   */
   public void run() {
     GUIApp.getInstance().startApp();
   }

@@ -6,23 +6,14 @@ package edu.ntnu.iir.bidata.exceptions;
  * making it easier to switch JSON libraries in the future.
  */
 public class JsonParsingException extends FileParsingException {
-    
-    /**
-     * Constructs a new JsonParsingException with the specified detail message.
-     * 
-     * @param message the detail message
-     */
-    public JsonParsingException(String message) {
-        super(message);
-    }
-    
-    /**
-     * Constructs a new JsonParsingException with the specified detail message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause of the exception
-     */
-    public JsonParsingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+
+  /**
+   * Constructs a new JsonParsingException with the specified detail message and cause.
+   *
+   * @param message the detail message
+   * @param cause   the cause of the exception
+   */
+  public JsonParsingException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
