@@ -11,8 +11,7 @@ import java.util.List;
 public class MockDice extends Dice {
   private final List<Integer> predefinedResults = new ArrayList<>();
   private int currentResultIndex = 0;
-  private List<Integer> lastRolledValues = new ArrayList<>();
-  private boolean isDoubles = false;
+  private final List<Integer> lastRolledValues = new ArrayList<>();
 
   /**
    * Creates a mock dice with the specified number of dice and sides.
@@ -43,14 +42,12 @@ public class MockDice extends Dice {
       int remainder = result % 2;
       lastRolledValues.set(0, half + remainder);
       lastRolledValues.set(1, half);
-      isDoubles = (half == (half + remainder));
     } else {
       // For other dice counts, just set the first die to the full value
       lastRolledValues.set(0, result);
       for (int i = 1; i < lastRolledValues.size(); i++) {
         lastRolledValues.set(i, 0);
       }
-      isDoubles = false;
     }
   }
 
@@ -64,13 +61,11 @@ public class MockDice extends Dice {
   public void setNextRollAsDoubles(boolean isDoubles, int value) {
     if (isDoubles) {
       // Set both dice to the same value
-      this.isDoubles = true;
       setNextResult(value * 2);
       lastRolledValues.set(0, value);
       lastRolledValues.set(1, value);
     } else {
       // Set dice to different values
-      this.isDoubles = false;
       int secondValue = (value % 6) + 1;
       if (secondValue == value) {
         secondValue = (secondValue % 6) + 1;
