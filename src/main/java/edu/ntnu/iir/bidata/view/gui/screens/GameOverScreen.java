@@ -1,7 +1,7 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
 import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +16,7 @@ import javafx.scene.text.TextAlignment;
  * This screen is shown after a game has been completed.
  */
 public class GameOverScreen extends StackPane {
-  
+
   /**
    * Creates a new game over screen with the specified winner name.
    *
@@ -24,7 +24,7 @@ public class GameOverScreen extends StackPane {
    */
   public GameOverScreen(String winnerName) {
 
-    VBox vbox = new VBox(20);
+    final VBox vbox = new VBox(20);
 
     // winner label
     Label winnerLabel = new Label("Winner: " + winnerName);
@@ -33,7 +33,7 @@ public class GameOverScreen extends StackPane {
 
     // play again button
     Button playAgainButton = new Button("Play Again");
-    playAgainButton.setOnAction(e -> GUIApp.getInstance().emitEvent(AppEvent.PLAY_AGAIN));
+    playAgainButton.setOnAction(e -> GuiApp.getInstance().emitEvent(AppEvent.PLAY_AGAIN));
 
     vbox.getChildren().addAll(winnerLabel, playAgainButton);
     vbox.setAlignment(Pos.CENTER);

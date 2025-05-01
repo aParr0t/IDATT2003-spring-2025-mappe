@@ -8,7 +8,10 @@ import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvas;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -18,10 +21,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A JavaFX screen for selecting, saving, and loading game boards.
@@ -40,7 +39,7 @@ public class ChooseBoardScreen extends StackPane {
    * Creates a new ChooseBoardScreen for selecting boards of a specific game type.
    *
    * @param gameType the type of game to display boards for
-   * @param boards the list of available boards to display
+   * @param boards   the list of available boards to display
    */
   public ChooseBoardScreen(GameType gameType, List<Board> boards) {
     this.gameType = gameType;
@@ -74,7 +73,7 @@ public class ChooseBoardScreen extends StackPane {
     // Set button actions
     continueButton.setOnAction(event -> {
       if (selectedBoard != null) {
-        GUIApp.getInstance().emitEvent(AppEvent.BOARD_CHOSEN, selectedBoard);
+        GuiApp.getInstance().emitEvent(AppEvent.BOARD_CHOSEN, selectedBoard);
       }
     });
 
@@ -129,7 +128,7 @@ public class ChooseBoardScreen extends StackPane {
       updateSelectedBoardInfo();
 
       // Emit the BOARD_SELECTED event so the controller can update the game model
-      GUIApp.getInstance().emitEvent(AppEvent.BOARD_SELECTED, board);
+      GuiApp.getInstance().emitEvent(AppEvent.BOARD_SELECTED, board);
 
       // Enable the buttons
       enableButtons();
@@ -156,7 +155,7 @@ public class ChooseBoardScreen extends StackPane {
    * Configures a FileChooser with common settings for board file operations.
    *
    * @param fileChooser the FileChooser to configure
-   * @param title the title to set for the FileChooser dialog
+   * @param title       the title to set for the FileChooser dialog
    */
   private void configureFileChooser(FileChooser fileChooser, String title) {
     fileChooser.setTitle(title);
@@ -171,7 +170,7 @@ public class ChooseBoardScreen extends StackPane {
       FileUtils.ensureDirectoryExists(FileConstants.BOARDS_DIR);
       fileChooser.setInitialDirectory(boardsDir);
     } catch (DirectoryCreationException e) {
-      GUIApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
+      GuiApp.getInstance().showMessage("Error accessing boards directory: " + e.getMessage());
     }
   }
 
@@ -191,7 +190,7 @@ public class ChooseBoardScreen extends StackPane {
 
     if (file != null) {
       // Emit the save event
-      GUIApp.getInstance().emitEvent(AppEvent.SAVE_BOARD, file.toPath());
+      GuiApp.getInstance().emitEvent(AppEvent.SAVE_BOARD, file.toPath());
     }
   }
 
@@ -209,7 +208,7 @@ public class ChooseBoardScreen extends StackPane {
 
     if (file != null) {
       // Emit the load event
-      GUIApp.getInstance().emitEvent(AppEvent.LOAD_BOARD, file.toPath());
+      GuiApp.getInstance().emitEvent(AppEvent.LOAD_BOARD, file.toPath());
     }
   }
 

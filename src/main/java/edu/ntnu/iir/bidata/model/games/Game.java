@@ -1,14 +1,19 @@
 package edu.ntnu.iir.bidata.model.games;
 
-import edu.ntnu.iir.bidata.model.*;
-
+import edu.ntnu.iir.bidata.model.Board;
+import edu.ntnu.iir.bidata.model.Dice;
+import edu.ntnu.iir.bidata.model.GameType;
+import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.PlayerConfigResponse;
+import edu.ntnu.iir.bidata.model.PlayingPiece;
+import edu.ntnu.iir.bidata.model.PlayingPieceType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
 /**
  * Abstract base class for all games in the application.
- * Provides common game functionality such as managing players, board, dice, 
+ * Provides common game functionality such as managing players, board, dice,
  * and basic game state. Specific game implementations should extend this class
  * and provide game-specific rules and behaviors.
  */
@@ -129,7 +134,7 @@ public abstract class Game {
   public List<Integer> getDiceCounts() {
     return dice.getCounts();
   }
-  
+
   /**
    * Sets the dice to be used in the game.
    * This is useful for testing with mock dice.

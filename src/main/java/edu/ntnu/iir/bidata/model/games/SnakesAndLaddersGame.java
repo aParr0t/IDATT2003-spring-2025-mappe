@@ -31,6 +31,9 @@ public class SnakesAndLaddersGame extends Game {
       case "snakes_and_ladders_dice_rolled":
         makeTurn();
         break;
+      default:
+        // No action needed for other events
+        break;
     }
   }
 

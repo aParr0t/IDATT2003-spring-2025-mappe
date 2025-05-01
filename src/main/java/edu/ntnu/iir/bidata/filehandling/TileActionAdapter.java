@@ -1,8 +1,19 @@
 package edu.ntnu.iir.bidata.filehandling;
 
-import com.google.gson.*;
-import edu.ntnu.iir.bidata.model.tileaction.*;
-
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import edu.ntnu.iir.bidata.model.tileaction.ChanceAction;
+import edu.ntnu.iir.bidata.model.tileaction.GoToJailAction;
+import edu.ntnu.iir.bidata.model.tileaction.IncomeTaxAction;
+import edu.ntnu.iir.bidata.model.tileaction.JailAction;
+import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
+import edu.ntnu.iir.bidata.model.tileaction.TileAction;
+import edu.ntnu.iir.bidata.model.tileaction.TreasuryAction;
 import java.lang.reflect.Type;
 
 /**
@@ -42,7 +53,9 @@ public class TileActionAdapter implements JsonSerializer<TileAction>, JsonDeseri
   }
 
   @Override
-  public TileAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+  public TileAction deserialize(
+          JsonElement json, Type typeOfT, JsonDeserializationContext context
+  ) throws JsonParseException {
     JsonObject jsonObject = json.getAsJsonObject();
 
     // Check if the type field exists

@@ -2,8 +2,9 @@ package edu.ntnu.iir.bidata.view.gui.screens;
 
 import edu.ntnu.iir.bidata.model.GameType;
 import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.gui.GameTypePreview;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
+import java.util.List;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -14,16 +15,18 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-import java.util.List;
-
 /**
  * A screen that allows users to choose which game they want to play.
  * Displays available games as clickable preview cards with images.
  */
 public class ChooseGameScreen extends StackPane {
-  /** List of available game previews to display on the screen. */
+  /**
+   * List of available game previews to display on the screen.
+   */
   List<GameTypePreview> gamePreviews = List.of(
-          new GameTypePreview("Stigespill", "/images/games/stigespill.png", GameType.SNAKES_AND_LADDERS),
+          new GameTypePreview(
+                  "Stigespill", "/images/games/stigespill.png", GameType.SNAKES_AND_LADDERS
+          ),
           new GameTypePreview("Monopoly", "/images/games/monopoly.png", GameType.MONOPOLY)
   );
 
@@ -58,7 +61,7 @@ public class ChooseGameScreen extends StackPane {
 
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
-        GUIApp.getInstance().emitEvent(AppEvent.GAME_CHOSEN, gamePreview.gameType());
+        GuiApp.getInstance().emitEvent(AppEvent.GAME_CHOSEN, gamePreview.gameType());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);

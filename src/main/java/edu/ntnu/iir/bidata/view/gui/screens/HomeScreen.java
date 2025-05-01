@@ -1,6 +1,6 @@
 package edu.ntnu.iir.bidata.view.gui.screens;
 
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,8 +31,8 @@ public class HomeScreen extends StackPane {
     Button quitButton = new Button("QUIT");
 
     // Button click handlers
-    startButton.setOnAction(event -> GUIApp.setContent(new ChooseGameScreen()));
-    quitButton.setOnAction(event -> GUIApp.getInstance().quitApp());
+    startButton.setOnAction(event -> GuiApp.setContent(new ChooseGameScreen()));
+    quitButton.setOnAction(event -> GuiApp.getInstance().quitApp());
 
     // Set button sizes
     startButton.setMinWidth(100);

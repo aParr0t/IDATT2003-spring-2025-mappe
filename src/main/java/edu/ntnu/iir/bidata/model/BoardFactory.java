@@ -5,7 +5,6 @@ import edu.ntnu.iir.bidata.model.tileaction.JailAction;
 import edu.ntnu.iir.bidata.model.tileaction.MoveAction;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
 import edu.ntnu.iir.bidata.utils.RandomMath;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,8 @@ public class BoardFactory {
       freePositions.add(i);
     }
 
-    int ladderCount = 5, snakeCount = 5;
+    int ladderCount = 5;
+    int snakeCount = 5;
     // generate ladders
     for (int i = 0; i < ladderCount; i++) {
       int start = RandomMath.randomPick(freePositions.stream().filter(
@@ -145,7 +145,8 @@ public class BoardFactory {
    * @return A Chinese-style Snakes and Ladders board
    */
   public static Board chineseSnakesAndLadders() {
-    int columns = 20, rows = 20;
+    int columns = 20;
+    int rows = 20;
     List<Tile> tiles = BoardTileLayout.snakesAndLadders(columns, rows);
     Board board = new Board(tiles);
 
@@ -439,8 +440,8 @@ public class BoardFactory {
    * <p>For Monopoly, this returns the standard monopoly board.</p>
    *
    * @param gameType The type of game to get boards for
-   * @return A list of available boards for the specified game type, or an empty list if
-   * the game type is not supported
+   * @return A list of available boards for the specified game type,
+   * or an empty list if the game type is not supported
    */
   public static List<Board> getAllBoardsForGameType(GameType gameType) {
     return switch (gameType) {

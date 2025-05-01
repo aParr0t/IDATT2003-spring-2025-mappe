@@ -1,17 +1,20 @@
 package edu.ntnu.iir.bidata.filehandling;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.TileStyling;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
-import javafx.geometry.Point2D;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import javafx.geometry.Point2D;
 
 /**
  * Implementation of BoardFileWriter that writes boards to a JSON file using Gson.

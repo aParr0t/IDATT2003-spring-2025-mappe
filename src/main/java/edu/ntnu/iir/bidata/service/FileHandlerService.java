@@ -1,10 +1,21 @@
 package edu.ntnu.iir.bidata.service;
 
-import edu.ntnu.iir.bidata.exceptions.*;
-import edu.ntnu.iir.bidata.filehandling.*;
+import edu.ntnu.iir.bidata.exceptions.BoardDataException;
+import edu.ntnu.iir.bidata.exceptions.CsvParsingException;
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
+import edu.ntnu.iir.bidata.exceptions.FileNotFoundException;
+import edu.ntnu.iir.bidata.exceptions.InvalidConfigurationException;
+import edu.ntnu.iir.bidata.exceptions.JsonParsingException;
+import edu.ntnu.iir.bidata.exceptions.PlayerDataException;
+import edu.ntnu.iir.bidata.filehandling.BoardFileReader;
+import edu.ntnu.iir.bidata.filehandling.BoardFileWriter;
+import edu.ntnu.iir.bidata.filehandling.FileConstants;
+import edu.ntnu.iir.bidata.filehandling.FileHandlerFactory;
+import edu.ntnu.iir.bidata.filehandling.FileUtils;
+import edu.ntnu.iir.bidata.filehandling.PlayerFileReader;
+import edu.ntnu.iir.bidata.filehandling.PlayerFileWriter;
 import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Player;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -24,7 +35,8 @@ public class FileHandlerService {
    * @throws DirectoryCreationException    If the directory cannot be created
    * @throws InvalidConfigurationException If the board configuration is invalid
    */
-  public void saveBoard(Board board, Path filePath) throws IOException, DirectoryCreationException, InvalidConfigurationException {
+  public void saveBoard(Board board, Path filePath) throws
+          IOException, DirectoryCreationException, InvalidConfigurationException {
     // Ensure the board exists
     if (board == null) {
       throw new InvalidConfigurationException("No board to save");
@@ -50,7 +62,8 @@ public class FileHandlerService {
    * @throws JsonParsingException  If there is an error parsing the JSON
    * @throws BoardDataException    If there is an error with the board data
    */
-  public Board loadBoard(Path filePath) throws IOException, FileNotFoundException, JsonParsingException, BoardDataException {
+  public Board loadBoard(Path filePath) throws
+          IOException, FileNotFoundException, JsonParsingException, BoardDataException {
     // Create the file handler
     BoardFileReader reader = FileHandlerFactory.createBoardFileReader();
 
@@ -67,7 +80,8 @@ public class FileHandlerService {
    * @throws DirectoryCreationException    If the directory cannot be created
    * @throws InvalidConfigurationException If the player configuration is invalid
    */
-  public void savePlayers(List<Player> players, Path filePath) throws IOException, DirectoryCreationException, InvalidConfigurationException {
+  public void savePlayers(List<Player> players, Path filePath) throws
+          IOException, DirectoryCreationException, InvalidConfigurationException {
     // Ensure players exist
     if (players == null || players.isEmpty()) {
       throw new InvalidConfigurationException("No players to save");
@@ -93,7 +107,8 @@ public class FileHandlerService {
    * @throws CsvParsingException   If there is an error parsing the CSV
    * @throws PlayerDataException   If there is an error with the player data
    */
-  public List<Player> loadPlayers(Path filePath) throws IOException, FileNotFoundException, CsvParsingException, PlayerDataException {
+  public List<Player> loadPlayers(Path filePath) throws
+          IOException, FileNotFoundException, CsvParsingException, PlayerDataException {
     // Create the file handler
     PlayerFileReader reader = FileHandlerFactory.createPlayerFileReader();
 

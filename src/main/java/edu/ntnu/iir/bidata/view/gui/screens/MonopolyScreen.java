@@ -7,8 +7,11 @@ import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.gui.BoardCanvasFactory;
 import edu.ntnu.iir.bidata.view.gui.DieRectangle;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
 import edu.ntnu.iir.bidata.view.gui.games.MonopolyBoard;
+import java.util.List;
+import java.util.Objects;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -17,14 +20,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import javafx.application.Platform;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * UI component that represents the Monopoly game screen.
@@ -43,7 +45,7 @@ public class MonopolyScreen extends StackPane {
    */
   public MonopolyScreen(Board board) {
     // Root layout
-    BorderPane root = new BorderPane();
+    final BorderPane root = new BorderPane();
 
     // Center section - Game board
     boardCanvas = (MonopolyBoard) BoardCanvasFactory.createBoardCanvas(GameType.MONOPOLY, board);
@@ -126,11 +128,11 @@ public class MonopolyScreen extends StackPane {
     Button helpButton = new Button("?");
     helpButton.setFont(Font.font("System", FontWeight.BOLD, 14));
     helpButton.setStyle(
-            "-fx-background-radius: 15; " +
-                    "-fx-min-width: 30; " +
-                    "-fx-min-height: 30; " +
-                    "-fx-background-color: #4285F4; " +
-                    "-fx-text-fill: white;"
+            "-fx-background-radius: 15; "
+                    + "-fx-min-width: 30; "
+                    + "-fx-min-height: 30; "
+                    + "-fx-background-color: #4285F4; "
+                    + "-fx-text-fill: white;"
     );
 
     // Prevent the button from receiving focus to avoid intercepting space key presses
@@ -178,12 +180,17 @@ public class MonopolyScreen extends StackPane {
    * Updates the UI components based on the current game state.
    * Updates player positions on the board with animation, player cards, and dice display.
    *
-   * @param players the list of players in the game
+   * @param players       the list of players in the game
    * @param currentPlayer the player whose turn it currently is
-   * @param diceCounts the list of dice values from the last roll
-   * @param playerMoney the list of money amounts for each player
+   * @param diceCounts    the list of dice values from the last roll
+   * @param playerMoney   the list of money amounts for each player
    */
-  public void update(List<Player> players, Player currentPlayer, List<Integer> diceCounts, List<Integer> playerMoney) {
+  public void update(
+          List<Player> players,
+          Player currentPlayer,
+          List<Integer> diceCounts,
+          List<Integer> playerMoney
+  ) {
     // Update player positions with animation
     boardCanvas.updatePlayersWithAnimation(players, () -> {
       // This is called when animation completes
@@ -198,15 +205,20 @@ public class MonopolyScreen extends StackPane {
    * Creates a visual card representation for a player.
    * The card displays the player's name, playing piece, money, and property statistics.
    *
-   * @param player the player to create a card for
+   * @param player   the player to create a card for
    * @param isActive whether this player is the current active player
-   * @param money the player's current money amount
+   * @param money    the player's current money amount
    * @return an HBox containing the styled player card
    */
   private HBox createPlayerCard(Player player, boolean isActive, int money) {
     VBox card = new VBox(5);
     card.setPadding(new Insets(10));
-    card.setStyle("-fx-border-color: " + (isActive ? "#4CAF50" : "lightgray") + "; -fx-border-width: 2px; -fx-border-radius: 5; -fx-background-color: #f9f9f9;");
+    card.setStyle(
+            "-fx-border-color: "
+                    + (isActive ? "#4CAF50" : "lightgray")
+                    + "; -fx-border-width: 2px; -fx-border-radius: 5;"
+                    + "-fx-background-color: #f9f9f9;"
+    );
     card.setPrefWidth(200);
 
     // Create a horizontal box for the player name and playing piece
@@ -224,7 +236,9 @@ public class MonopolyScreen extends StackPane {
     if (playingPiece != null) {
       try {
         String imagePath = playingPiece.getImagePath();
-        Image pieceImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+        Image pieceImage = new Image(
+                Objects.requireNonNull(getClass().getResourceAsStream(imagePath))
+        );
         pieceImageView = new ImageView(pieceImage);
         pieceImageView.setFitHeight(36);
         pieceImageView.setFitWidth(36);
@@ -257,11 +271,13 @@ public class MonopolyScreen extends StackPane {
    * Updates the player cards section with current player information.
    * Highlights the current active player and shows updated money amounts.
    *
-   * @param players the list of players in the game
+   * @param players       the list of players in the game
    * @param currentPlayer the player whose turn it currently is
-   * @param playerMoney the list of money amounts for each player
+   * @param playerMoney   the list of money amounts for each player
    */
-  private void drawPlayerCards(List<Player> players, Player currentPlayer, List<Integer> playerMoney) {
+  private void drawPlayerCards(
+          List<Player> players, Player currentPlayer, List<Integer> playerMoney
+  ) {
     playerCardsSection.getChildren().clear();
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
@@ -281,8 +297,8 @@ public class MonopolyScreen extends StackPane {
     diceContainer.getChildren().clear();
 
     // Check if dice are equal (doubles)
-    boolean areEqual = diceCounts.size() >= 2 &&
-            diceCounts.stream().distinct().count() == 1;
+    boolean areEqual = diceCounts.size() >= 2
+            && diceCounts.stream().distinct().count() == 1;
 
     // Set background color based on whether dice are equal
     diceContainer.setStyle("-fx-background-color: " + (areEqual ? "#FFD700;" : "#ffffff;"));
@@ -300,6 +316,6 @@ public class MonopolyScreen extends StackPane {
    * The event is handled by the game controller to advance game state.
    */
   private void emitDiceRolledEvent() {
-    GUIApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
+    GuiApp.getInstance().emitEvent(AppEvent.IN_GAME_EVENT, "monopoly_dice_rolled");
   }
 }

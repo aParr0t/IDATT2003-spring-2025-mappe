@@ -1,20 +1,34 @@
 package edu.ntnu.iir.bidata.controller;
 
-import edu.ntnu.iir.bidata.exceptions.*;
-import edu.ntnu.iir.bidata.model.*;
-import edu.ntnu.iir.bidata.service.FileHandlerService;
+import edu.ntnu.iir.bidata.exceptions.BoardDataException;
+import edu.ntnu.iir.bidata.exceptions.CsvParsingException;
+import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
+import edu.ntnu.iir.bidata.exceptions.FileNotFoundException;
+import edu.ntnu.iir.bidata.exceptions.InvalidConfigurationException;
+import edu.ntnu.iir.bidata.exceptions.JsonParsingException;
+import edu.ntnu.iir.bidata.exceptions.PlayerDataException;
+import edu.ntnu.iir.bidata.model.Board;
+import edu.ntnu.iir.bidata.model.BoardFactory;
+import edu.ntnu.iir.bidata.model.Player;
+import edu.ntnu.iir.bidata.model.PlayerConfigResponse;
 import edu.ntnu.iir.bidata.model.games.Game;
 import edu.ntnu.iir.bidata.model.games.GameFactory;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
-import edu.ntnu.iir.bidata.view.gui.screens.*;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.service.FileHandlerService;
 import edu.ntnu.iir.bidata.view.AppEvent;
-import javafx.scene.layout.StackPane;
-
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
+import edu.ntnu.iir.bidata.view.gui.screens.ChooseBoardScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.ChoosePlayerScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.GameOverScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.GameScreenFactory;
+import edu.ntnu.iir.bidata.view.gui.screens.HomeScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.MonopolyScreen;
+import edu.ntnu.iir.bidata.view.gui.screens.SnakesAndLaddersScreen;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller class for managing board game logic and GUI interactions.
@@ -40,37 +54,40 @@ public class BoardGameController {
    * player configuration, in-game actions, and file operations.
    */
   public void setup() {
-    GUIApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
+    GuiApp.getInstance().addEventListener(AppEvent.QUIT, event -> {
       System.out.println("quitted");
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
+    GuiApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
       // Create game using the GameFactory
       game = GameFactory.createGame(gameType);
       // update view
       List<Board> boards = BoardFactory.getAllBoardsForGameType(gameType);
-      GUIApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
+      GuiApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.BOARD_SELECTED, board -> {
+    GuiApp.getInstance().addEventListener(AppEvent.BOARD_SELECTED, board -> {
       // Update model immediately when a board is selected
       game.setBoard(board);
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
+    GuiApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
       // Board is already set in the game model from BOARD_SELECTED event
       // Just proceed to the next screen
       List<Player> players = List.of(
               new Player("Atas"),
               new Player("Stian")
       );
-      GUIApp.setContent(new ChoosePlayerScreen(players, game.getAllPlayingPieces(), game.getMaxPlayers()), true, true);
+      GuiApp.setContent(
+              new ChoosePlayerScreen(
+                      players, game.getAllPlayingPieces(), game.getMaxPlayers()
+              ), true, true);
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
+    GuiApp.getInstance().addEventListener(AppEvent.PLAYERS_CHOSEN, players -> {
       PlayerConfigResponse response = game.isPlayerConfigOk(players);
       if (!response.isPlayerConfigOk()) {
-        GUIApp.getInstance().showMessage(response.errorMessage());
+        GuiApp.getInstance().showMessage(response.errorMessage());
         return;
       }
       // update model
@@ -80,45 +97,45 @@ public class BoardGameController {
       game.start();
       // Create game screen using the GameScreenFactory
       gameplayScreen = GameScreenFactory.createGameScreen(game.getGameType(), game.getBoard());
-      GUIApp.setContent(gameplayScreen, true, false);
+      GuiApp.setContent(gameplayScreen, true, false);
       updateGameScreen();
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
+    GuiApp.getInstance().addEventListener(AppEvent.IN_GAME_EVENT, event -> {
       game.handleEvent(event);
       updateGameScreen();
       if (game.isGameOver()) {
-        GUIApp.setContent(new GameOverScreen(game.getWinner().getName()), false, false);
+        GuiApp.setContent(new GameOverScreen(game.getWinner().getName()), false, false);
       }
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.PLAY_AGAIN, event -> {
-      GUIApp.setContent(new HomeScreen(), false, false);
+    GuiApp.getInstance().addEventListener(AppEvent.PLAY_AGAIN, event -> {
+      GuiApp.setContent(new HomeScreen(), false, false);
     });
 
     // File handling event listeners
-    GUIApp.getInstance().addEventListener(AppEvent.SAVE_BOARD, filePath -> {
+    GuiApp.getInstance().addEventListener(AppEvent.SAVE_BOARD, filePath -> {
       try {
         // Ensure the board exists
         if (game == null || game.getBoard() == null) {
-          GUIApp.getInstance().showMessage("No board to save");
+          GuiApp.getInstance().showMessage("No board to save");
           return;
         }
 
         // Use the file handler service to save the board
         fileHandlerService.saveBoard(game.getBoard(), filePath);
 
-        GUIApp.getInstance().showMessage("Board saved successfully to " + filePath);
+        GuiApp.getInstance().showMessage("Board saved successfully to " + filePath);
       } catch (DirectoryCreationException e) {
-        GUIApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
       } catch (InvalidConfigurationException e) {
-        GUIApp.getInstance().showMessage("Invalid board configuration: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Invalid board configuration: " + e.getMessage());
       } catch (IOException e) {
-        GUIApp.getInstance().showMessage("Error saving board: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error saving board: " + e.getMessage());
       }
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.LOAD_BOARD, filePath -> {
+    GuiApp.getInstance().addEventListener(AppEvent.LOAD_BOARD, filePath -> {
       try {
         // Use the file handler service to load the board
         Board board = fileHandlerService.loadBoard(filePath);
@@ -131,50 +148,50 @@ public class BoardGameController {
           game.setBoard(board);
 
           // Get the current screen
-          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen chooseBoardScreen) {
+          if (GuiApp.getCurrentContent() instanceof ChooseBoardScreen chooseBoardScreen) {
             chooseBoardScreen.addLoadedBoard(board);
           }
 
-          GUIApp.getInstance().showMessage("Board loaded successfully from " + filePath);
+          GuiApp.getInstance().showMessage("Board loaded successfully from " + filePath);
         } else {
-          GUIApp.getInstance().showMessage("No game selected to load the board into");
+          GuiApp.getInstance().showMessage("No game selected to load the board into");
         }
       } catch (FileNotFoundException e) {
-        GUIApp.getInstance().showMessage("Board file not found: " + e.getFilePath());
+        GuiApp.getInstance().showMessage("Board file not found: " + e.getFilePath());
       } catch (JsonParsingException e) {
-        GUIApp.getInstance().showMessage("Error parsing board file: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error parsing board file: " + e.getMessage());
       } catch (BoardDataException e) {
-        GUIApp.getInstance().showMessage("Invalid board data: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Invalid board data: " + e.getMessage());
       } catch (IOException e) {
-        GUIApp.getInstance().showMessage("Error loading board: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error loading board: " + e.getMessage());
       }
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, tuple -> {
+    GuiApp.getInstance().addEventListener(AppEvent.SAVE_PLAYERS, tuple -> {
       try {
         Path filePath = tuple.first();
         List<Player> players = tuple.second();
 
         // Ensure players exist
         if (players.isEmpty()) {
-          GUIApp.getInstance().showMessage("No players to save");
+          GuiApp.getInstance().showMessage("No players to save");
           return;
         }
 
         // Use the file handler service to save the players
         fileHandlerService.savePlayers(players, filePath);
 
-        GUIApp.getInstance().showMessage("Players saved successfully to " + filePath);
+        GuiApp.getInstance().showMessage("Players saved successfully to " + filePath);
       } catch (DirectoryCreationException e) {
-        GUIApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error creating directory: " + e.getMessage());
       } catch (InvalidConfigurationException e) {
-        GUIApp.getInstance().showMessage("Invalid player configuration: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Invalid player configuration: " + e.getMessage());
       } catch (IOException e) {
-        GUIApp.getInstance().showMessage("Error saving players: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error saving players: " + e.getMessage());
       }
     });
 
-    GUIApp.getInstance().addEventListener(AppEvent.LOAD_PLAYERS, filePath -> {
+    GuiApp.getInstance().addEventListener(AppEvent.LOAD_PLAYERS, filePath -> {
       try {
         // Use the file handler service to load the players
         List<Player> players = fileHandlerService.loadPlayers(filePath);
@@ -187,25 +204,27 @@ public class BoardGameController {
             game.setPlayers(players);
 
             // Update the ChoosePlayerScreen if it's the current screen
-            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen choosePlayerScreen) {
+            if (GuiApp.getCurrentContent() instanceof ChoosePlayerScreen choosePlayerScreen) {
               choosePlayerScreen.updatePlayers(players);
             }
 
-            GUIApp.getInstance().showMessage("Players loaded successfully from " + filePath);
+            GuiApp.getInstance().showMessage("Players loaded successfully from " + filePath);
           } else {
-            GUIApp.getInstance().showMessage("Invalid player configuration: " + response.errorMessage());
+            GuiApp.getInstance().showMessage(
+                    "Invalid player configuration: " + response.errorMessage()
+            );
           }
         } else {
-          GUIApp.getInstance().showMessage("No game selected to load the players into");
+          GuiApp.getInstance().showMessage("No game selected to load the players into");
         }
       } catch (FileNotFoundException e) {
-        GUIApp.getInstance().showMessage("Player file not found: " + e.getFilePath());
+        GuiApp.getInstance().showMessage("Player file not found: " + e.getFilePath());
       } catch (CsvParsingException e) {
-        GUIApp.getInstance().showMessage("Error parsing player file: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error parsing player file: " + e.getMessage());
       } catch (PlayerDataException e) {
-        GUIApp.getInstance().showMessage("Invalid player data: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Invalid player data: " + e.getMessage());
       } catch (IOException e) {
-        GUIApp.getInstance().showMessage("Error loading players: " + e.getMessage());
+        GuiApp.getInstance().showMessage("Error loading players: " + e.getMessage());
       }
     });
   }
@@ -249,6 +268,6 @@ public class BoardGameController {
    * Initiates the GUI application instance to begin the game.
    */
   public void run() {
-    GUIApp.getInstance().startApp();
+    GuiApp.getInstance().startApp();
   }
 }

@@ -4,6 +4,10 @@ import edu.ntnu.iir.bidata.model.Board;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.utils.ImageLoadTester;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -11,10 +15,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Abstract base class for drawing board games on a JavaFX Canvas with animation support.
@@ -30,7 +30,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private boolean animating = false;
   // Use instance variable instead of static to allow proper position tracking
   private Map<String, Integer> previousPositions = new HashMap<>();
-  private final Map<String, Integer> lastKnownPositions = new HashMap<>(); // Added to track last known positions
+  // Track last known positions
+  private final Map<String, Integer> lastKnownPositions = new HashMap<>();
   private final Map<Player, Double> animationProgress = new HashMap<>();
   private final AnimationTimer animationTimer;
   private Runnable onAnimationComplete;
@@ -89,8 +90,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
    */
   private void preloadPlayerImages() {
     for (Player player : players) {
-      if (player != null && player.getPlayingPiece() != null &&
-              player.getPlayingPiece().getImagePath() != null) {
+      if (player != null && player.getPlayingPiece() != null
+              && player.getPlayingPiece().getImagePath() != null) {
         ImageLoadTester.attemptLoadImage(player.getPlayingPiece().getImagePath());
       }
     }
@@ -172,7 +173,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   @Override
   public void startAnimation(Runnable onComplete) {
     if (players.isEmpty()) {
-      if (onComplete != null) onComplete.run();
+      if (onComplete != null) {
+        onComplete.run();
+      }
       return;
     }
 
@@ -214,7 +217,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
    * (Help from AI: We got lots of help from AI with animation, as Java is way different from JS)
    */
   private void updateAnimation() {
-    if (!animating) return;
+    if (!animating) {
+      return;
+    }
 
     boolean allComplete = true;
 
@@ -304,7 +309,8 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
               new Point2D(0, tileHeight / 2),
               new Point2D(tileWidth / 2, tileHeight / 2)
       );
-      Point2D offset = offsets.get(i % offsets.size()); // Use modulo for safety with more than 4 players
+      // Use modulo for safety with more than 4 players
+      Point2D offset = offsets.get(i % offsets.size());
       Point2D playerPos = tile.getPosition().add(offset);
       double playerSize = Math.min(tileWidth, tileHeight) * 0.5 * getWidth();
 
@@ -313,11 +319,22 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       Image image = ImageLoadTester.attemptLoadImage(imagePath);
 
       if (image != null && !image.isError()) {
-        gc.drawImage(image, playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+        gc.drawImage(
+                image,
+                playerPos.getX() * getWidth(),
+                playerPos.getY() * getHeight(),
+                playerSize,
+                playerSize
+        );
         // draw outline of the tile
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.strokeRect(playerPos.getX() * getWidth(), playerPos.getY() * getHeight(), playerSize, playerSize);
+        gc.strokeRect(
+                playerPos.getX() * getWidth(),
+                playerPos.getY() * getHeight(),
+                playerSize,
+                playerSize
+        );
       }
     }
   }
@@ -336,7 +353,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     int maxSteps = board.getTiles().size(); // Prevent infinite loop
 
     for (int i = 0; i < maxSteps; i++) {
-      if (temp == null) return false;
+      if (temp == null) {
+        return false;
+      }
 
       // If the next tile is our target, we can animate along the path
       if (temp.getNextTile() != null && temp.getNextTile().getId() == currentTile.getId()) {
@@ -358,8 +377,12 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
    * @return the ID of the intermediate tile based on current progress
    */
   private int getIntermediatePosition(Tile startTile, Tile endTile, double progress) {
-    if (progress >= 1.0) return endTile.getId();
-    if (progress <= 0.0) return startTile.getId();
+    if (progress >= 1.0) {
+      return endTile.getId();
+    }
+    if (progress <= 0.0) {
+      return startTile.getId();
+    }
 
     // Count steps between tiles
     Tile temp = startTile;
@@ -371,7 +394,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
       steps++;
     }
 
-    if (steps == 0) return endTile.getId();
+    if (steps == 0) {
+      return endTile.getId();
+    }
 
     // Calculate how many steps to move based on progress
     int stepsToMove = (int) Math.floor(progress * steps);
@@ -477,7 +502,14 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
    * @param tileWidth  the width of the tile
    * @param tileHeight the height of the tile
    */
-  private void drawTileWithColor(GraphicsContext gc, Tile tile, double canvasX, double canvasY, double tileWidth, double tileHeight) {
+  private void drawTileWithColor(
+          GraphicsContext gc,
+          Tile tile,
+          double canvasX,
+          double canvasY,
+          double tileWidth,
+          double tileHeight
+  ) {
     // determine tile color
     Color fillColor = Color.WHITE;
     if (tile.getStyling() != null) {

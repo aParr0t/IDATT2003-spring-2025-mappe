@@ -6,8 +6,12 @@ import edu.ntnu.iir.bidata.model.Tile;
 import edu.ntnu.iir.bidata.model.tileaction.GoToJailAction;
 import edu.ntnu.iir.bidata.model.tileaction.JailAction;
 import edu.ntnu.iir.bidata.model.tileaction.TileAction;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents a Monopoly game implementation.
@@ -15,19 +19,29 @@ import java.util.*;
  * such as money management, jail mechanics, and turn handling.
  */
 public class MonopolyGame extends Game {
-  /** Map to track the amount of money each player has. */
+  /**
+   * Map to track the amount of money each player has.
+   */
   private final Map<Player, Integer> playerMoney;
-  
-  /** Set to track which players are currently in jail. */
+
+  /**
+   * Set to track which players are currently in jail.
+   */
   private final Set<Player> playersInJail;
-  
-  /** The amount of money each player starts with. */
+
+  /**
+   * The amount of money each player starts with.
+   */
   private static final int STARTING_MONEY = 1500;
-  
-  /** The amount of money received when passing GO. */
+
+  /**
+   * The amount of money received when passing GO.
+   */
   private static final int PASSING_GO_MONEY = 200;
-  
-  /** The amount of money needed to win the game. */
+
+  /**
+   * The amount of money needed to win the game.
+   */
   private static final int WINNING_MONEY = 2000;
 
   /**
@@ -76,7 +90,8 @@ public class MonopolyGame extends Game {
    * @param player the player to take money from
    * @param amount the amount to remove (must be positive)
    * @return the new balance
-   * @throws IllegalArgumentException if the player doesn't have enough money or amount is not positive
+   * @throws IllegalArgumentException if the player doesn't
+   *                                  have enough money or amount is not positive
    */
   public int removeMoney(Player player, int amount) {
     if (amount <= 0) {
@@ -99,7 +114,8 @@ public class MonopolyGame extends Game {
    * @param from   the player paying money
    * @param to     the player receiving money
    * @param amount the amount to transfer (must be positive)
-   * @throws IllegalArgumentException if the paying player doesn't have enough money or amount is not positive
+   * @throws IllegalArgumentException if the paying player doesn't
+   *                                  have enough money or amount is not positive
    */
   public void transferMoney(Player from, Player to, int amount) {
     removeMoney(from, amount);
@@ -169,6 +185,9 @@ public class MonopolyGame extends Game {
       case "monopoly_dice_rolled":
         makeTurn();
         break;
+      default:
+        // Ignore unhandled events
+        break;
     }
   }
 
@@ -177,7 +196,7 @@ public class MonopolyGame extends Game {
    * Handles dice rolling, moving the player, jail mechanics, and tile actions.
    */
   private void turnLogic() {
-        // roll dice
+    // roll dice
     this.dice.rollAll();
     int sum = this.dice.getSum();
     List<Integer> counts = this.dice.getCounts();

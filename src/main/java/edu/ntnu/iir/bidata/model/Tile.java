@@ -5,8 +5,8 @@ import javafx.geometry.Point2D;
 
 /**
  * Represents a tile on the game board.
- * <p>
- * A tile is a fundamental element of the game board with a unique identifier,
+ *
+ * <p>A tile is a fundamental element of the game board with a unique identifier,
  * position, dimensions, and an optional action that occurs when a player lands on it.
  * Tiles form a linked list where each tile points to the next tile in sequence.
  */
@@ -14,14 +14,15 @@ public class Tile {
   private final int id;
   private Tile nextTile;
   private Point2D position; // Position as x,y coordinates (0.0-1.0)
-  private double width, height;
+  private double width;
+  private double height;
   private TileAction action;
   private TileStyling styling;
 
   /**
    * Creates a tile with a unique identifier.
-   * <p>
-   * Initializes the tile with default position at (0.0, 0.0) and default styling.
+   *
+   * <p>Initializes the tile with default position at (0.0, 0.0) and default styling.
    *
    * @param id the tile's unique identifier
    */
@@ -108,7 +109,7 @@ public class Tile {
   /**
    * Sets both width and height dimensions of this tile.
    *
-   * @param width the width of the tile
+   * @param width  the width of the tile
    * @param height the height of the tile
    */
   public void setSize(double width, double height) {
@@ -177,9 +178,9 @@ public class Tile {
    */
   @Override
   public String toString() {
-    return "Tile{" +
-            "id=" + id +
-            ", position=" + position +
-            '}';
+    return "Tile{"
+            + "id=" + id
+            + ", position=" + position
+            + '}';
   }
 }

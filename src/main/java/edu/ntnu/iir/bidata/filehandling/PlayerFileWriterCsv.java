@@ -3,7 +3,6 @@ package edu.ntnu.iir.bidata.filehandling;
 import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.PlayingPiece;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Implementation of PlayerFileWriter that writes players to a CSV file.
  */
-public class PlayerFileWriterCSV implements PlayerFileWriter {
+public class PlayerFileWriterCsv implements PlayerFileWriter {
   @Override
   public void writePlayers(List<Player> players, Path filePath) throws IOException {
     // Ensure the parent directory exists

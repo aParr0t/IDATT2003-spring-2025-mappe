@@ -1,38 +1,43 @@
 package edu.ntnu.iir.bidata.view.gui;
 
-import edu.ntnu.iir.bidata.view.UIApp;
+import edu.ntnu.iir.bidata.view.AppEvent;
+import edu.ntnu.iir.bidata.view.GameEventListener;
+import edu.ntnu.iir.bidata.view.UiApp;
 import edu.ntnu.iir.bidata.view.gui.screens.HomeScreen;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Stack;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
-import javafx.geometry.Pos;
 import javafx.stage.Stage;
-
-import java.util.*;
-
-import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.GameEventListener;
 
 /**
  * JavaFX application class that implements the UIApp interface.
  * Manages the GUI components, screen navigation, and event handling for the application.
  */
-public class GUIApp extends Application implements UIApp {
-  private static final Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
+public class GuiApp extends Application implements UiApp {
+  private static final Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners =
+          new HashMap<>();  // (Help from AI)
   private static BorderPane sceneContent;
   private static Stage stage;
-  private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
-  private static GUIApp instance;
+  // Keep track of navigation history
+  private static final Stack<Node> screenHistory = new Stack<>();
+  private static GuiApp instance;
   private static boolean showBackButton = true;  // Flag to control back button visibility
 
   /**
    * Creates a new GUIApp instance and sets it as the singleton instance.
    */
-  public GUIApp() {
+  public GuiApp() {
     instance = this;
   }
 
@@ -44,8 +49,8 @@ public class GUIApp extends Application implements UIApp {
    */
   @Override
   public void start(Stage stage) {
-    GUIApp.sceneContent = new BorderPane();
-    GUIApp.stage = stage;
+    GuiApp.sceneContent = new BorderPane();
+    GuiApp.stage = stage;
     Scene scene = new Scene(sceneContent, 1000, 800);
     scene.setOnKeyPressed(event -> {
       if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
@@ -65,9 +70,9 @@ public class GUIApp extends Application implements UIApp {
    *
    * @return the singleton instance of GUIApp
    */
-  public static GUIApp getInstance() {
+  public static GuiApp getInstance() {
     if (instance == null) {
-      instance = new GUIApp();
+      instance = new GuiApp();
     }
     return instance;
   }
@@ -79,14 +84,14 @@ public class GUIApp extends Application implements UIApp {
    * @param content the node to set as the content
    */
   public static void setContent(Node content) {
-    GUIApp.setContent(content, true);
+    GuiApp.setContent(content, true);
   }
 
   /**
    * Sets the content of the application with the given node.
    * Controls whether to add the current screen to the navigation history.
    *
-   * @param content the node to set as the content
+   * @param content      the node to set as the content
    * @param addToHistory whether to add the current screen to history
    */
   public static void setContent(Node content, boolean addToHistory) {
@@ -97,8 +102,8 @@ public class GUIApp extends Application implements UIApp {
    * Sets the content of the application with the given node.
    * Controls navigation history and back button visibility.
    *
-   * @param content the node to set as the content
-   * @param addToHistory whether to add the current screen to history
+   * @param content        the node to set as the content
+   * @param addToHistory   whether to add the current screen to history
    * @param showBackButton whether to show the back navigation button
    */
   public static void setContent(Node content, boolean addToHistory, boolean showBackButton) {
@@ -111,7 +116,7 @@ public class GUIApp extends Application implements UIApp {
     sceneContent.setCenter(content);
 
     // Set the back button visibility flag
-    GUIApp.showBackButton = showBackButton;
+    GuiApp.showBackButton = showBackButton;
 
     // Update back button visibility
     updateBackButton();
@@ -162,8 +167,8 @@ public class GUIApp extends Application implements UIApp {
   /**
    * Adds an event listener for the specified event type.
    *
-   * @param <T> the type of data associated with the event
-   * @param event the event to listen for
+   * @param <T>      the type of data associated with the event
+   * @param event    the event to listen for
    * @param listener the listener to be notified when the event occurs
    */
   @Override
@@ -177,8 +182,8 @@ public class GUIApp extends Application implements UIApp {
   /**
    * Removes an event listener for the specified event type.
    *
-   * @param <T> the type of data associated with the event
-   * @param event the event to stop listening for
+   * @param <T>      the type of data associated with the event
+   * @param event    the event to stop listening for
    * @param listener the listener to be removed
    */
   @Override
@@ -191,9 +196,9 @@ public class GUIApp extends Application implements UIApp {
   /**
    * Emits an event with associated data to all registered listeners.
    *
-   * @param <T> the type of data associated with the event
+   * @param <T>   the type of data associated with the event
    * @param event the event to emit
-   * @param data the data to pass to listeners
+   * @param data  the data to pass to listeners
    */
   @SuppressWarnings("unchecked")
   @Override
@@ -212,7 +217,7 @@ public class GUIApp extends Application implements UIApp {
    */
   @Override
   public void emitEvent(AppEvent<Void> event) {
-    UIApp.super.emitEvent(event);
+    UiApp.super.emitEvent(event);
   }
 
   /**

@@ -3,11 +3,15 @@ package edu.ntnu.iir.bidata.view.gui.screens;
 import edu.ntnu.iir.bidata.exceptions.DirectoryCreationException;
 import edu.ntnu.iir.bidata.filehandling.FileConstants;
 import edu.ntnu.iir.bidata.filehandling.FileUtils;
+import edu.ntnu.iir.bidata.model.Player;
 import edu.ntnu.iir.bidata.model.PlayingPiece;
 import edu.ntnu.iir.bidata.model.PlayingPieceType;
 import edu.ntnu.iir.bidata.utils.Tuple;
 import edu.ntnu.iir.bidata.view.AppEvent;
-import edu.ntnu.iir.bidata.view.gui.GUIApp;
+import edu.ntnu.iir.bidata.view.gui.GuiApp;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,15 +25,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import edu.ntnu.iir.bidata.model.Player;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Screen for selecting and configuring players before starting a game.
- * Allows adding, removing, and customizing players, as well as saving and loading player configurations.
+ * Allows adding, removing, and customizing players,
+ * as well as saving and loading player configurations.
  */
 public class ChoosePlayerScreen extends StackPane {
   private final HBox playersContainer;
@@ -40,11 +40,15 @@ public class ChoosePlayerScreen extends StackPane {
   /**
    * Constructs a new player selection screen.
    *
-   * @param startingPlayers initial list of players to display
+   * @param startingPlayers  initial list of players to display
    * @param allPlayingPieces list of all available playing pieces for selection
-   * @param maxPlayers maximum number of players allowed
+   * @param maxPlayers       maximum number of players allowed
    */
-  public ChoosePlayerScreen(List<Player> startingPlayers, List<PlayingPiece> allPlayingPieces, int maxPlayers) {
+  public ChoosePlayerScreen(
+          List<Player> startingPlayers,
+          List<PlayingPiece> allPlayingPieces,
+          int maxPlayers
+  ) {
     this.players = new ArrayList<>(startingPlayers);
     this.allPlayingPieces = allPlayingPieces;
     this.maxPlayers = maxPlayers;
@@ -202,7 +206,11 @@ public class ChoosePlayerScreen extends StackPane {
     playerNameField.setMaxWidth(180);
 
     // Add a listener to update the player name when the text field changes
-    playerNameField.textProperty().addListener((observable, oldValue, newValue) -> player.setName(newValue));
+    playerNameField.textProperty().addListener(
+            (observable, oldValue, newValue) -> {
+              player.setName(newValue);
+            }
+    );
 
     // Delete button
     Button deleteButton = new Button("Delete");
@@ -247,14 +255,14 @@ public class ChoosePlayerScreen extends StackPane {
    * Handles the "Start Game" button click by emitting a PLAYERS_CHOSEN event.
    */
   private void startGameHandler() {
-    GUIApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
+    GuiApp.getInstance().emitEvent(AppEvent.PLAYERS_CHOSEN, players);
   }
 
   /**
    * Configures a FileChooser with common settings for player file operations.
    *
    * @param fileChooser the FileChooser to configure
-   * @param title the title to set for the FileChooser dialog
+   * @param title       the title to set for the FileChooser dialog
    */
   private void configureFileChooser(FileChooser fileChooser, String title) {
     fileChooser.setTitle(title);
@@ -269,7 +277,7 @@ public class ChoosePlayerScreen extends StackPane {
       FileUtils.ensureDirectoryExists(FileConstants.PLAYERS_DIR);
       fileChooser.setInitialDirectory(playersDir);
     } catch (DirectoryCreationException e) {
-      GUIApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
+      GuiApp.getInstance().showMessage("Error accessing players directory: " + e.getMessage());
     }
   }
 
@@ -289,7 +297,7 @@ public class ChoosePlayerScreen extends StackPane {
 
     if (file != null) {
       // Emit the save event
-      GUIApp.getInstance().emitEvent(AppEvent.SAVE_PLAYERS, new Tuple<>(file.toPath(), players));
+      GuiApp.getInstance().emitEvent(AppEvent.SAVE_PLAYERS, new Tuple<>(file.toPath(), players));
     }
   }
 
@@ -307,7 +315,7 @@ public class ChoosePlayerScreen extends StackPane {
 
     if (file != null) {
       // Emit the load event
-      GUIApp.getInstance().emitEvent(AppEvent.LOAD_PLAYERS, file.toPath());
+      GuiApp.getInstance().emitEvent(AppEvent.LOAD_PLAYERS, file.toPath());
     }
   }
 }
