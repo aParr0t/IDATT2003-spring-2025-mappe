@@ -4,8 +4,8 @@ import edu.ntnu.iir.bidata.exceptions.*;
 import edu.ntnu.iir.bidata.model.*;
 import edu.ntnu.iir.bidata.service.FileHandlerService;
 import edu.ntnu.iir.bidata.model.games.Game;
+import edu.ntnu.iir.bidata.model.games.GameFactory;
 import edu.ntnu.iir.bidata.model.games.MonopolyGame;
-import edu.ntnu.iir.bidata.model.games.SnakesAndLaddersGame;
 import edu.ntnu.iir.bidata.view.gui.screens.*;
 import edu.ntnu.iir.bidata.view.gui.GUIApp;
 import edu.ntnu.iir.bidata.view.AppEvent;
@@ -34,14 +34,8 @@ public class BoardGameController {
     });
 
     GUIApp.getInstance().addEventListener(AppEvent.GAME_CHOSEN, gameType -> {
-      // TODO: maybe use a factory pattern to create the game
-      if (gameType == GameType.SNAKES_AND_LADDERS) {
-        game = new SnakesAndLaddersGame();
-      } else if (gameType == GameType.MONOPOLY) {
-        game = new MonopolyGame();
-      } else {
-        throw new IllegalArgumentException("Invalid game type: " + gameType);
-      }
+      // Create game using the GameFactory
+      game = GameFactory.createGame(gameType);
       // update view
       List<Board> boards = BoardFactory.getAllBoardsForGameType(gameType);
       GUIApp.setContent(new ChooseBoardScreen(gameType, boards), true, true);
@@ -55,7 +49,6 @@ public class BoardGameController {
     GUIApp.getInstance().addEventListener(AppEvent.BOARD_CHOSEN, board -> {
       // Board is already set in the game model from BOARD_SELECTED event
       // Just proceed to the next screen
-      // TODO: players should be fetched from local storage
       List<Player> players = List.of(
               new Player("Atas"),
               new Player("Stian")
@@ -73,20 +66,9 @@ public class BoardGameController {
       game.setPlayers(players);
 
       // start game
-      // TODO: maybe use a factory pattern to create the game screen
       game.start();
-      switch (game.getGameType()) {
-        case SNAKES_AND_LADDERS:
-          gameplayScreen = new SnakesAndLaddersScreen(game.getBoard());
-          break;
-        case MONOPOLY:
-          gameplayScreen = new MonopolyScreen(
-                  game.getBoard()
-          );
-          break;
-        default:
-          throw new IllegalArgumentException("Invalid game type: " + game.getGameType());
-      }
+      // Create game screen using the GameScreenFactory
+      gameplayScreen = GameScreenFactory.createGameScreen(game.getGameType(), game.getBoard());
       GUIApp.setContent(gameplayScreen, true, false);
       updateGameScreen();
     });
@@ -138,8 +120,7 @@ public class BoardGameController {
           game.setBoard(board);
 
           // Get the current screen
-          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen) {
-            ChooseBoardScreen chooseBoardScreen = (ChooseBoardScreen) GUIApp.getCurrentContent();
+          if (GUIApp.getCurrentContent() instanceof ChooseBoardScreen chooseBoardScreen) {
             chooseBoardScreen.addLoadedBoard(board);
           }
 
@@ -195,8 +176,7 @@ public class BoardGameController {
             game.setPlayers(players);
 
             // Update the ChoosePlayerScreen if it's the current screen
-            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen) {
-              ChoosePlayerScreen choosePlayerScreen = (ChoosePlayerScreen) GUIApp.getCurrentContent();
+            if (GUIApp.getCurrentContent() instanceof ChoosePlayerScreen choosePlayerScreen) {
               choosePlayerScreen.updatePlayers(players);
             }
 
@@ -220,7 +200,6 @@ public class BoardGameController {
   }
 
   private void updateGameScreen() {
-    // TODO: may need different controller for each game screen
     if (gameplayScreen instanceof SnakesAndLaddersScreen) {
       ((SnakesAndLaddersScreen) gameplayScreen).update(
               game.getPlayers(),
@@ -231,8 +210,7 @@ public class BoardGameController {
       List<Integer> playerMoney = new ArrayList<>();
 
       // Get player money if this is a MonopolyGame
-      if (game instanceof MonopolyGame) {
-        MonopolyGame monopolyGame = (MonopolyGame) game;
+      if (game instanceof MonopolyGame monopolyGame) {
         for (Player player : game.getPlayers()) {
           playerMoney.add(monopolyGame.getPlayerMoney(player));
         }
