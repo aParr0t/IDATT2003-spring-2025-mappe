@@ -10,8 +10,7 @@ import javafx.scene.shape.Rectangle;
  * The number of dots (1-6) determines the display pattern.
  */
 public class DieRectangle extends Pane {
-  private final Rectangle background;
-  private int dotCount;
+  private final int dotCount;
   private final double size;
   private final double dotRadius;
 
@@ -42,7 +41,7 @@ public class DieRectangle extends Pane {
     this.dotRadius = size * 0.08; // Dot size proportional to die size
 
     // Create the background rectangle
-    background = new Rectangle(size, size);
+    Rectangle background = new Rectangle(size, size);
     background.setFill(Color.WHITE);
     background.setStroke(Color.BLACK);
     background.setArcWidth(size * 0.2);
