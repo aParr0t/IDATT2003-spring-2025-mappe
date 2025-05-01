@@ -73,23 +73,4 @@ public class DieRectangle extends Pane {
       getChildren().add(dot);
     }
   }
-
-  /**
-   * Sets the new dot count and redraws the die.
-   *
-   * @param newDotCount The new number of dots (1-6)
-   */
-  public void setDotCount(int newDotCount) {
-    if (newDotCount < 1 || newDotCount > 6) {
-      throw new IllegalArgumentException("Dot count must be between 1 and 6");
-    }
-
-    // Clear previous dots but keep the background
-    getChildren().clear();
-    getChildren().add(background);
-
-    // Update dotCount and redraw
-    this.dotCount = newDotCount;
-    drawDots();
-  }
 }

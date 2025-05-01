@@ -7,22 +7,18 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 import edu.ntnu.iir.bidata.view.AppEvent;
 import edu.ntnu.iir.bidata.view.GameEventListener;
 
-import java.util.Stack;
-
 public class GUIApp extends Application implements UIApp {
-  private static Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
+  private static final Map<AppEvent<?>, List<GameEventListener<?>>> eventListeners = new HashMap<>();  // (Help from AI)
   private static BorderPane sceneContent;
   private static Stage stage;
   private static final Stack<Node> screenHistory = new Stack<>();  // Keep track of navigation history
@@ -39,8 +35,8 @@ public class GUIApp extends Application implements UIApp {
     GUIApp.stage = stage;
     Scene scene = new Scene(sceneContent, 1000, 800);
     scene.setOnKeyPressed(event -> {
-      switch (event.getCode()) {
-        case ESCAPE -> quitApp();
+      if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
+        quitApp();
       }
     });
     stage.setScene(scene);
@@ -48,7 +44,6 @@ public class GUIApp extends Application implements UIApp {
 
     // Set initial screen
     setContent(new HomeScreen(), false); // Don't add to history since it's first screen
-//    setContent(new GameplayScreen(), false); // Don't add to history since it's first screen
   }
 
   // Static method to get the instance
@@ -75,7 +70,7 @@ public class GUIApp extends Application implements UIApp {
 
     // Change content
     sceneContent.setCenter(content);
-    
+
     // Set the back button visibility flag
     GUIApp.showBackButton = showBackButton;
 
@@ -161,10 +156,10 @@ public class GUIApp extends Application implements UIApp {
     alert.setContentText(message);
     alert.showAndWait();
   }
-  
+
   /**
    * Gets the current content displayed in the application.
-   * 
+   *
    * @return The current content node
    */
   public static Node getCurrentContent() {

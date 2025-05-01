@@ -35,11 +35,11 @@ public class ChooseGameScreen extends StackPane {
 
       // game preview image
       Rectangle imageContainer = new Rectangle(200, 200);
-      ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.getImagePath()));
+      ImagePattern imagePattern = new ImagePattern(new Image(gamePreview.imagePath()));
       imageContainer.setFill(imagePattern);
 
       // game name
-      Label gameName = new Label(gamePreview.getName());
+      Label gameName = new Label(gamePreview.name());
       gameName.setFont(new Font(18));
       gameName.setStyle("-fx-padding: 10px;");
 
@@ -48,7 +48,7 @@ public class ChooseGameScreen extends StackPane {
 
       // add click handler to gameCard
       gameCard.setOnMouseClicked(event -> {
-        GUIApp.getInstance().emitEvent(AppEvent.GAME_CHOSEN, gamePreview.getGameType());
+        GUIApp.getInstance().emitEvent(AppEvent.GAME_CHOSEN, gamePreview.gameType());
       });
     }
     gamesContainer.setAlignment(Pos.CENTER);

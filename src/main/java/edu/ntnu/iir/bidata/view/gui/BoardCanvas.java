@@ -26,9 +26,9 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
   private boolean animating = false;
   // Use instance variable instead of static to allow proper position tracking
   private Map<String, Integer> previousPositions = new HashMap<>();
-  private Map<String, Integer> lastKnownPositions = new HashMap<>(); // Added to track last known positions
-  private Map<Player, Double> animationProgress = new HashMap<>();
-  private AnimationTimer animationTimer;
+  private final Map<String, Integer> lastKnownPositions = new HashMap<>(); // Added to track last known positions
+  private final Map<Player, Double> animationProgress = new HashMap<>();
+  private final AnimationTimer animationTimer;
   private Runnable onAnimationComplete;
 
   public BoardCanvas(Board board) {
@@ -127,15 +127,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     previousPositions = new HashMap<>(lastKnownPositions);
   }
 
-  @Override
-  public void setPreviousPositions(Map<String, Integer> previousPositions) {
-    if (previousPositions == null) {
-      this.previousPositions = new HashMap<>();
-      return;
-    }
-    this.previousPositions = new HashMap<>(previousPositions);
-  }
-
   private int getPreviousPosition(Player player) {
     if (player == null) {
       return 1; // Default position
@@ -220,11 +211,6 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     if (onAnimationComplete != null) {
       onAnimationComplete.run();
     }
-  }
-
-  @Override
-  public boolean isAnimating() {
-    return animating;
   }
 
   public abstract void draw();
@@ -426,15 +412,5 @@ public abstract class BoardCanvas extends Canvas implements AnimatedBoardCanvas 
     // Fill with color
     gc.setFill(fillColor);
     gc.fillRect(canvasX, canvasY, tileWidth, tileHeight);
-  }
-
-  /**
-   * Sets whether tile numbers should be displayed on the board
-   *
-   * @param showTileNumbers true to show tile numbers, false to hide them
-   */
-  public void setShowTileNumbers(boolean showTileNumbers) {
-    this.showTileNumbers = showTileNumbers;
-    draw(); // Redraw the board to reflect the change
   }
 }
