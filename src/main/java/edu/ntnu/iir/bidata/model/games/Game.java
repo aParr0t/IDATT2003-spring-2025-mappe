@@ -64,6 +64,16 @@ public abstract class Game {
   public List<Integer> getDiceCounts() {
     return dice.getCounts();
   }
+  
+  /**
+   * Sets the dice to be used in the game.
+   * This is useful for testing with mock dice.
+   *
+   * @param dice the dice to use
+   */
+  public void setDice(Dice dice) {
+    this.dice = dice;
+  }
 
   public Player getWinner() {
     return winner;
@@ -112,4 +122,3 @@ public abstract class Game {
 
   public abstract void start();
 }
-
