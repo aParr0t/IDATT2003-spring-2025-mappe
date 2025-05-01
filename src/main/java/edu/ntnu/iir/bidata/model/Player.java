@@ -23,19 +23,6 @@ public class Player {
     this.playingPiece = playingPiece;
   }
 
-  /**
-   * Moves the player forward a certain number of steps.
-   * If the steps are negative, the player does not move.
-   *
-   * @param steps the number of steps to move forward
-   */
-  public void move(int steps) {
-    if (steps > 0) {
-      this.position += steps;
-    }
-    // Hvis steps er negativt, skjer ingenting
-  }
-
   public int getPosition() {
     return position;
   }
