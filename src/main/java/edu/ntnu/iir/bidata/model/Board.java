@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class Board {
   private String name = "Unnamed board";
-  private Map<Integer, Tile> tiles;
-  private double width;
-  private double height;
+  private final Map<Integer, Tile> tiles;
+  private final double width;
+  private final double height;
 
   /**
    * Creates a new empty board with default dimensions.
