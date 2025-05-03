@@ -57,6 +57,9 @@ public class ChoosePlayerScreen extends StackPane {
     Label titleLabel = new Label("Who's playing?");
     titleLabel.setFont(new Font(32));
 
+    Label subtitleLabel = new Label("Click on a player to change their playing piece");
+    subtitleLabel.setFont(new Font(18));
+
     // draw game previews
     playersContainer = new HBox(20);
     playersContainer.setAlignment(Pos.CENTER);
@@ -78,7 +81,7 @@ public class ChoosePlayerScreen extends StackPane {
     loadPlayersButton.setOnAction(event -> loadPlayers());
 
     // Vertical box to hold elements
-    VBox container = new VBox(20, titleLabel, playersContainer, buttonContainer);
+    VBox container = new VBox(20, titleLabel, subtitleLabel, playersContainer, buttonContainer);
     container.setAlignment(Pos.CENTER);
 
     // Add vbox to StackPane

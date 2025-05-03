@@ -136,32 +136,6 @@ public class BoardFactory {
     return board;
   }
 
-  /**
-   * Creates a Chinese variant of Snakes and Ladders with special rules.
-   * In this variant, most tiles lead back to the starting position.
-   *
-   * <p>You have to roll double 6 every time to win</p>
-   *
-   * @return A Chinese-style Snakes and Ladders board
-   */
-  public static Board chineseSnakesAndLadders() {
-    int columns = 20;
-    int rows = 20;
-    List<Tile> tiles = BoardTileLayout.snakesAndLadders(columns, rows);
-    Board board = new Board(tiles);
-
-    // snakes
-    for (int i = 1; i < columns * rows; i++) {
-      if ((i - 1) % 12 == 0) {
-        continue;
-      }
-      addMoveAction(board, i, 1);
-    }
-
-    board.setName("Chinese board");
-    colorSnakesAndLaddersBoard(board);
-    return board;
-  }
 
   /**
    * Helper method to add move actions to a board's tiles.
@@ -433,7 +407,6 @@ public class BoardFactory {
    * <ul>
    *   <li>A random board (10x10)</li>
    *   <li>A normal board with classic configuration</li>
-   *   <li>A Chinese variant</li>
    * </ul>
    * </p>
    *
@@ -447,8 +420,7 @@ public class BoardFactory {
     return switch (gameType) {
       case GameType.SNAKES_AND_LADDERS -> List.of(
               randomSnakesAndLadders(10, 10),
-              normalSnakesAndLadders(),
-              chineseSnakesAndLadders()
+              normalSnakesAndLadders()
       );
       case GameType.MONOPOLY -> List.of(
               standardMonopoly()
