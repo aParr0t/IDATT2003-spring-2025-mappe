@@ -97,7 +97,7 @@ public class BoardGameController {
       game.start();
       // Create game screen using the GameScreenFactory
       gameplayScreen = GameScreenFactory.createGameScreen(game.getGameType(), game.getBoard());
-      GuiApp.setContent(gameplayScreen, true, false);
+      GuiApp.setContent(gameplayScreen, true, true);
       updateGameScreen();
     });
 
